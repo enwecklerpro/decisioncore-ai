@@ -7,13 +7,14 @@ sap.ui.define([
         metadata: { manifest: "json" },
         init: function () {
             UIComponent.prototype.init.apply(this, arguments);
-            this.getRouter().initialize();
 
             // View model for UI state
             var oViewModel = new JSONModel({
                 busy: false,
-                scenario: "",
+                scenarioName: "",
+                correlationId: "",
                 payload: '{\n  "amount": 5000,\n  "riskLevel": 3,\n  "customerType": "STANDARD",\n  "country": "DE"\n}',
+                isSimulation: true,
                 result: null,
                 hasResult: false
             });

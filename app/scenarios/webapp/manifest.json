@@ -1,0 +1,132 @@
+{
+    "_version": "1.65.0",
+    "sap.app": {
+        "id": "decisioncore.scenarios",
+        "type": "application",
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "applicationVersion": {
+            "version": "2.0.0"
+        },
+        "i18n": "i18n/i18n.properties",
+        "dataSources": {
+            "mainService": {
+                "uri": "/api/decision/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "4.0"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "sap-icon://decision",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.120.0",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.fe.templates": {},
+                "sap.f": {}
+            }
+        },
+        "models": {
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            },
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "decisioncore.scenarios.i18n.i18n"
+                }
+            }
+        },
+        "routing": {
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "ScenariosList",
+                    "target": "ScenariosList"
+                },
+                {
+                    "pattern": "Scenarios({key}):?query:",
+                    "name": "ScenariosObjectPage",
+                    "target": "ScenariosObjectPage"
+                }
+            ],
+            "targets": {
+                "ScenariosList": {
+                    "type": "Component",
+                    "id": "ScenariosList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/Scenarios",
+                            "variantManagement": "Page",
+                            "initialLoad": "Enabled",
+                            "navigation": {
+                                "Scenarios": {
+                                    "detail": {
+                                        "route": "ScenariosObjectPage"
+                                    }
+                                }
+                            },
+                            "controlConfiguration": {
+                                "@com.sap.vocabularies.UI.v1.LineItem": {
+                                    "tableSettings": {
+                                        "type": "ResponsiveTable",
+                                        "selectionMode": "Multi",
+                                        "condensedTableLayout": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "ScenariosObjectPage": {
+                    "type": "Component",
+                    "id": "ScenariosObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/Scenarios",
+                            "editableHeaderContent": false,
+                            "sectionLayout": "Tabs"
+                        }
+                    }
+                }
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        }
+    },
+    "sap.cloud": {
+        "public": true,
+        "service": "decisioncore.ai"
+    }
+}

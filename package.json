@@ -1,0 +1,99 @@
+{
+  "name": "decisioncore-ai",
+  "version": "2.0.0",
+  "description": "DecisionCore AI – Explainable Decision Intelligence for SAP",
+  "repository": "https://github.com/enwecklerpro/decisioncore-ai",
+  "author": "Taha Khattari",
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@sap/cds": "^9",
+    "express": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^2",
+    "@sap/ux-specification": "latest",
+    "jest": "^29"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch": "cds watch",
+    "test": "cds bind --exec jest",
+    "build": "cds build --production",
+    "deploy:cf": "npm run build && cf push",
+    "lint": "eslint srv/"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "database": ":memory:"
+        }
+      },
+      "[production]": {
+        "db": {
+          "kind": "hana"
+        },
+        "auth": {
+          "kind": "xsuaa"
+        }
+      },
+      "[hybrid]": {
+        "auth": {
+          "kind": "mocked",
+          "users": {
+            "admin": {
+              "password": "admin",
+              "roles": [
+                "DecisionAdmin",
+                "DecisionBusiness",
+                "DecisionViewer"
+              ]
+            },
+            "business": {
+              "password": "business",
+              "roles": [
+                "DecisionBusiness",
+                "DecisionViewer"
+              ]
+            },
+            "viewer": {
+              "password": "viewer",
+              "roles": [
+                "DecisionViewer"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "fiori": {
+      "lean_draft": true
+    },
+    "features": {
+      "serve_on_root": true
+    }
+  },
+  "sapux": [
+    "app/dashboard",
+    "app/scenarios",
+    "app/rules",
+    "app/execute",
+    "app/history",
+    "app/admin"
+  ],
+  "decisioncore": {
+    "version": "2.0.0",
+    "codename": "Rules + AI",
+    "releaseDate": "2026-01-16",
+    "roadmap": {
+      "v2.1": "SAP AI Core Integration",
+      "v2.5": "ML Training from History",
+      "v3.0": "AutoML & Rule Discovery"
+    }
+  }
+}

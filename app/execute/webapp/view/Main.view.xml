@@ -1,0 +1,135 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" xmlns:l="sap.ui.layout" 
+    xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form"
+    controllerName="decisioncore.execute.controller.Main" displayBlock="true">
+    
+    <App id="app" busy="{view>/busy}">
+        <pages>
+            <Page title="{i18n>appTitle}" showNavButton="false" class="sapUiContentPadding">
+                <customHeader>
+                    <Bar>
+                        <contentLeft>
+                            <Title text="{i18n>appTitle}" level="H4"/>
+                        </contentLeft>
+                        <contentRight>
+                            <Switch state="{view>/isSimulation}" customTextOn="SIM" customTextOff="LIVE" type="AcceptReject"/>
+                            <Text text="{= ${view>/isSimulation} ? 'Simulation Mode' : 'Live Mode'}" class="sapUiSmallMarginBegin"/>
+                        </contentRight>
+                    </Bar>
+                </customHeader>
+                
+                <content>
+                    <l:Grid defaultSpan="XL6 L6 M12 S12" class="sapUiSmallMargin">
+                        <!-- Input Panel -->
+                        <f:Card class="sapUiSmallMarginBottom">
+                            <f:header>
+                                <f:cards:Header title="Decision Request" subtitle="Configure and submit" xmlns:cards="sap.f.cards"/>
+                            </f:header>
+                            <f:content>
+                                <VBox class="sapUiSmallMargin">
+                                    <form:SimpleForm editable="true" layout="ResponsiveGridLayout" 
+                                        labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12">
+                                        
+                                        <Label text="{i18n>selectScenario}" required="true"/>
+                                        <Select id="scenarioSelect" forceSelection="false" 
+                                            selectedKey="{view>/scenarioName}" width="100%"
+                                            items="{path: '/Scenarios', filters: [{path: 'status', operator: 'EQ', value1: 'ACTIVE'}]}">
+                                            <core:Item key="{name}" text="{name} - {displayName}"/>
+                                        </Select>
+                                        
+                                        <Label text="{i18n>correlationId}"/>
+                                        <Input value="{view>/correlationId}" placeholder="Optional tracking ID"/>
+                                        
+                                    </form:SimpleForm>
+                                    
+                                    <Label text="{i18n>enterPayload}" class="sapUiSmallMarginTop sapUiSmallMarginBegin"/>
+                                    <TextArea id="payloadInput" value="{view>/payload}" rows="15" width="100%" 
+                                        placeholder='{"amount": 5000, "riskLevel": 3, "customerType": "STANDARD"}'
+                                        class="sapUiSmallMargin"/>
+                                    
+                                    <HBox class="sapUiSmallMargin" justifyContent="SpaceBetween">
+                                        <HBox>
+                                            <Button text="{i18n>evaluate}" type="Emphasized" press=".onEvaluate" 
+                                                icon="sap-icon://play" class="sapUiSmallMarginEnd"/>
+                                            <Button text="{i18n>clear}" type="Transparent" press=".onClear" 
+                                                icon="sap-icon://clear-all"/>
+                                        </HBox>
+                                        <MenuButton text="Sample Payloads" icon="sap-icon://documents">
+                                            <menu>
+                                                <Menu>
+                                                    <MenuItem text="Credit Application" press=".onLoadCreditSample"/>
+                                                    <MenuItem text="Fraud Check" press=".onLoadFraudSample"/>
+                                                    <MenuItem text="Vendor Risk" press=".onLoadVendorSample"/>
+                                                </Menu>
+                                            </menu>
+                                        </MenuButton>
+                                    </HBox>
+                                </VBox>
+                            </f:content>
+                        </f:Card>
+                        
+                        <!-- Result Panel -->
+                        <f:Card visible="{view>/hasResult}">
+                            <f:header>
+                                <f:cards:Header xmlns:cards="sap.f.cards"
+                                    title="{view>/result/decision}"
+                                    subtitle="{= ${view>/isSimulation} ? 'Simulation Result (Not Saved)' : 'Decision Result'}"
+                                    statusText="{= 'Score: ' + ${view>/result/finalScore} + '/100'}"
+                                    iconSrc="{= ${view>/result/decision} === 'APPROVED' ? 'sap-icon://accept' : ${view>/result/decision} === 'REJECTED' ? 'sap-icon://decline' : 'sap-icon://pending'}"/>
+                            </f:header>
+                            <f:content>
+                                <VBox class="sapUiSmallMargin">
+                                    <!-- Decision Status -->
+                                    <ObjectStatus 
+                                        title="{i18n>decision}" 
+                                        text="{view>/result/decision}" 
+                                        state="{= ${view>/result/decision} === 'APPROVED' ? 'Success' : ${view>/result/decision} === 'REJECTED' ? 'Error' : 'Warning'}"
+                                        icon="{= ${view>/result/decision} === 'APPROVED' ? 'sap-icon://accept' : ${view>/result/decision} === 'REJECTED' ? 'sap-icon://decline' : 'sap-icon://pending'}"
+                                        class="sapUiSmallMarginBottom"/>
+                                    
+                                    <!-- Score Grid -->
+                                    <l:Grid defaultSpan="XL3 L3 M6 S6" class="sapUiSmallMarginBottom">
+                                        <VBox class="sapUiSmallPadding">
+                                            <Label text="{i18n>finalScore}" design="Bold"/>
+                                            <ObjectNumber number="{view>/result/finalScore}" unit="/ 100" emphasized="true"/>
+                                        </VBox>
+                                        <VBox class="sapUiSmallPadding">
+                                            <Label text="{i18n>confidence}" design="Bold"/>
+                                            <ObjectNumber number="{view>/result/confidence}" unit="%"/>
+                                        </VBox>
+                                        <VBox class="sapUiSmallPadding">
+                                            <Label text="{i18n>rulesScore}" design="Bold"/>
+                                            <ObjectNumber number="{view>/result/rulesScore}"/>
+                                        </VBox>
+                                        <VBox class="sapUiSmallPadding">
+                                            <Label text="{i18n>aiScore}" design="Bold"/>
+                                            <ObjectNumber number="{view>/result/aiScore}"/>
+                                        </VBox>
+                                    </l:Grid>
+                                    
+                                    <HBox class="sapUiSmallMarginBottom">
+                                        <Label text="{i18n>processingTime}:" class="sapUiSmallMarginEnd"/>
+                                        <Text text="{view>/result/processingTimeMs} ms"/>
+                                    </HBox>
+                                    
+                                    <!-- Explanation -->
+                                    <Panel headerText="{i18n>explanation}" expandable="true" expanded="true">
+                                        <content>
+                                            <FormattedText htmlText="&lt;pre style='white-space:pre-wrap;font-family:monospace;font-size:12px;background:#f5f5f5;padding:12px;border-radius:4px;'&gt;{view>/result/explanation}&lt;/pre&gt;"/>
+                                        </content>
+                                    </Panel>
+                                    
+                                    <!-- Rules Fired -->
+                                    <Panel headerText="{i18n>rulesFired}" expandable="true" expanded="false" class="sapUiSmallMarginTop">
+                                        <content>
+                                            <FormattedText htmlText="&lt;pre style='font-family:monospace;font-size:11px;'&gt;{view>/result/rulesFired}&lt;/pre&gt;"/>
+                                        </content>
+                                    </Panel>
+                                </VBox>
+                            </f:content>
+                        </f:Card>
+                    </l:Grid>
+                </content>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>

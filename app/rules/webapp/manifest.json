@@ -1,0 +1,107 @@
+{
+    "_version": "1.65.0",
+    "sap.app": {
+        "id": "decisioncore.rules",
+        "type": "application",
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "applicationVersion": {
+            "version": "2.0.0"
+        },
+        "i18n": "i18n/i18n.properties",
+        "dataSources": {
+            "mainService": {
+                "uri": "/api/decision/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "4.0"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "sap-icon://business-objects-experience"
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.120.0",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "models": {
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true
+                }
+            },
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "decisioncore.rules.i18n.i18n"
+                }
+            }
+        },
+        "routing": {
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "RulesList",
+                    "target": "RulesList"
+                },
+                {
+                    "pattern": "Rules({key}):?query:",
+                    "name": "RulesObjectPage",
+                    "target": "RulesObjectPage"
+                }
+            ],
+            "targets": {
+                "RulesList": {
+                    "type": "Component",
+                    "id": "RulesList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/Rules",
+                            "variantManagement": "Page",
+                            "navigation": {
+                                "Rules": {
+                                    "detail": {
+                                        "route": "RulesObjectPage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "RulesObjectPage": {
+                    "type": "Component",
+                    "id": "RulesObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/Rules",
+                            "editableHeaderContent": false,
+                            "sectionLayout": "Tabs"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

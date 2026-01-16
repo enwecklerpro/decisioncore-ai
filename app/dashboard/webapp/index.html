@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>DecisionCore AI - Dashboard</title>
+    <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon" data-sap-ui-compatVersion="edge" data-sap-ui-async="true"
+        data-sap-ui-frameOptions="allow" data-sap-ui-resourceroots='{"decisioncore.dashboard": "./"}'
+        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport">
+        </script>
+    <style>
+        .dashboardCard {
+            margin: 8px;
+        }
+
+        .kpiValue {
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .kpiLabel {
+            color: #666;
+            font-size: 0.875rem;
+        }
+
+        .chartContainer {
+            height: 200px;
+            padding: 16px;
+        }
+    </style>
+</head>
+
+<body class="sapUiBody">
+    <div data-sap-ui-component data-name="decisioncore.dashboard" data-id="container"></div>
+</body>
+
+</html>

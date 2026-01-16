@@ -1,0 +1,107 @@
+{
+    "_version": "1.65.0",
+    "sap.app": {
+        "id": "decisioncore.admin",
+        "type": "application",
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "applicationVersion": {
+            "version": "2.0.0"
+        },
+        "i18n": "i18n/i18n.properties",
+        "dataSources": {
+            "mainService": {
+                "uri": "/api/admin/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "4.0"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "sap-icon://settings"
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": false
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.120.0",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "models": {
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true
+                }
+            },
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "decisioncore.admin.i18n.i18n"
+                }
+            }
+        },
+        "routing": {
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "AIProvidersList",
+                    "target": "AIProvidersList"
+                },
+                {
+                    "pattern": "AIProviders({key}):?query:",
+                    "name": "AIProvidersObjectPage",
+                    "target": "AIProvidersObjectPage"
+                }
+            ],
+            "targets": {
+                "AIProvidersList": {
+                    "type": "Component",
+                    "id": "AIProvidersList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/AIProviders",
+                            "variantManagement": "Page",
+                            "navigation": {
+                                "AIProviders": {
+                                    "detail": {
+                                        "route": "AIProvidersObjectPage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "AIProvidersObjectPage": {
+                    "type": "Component",
+                    "id": "AIProvidersObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/AIProviders",
+                            "editableHeaderContent": false,
+                            "sectionLayout": "Tabs"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

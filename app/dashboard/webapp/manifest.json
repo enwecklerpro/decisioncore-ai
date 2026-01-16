@@ -1,0 +1,92 @@
+{
+    "_version": "1.65.0",
+    "sap.app": {
+        "id": "decisioncore.dashboard",
+        "type": "application",
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "applicationVersion": {
+            "version": "2.0.0"
+        },
+        "i18n": "i18n/i18n.properties",
+        "dataSources": {
+            "mainService": {
+                "uri": "/api/decision/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "4.0"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "sap-icon://performance"
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "rootView": {
+            "viewName": "decisioncore.dashboard.view.Dashboard",
+            "type": "XML",
+            "id": "dashboardView"
+        },
+        "dependencies": {
+            "minUI5Version": "1.120.0",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.ui.layout": {},
+                "sap.f": {},
+                "sap.suite.ui.microchart": {}
+            }
+        },
+        "models": {
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server"
+                }
+            },
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "decisioncore.dashboard.i18n.i18n"
+                }
+            },
+            "dashboard": {
+                "type": "sap.ui.model.json.JSONModel"
+            }
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "viewPath": "decisioncore.dashboard.view",
+                "controlId": "app",
+                "controlAggregation": "pages"
+            },
+            "routes": [
+                {
+                    "pattern": "",
+                    "name": "main",
+                    "target": "main"
+                }
+            ],
+            "targets": {
+                "main": {
+                    "viewName": "Dashboard",
+                    "viewLevel": 1
+                }
+            }
+        }
+    }
+}

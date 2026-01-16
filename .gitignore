@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+gen/
+dist/
+
+# Database
+*.sqlite
+db.sqlite
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Test coverage
+coverage/
+
+# SAP CAP
+default-env.json
+*.mtar
+mta_archives/
+resources/
+
+# Credentials (NEVER commit)
+credentials/
+*.key
+*.pem
+*.p12

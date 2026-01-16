@@ -1,0 +1,59 @@
+[
+    {
+        "ID": "ai-mock-001",
+        "code": "MOCK_DEFAULT",
+        "name": "Mock AI Provider",
+        "description": "Built-in heuristic-based scoring for development and testing. Always available.",
+        "providerType": "MOCK",
+        "status": "ACTIVE",
+        "isDefault": true,
+        "model": "mock-heuristic-v2.0",
+        "timeoutMs": 5000,
+        "retryCount": 0,
+        "cacheTTLSeconds": 0,
+        "healthStatus": "healthy"
+    },
+    {
+        "ID": "ai-openai-001",
+        "code": "OPENAI_GPT4",
+        "name": "OpenAI GPT-4o-mini",
+        "description": "OpenAI GPT-4o-mini for intelligent decision scoring. Fast and cost-effective.",
+        "providerType": "OPENAI",
+        "status": "DRAFT",
+        "isDefault": false,
+        "model": "gpt-4o-mini",
+        "maxTokens": 500,
+        "timeoutMs": 10000,
+        "retryCount": 2,
+        "cacheTTLSeconds": 300,
+        "promptTemplate": "You are an enterprise decision scoring engine. Analyze the following business data and provide a risk/approval score.\n\nINPUT DATA:\n{{PAYLOAD}}\n\nSCENARIO: {{SCENARIO}}\n\nRespond ONLY with valid JSON in this exact format:\n{\n  \"score\": <number 0-100>,\n  \"confidence\": <number 0-100>,\n  \"factors\": [{\"factor\": \"<name>\", \"impact\": <-50 to +50>, \"reason\": \"<text>\"}],\n  \"recommendation\": \"<APPROVE|REJECT|REVIEW>\",\n  \"explanation\": \"<one sentence>\"\n}"
+    },
+    {
+        "ID": "ai-azure-001",
+        "code": "AZURE_OPENAI",
+        "name": "Azure OpenAI Enterprise",
+        "description": "Azure-hosted GPT for enterprise deployments with data residency.",
+        "providerType": "AZURE_OPENAI",
+        "status": "DRAFT",
+        "isDefault": false,
+        "model": "gpt-4o-mini",
+        "maxTokens": 500,
+        "timeoutMs": 15000,
+        "retryCount": 3,
+        "cacheTTLSeconds": 600
+    },
+    {
+        "ID": "ai-claude-001",
+        "code": "CLAUDE_HAIKU",
+        "name": "Anthropic Claude Haiku",
+        "description": "Claude 3 Haiku for fast, thoughtful decision analysis.",
+        "providerType": "CLAUDE",
+        "status": "DRAFT",
+        "isDefault": false,
+        "model": "claude-3-haiku-20240307",
+        "maxTokens": 500,
+        "timeoutMs": 10000,
+        "retryCount": 2,
+        "cacheTTLSeconds": 300
+    }
+]

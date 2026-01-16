@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DecisionCore AI - Explainable Decision Intelligence for SAP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a6ed1;
+            --primary-dark: #0854a0;
+            --success: #107e3e;
+            --warning: #df6e0c;
+            --error: #bb0000;
+            --bg: #fafbfc;
+            --card-bg: #ffffff;
+            --text: #32363a;
+            --text-light: #6a6d70;
+            --border: #e5e5e5;
+            --gradient: linear-gradient(135deg, #0a6ed1 0%, #0854a0 50%, #1a4f7a 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--gradient);
+            color: white;
+            padding: 60px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='0.5'/%3E%3Ccircle cx='50' cy='50' r='30' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='0.5'/%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='0.5'/%3E%3C/svg%3E") repeat;
+            opacity: 0.6;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1200px;
+            margin: -40px auto 40px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Section */
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            margin-top: 32px;
+        }
+
+        /* App Grid */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border-color: var(--primary);
+        }
+
+        .app-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .app-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .app-card p {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            flex: 1;
+        }
+
+        .app-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-top: 12px;
+            font-weight: 500;
+        }
+
+        .badge-business {
+            background: #e8f5e9;
+            color: var(--success);
+        }
+
+        .badge-admin {
+            background: #fff3e0;
+            color: var(--warning);
+        }
+
+        .badge-analytics {
+            background: #e3f2fd;
+            color: var(--primary);
+        }
+
+        /* Services */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid var(--border);
+        }
+
+        .service-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .service-name {
+            font-weight: 600;
+        }
+
+        .service-path {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            font-family: monospace;
+        }
+
+        .service-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .service-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Roadmap */
+        .roadmap {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            padding: 8px 0;
+        }
+
+        .roadmap-item {
+            flex: 0 0 200px;
+            text-align: center;
+            padding: 16px;
+            border-radius: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+        }
+
+        .roadmap-version {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .roadmap-title {
+            font-weight: 600;
+            margin: 8px 0;
+        }
+
+        .roadmap-desc {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .roadmap-item.current {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(10, 110, 209, 0.05) 0%, rgba(10, 110, 209, 0.02) 100%);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🧠</div>
+                <span class="logo-text">DecisionCore AI</span>
+            </div>
+            <p class="tagline">Explainable Decision Intelligence for SAP</p>
+            <span class="version-badge">Version 2.0.0 – Rules + AI Scoring</span>
+            <p style="margin-top: 16px; font-size: 0.9rem; opacity: 0.8;">Created by <strong>Taha Khattari</strong></p>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-value">6</div>
+                <div class="stat-label">Scenario Templates</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">12+</div>
+                <div class="stat-label">Rule Operators</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">4</div>
+                <div class="stat-label">AI Providers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Explainable</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">📱 Applications</h2>
+        <div class="apps-grid">
+            <a href="/dashboard/webapp/index.html" class="app-card">
+                <div class="app-icon">📊</div>
+                <h3>Executive Dashboard</h3>
+                <p>Real-time analytics with approval rates, top rules, and AI vs Rules contribution.</p>
+                <span class="app-badge badge-analytics">Analytics</span>
+            </a>
+            <a href="/scenarios/webapp/index.html" class="app-card">
+                <div class="app-icon">🎯</div>
+                <h3>Scenario Management</h3>
+                <p>Create and manage decision scenarios with scoring weights and thresholds.</p>
+                <span class="app-badge badge-business">Business</span>
+            </a>
+            <a href="/rules/webapp/index.html" class="app-card">
+                <div class="app-icon">📋</div>
+                <h3>Rules Management</h3>
+                <p>Configure business rules with expressions, operators, and actions.</p>
+                <span class="app-badge badge-business">Business</span>
+            </a>
+            <a href="/execute/webapp/index.html" class="app-card">
+                <div class="app-icon">▶️</div>
+                <h3>Decision Execution</h3>
+                <p>Execute and simulate decisions with real-time feedback.</p>
+                <span class="app-badge badge-business">Business</span>
+            </a>
+            <a href="/history/webapp/index.html" class="app-card">
+                <div class="app-icon">📜</div>
+                <h3>Decision History</h3>
+                <p>View audit trail and historical decision data.</p>
+                <span class="app-badge badge-analytics">Analytics</span>
+            </a>
+            <a href="/admin/webapp/index.html" class="app-card">
+                <div class="app-icon">⚙️</div>
+                <h3>AI Provider Admin</h3>
+                <p>Configure AI providers, test connections, manage settings.</p>
+                <span class="app-badge badge-admin">Admin</span>
+            </a>
+        </div>
+
+        <h2 class="section-title">🔌 Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-info">
+                    <span class="service-name">Decision Service</span>
+                    <span class="service-path">/api/decision</span>
+                </div>
+                <a href="/api/decision/$metadata" class="service-link">$metadata →</a>
+            </div>
+            <div class="service-card">
+                <div class="service-info">
+                    <span class="service-name">Admin Service</span>
+                    <span class="service-path">/api/admin</span>
+                </div>
+                <a href="/api/admin/$metadata" class="service-link">$metadata →</a>
+            </div>
+            <div class="service-card">
+                <div class="service-info">
+                    <span class="service-name">Public API</span>
+                    <span class="service-path">/api/v1</span>
+                </div>
+                <a href="/api/v1/$metadata" class="service-link">$metadata →</a>
+            </div>
+        </div>
+
+        <h2 class="section-title">🗺️ Product Roadmap</h2>
+        <div class="roadmap">
+            <div class="roadmap-item current">
+                <div class="roadmap-version">v2.0</div>
+                <div class="roadmap-title">Rules + AI</div>
+                <div class="roadmap-desc">Dynamic rules engine, Mock AI, Templates, Dashboard</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="roadmap-version">v2.1</div>
+                <div class="roadmap-title">SAP AI Core</div>
+                <div class="roadmap-desc">Full integration with SAP AI Core & BTP destinations</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="roadmap-version">v2.5</div>
+                <div class="roadmap-title">ML Training</div>
+                <div class="roadmap-desc">Train custom ML models from decision history</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="roadmap-version">v3.0</div>
+                <div class="roadmap-title">AutoML</div>
+                <div class="roadmap-desc">Automated rule discovery & optimization</div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p><strong>DecisionCore AI</strong> – Explainable Decision Intelligence for SAP</p>
+        <p style="margin: 8px 0;">Created by <strong>Taha Khattari</strong></p>
+        <p>Built with ❤️ on <a href="https://cap.cloud.sap" target="_blank">SAP Cloud Application Programming Model</a>
+        </p>
+        <p style="margin-top: 12px; font-size: 0.75rem;">© 2026 Taha Khattari. All Rights Reserved.</p>
+    </footer>
+</body>
+
+</html>

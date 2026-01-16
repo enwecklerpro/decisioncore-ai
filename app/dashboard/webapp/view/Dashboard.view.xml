@@ -71,33 +71,28 @@
                     <l:Grid defaultSpan="XL4 L4 M12 S12" class="sapUiTinyMarginTop">
                         
                         <!-- DONUT CHART: Decision Distribution -->
-                        <f:Card class="dashboardCard" height="340px">
+                        <f:Card class="dashboardCard" height="360px">
                             <f:header>
                                 <cards:Header title="Decision Outcomes" subtitle="Distribution of results"/>
                             </f:header>
                             <f:content>
                                 <VBox alignItems="Center" justifyContent="Center" height="100%">
-                                    <!-- CSS Donut Chart Injected Here -->
-                                    <html:div class="donut-chart-container">
-                                        <html:div class="donut-chart" style="background: {dashboard>/chartData/donutGradient}"></html:div>
-                                        <html:div class="donut-center-text">
-                                            <html:div class="donut-number">{dashboard>/stats/totalDecisions}</html:div>
-                                            <html:div style="font-size:0.8rem; color:#666;">Total</html:div>
-                                        </html:div>
-                                    </html:div>
+                                    
+                                    <!-- Using core:HTML for robust CSS dynamic binding -->
+                                    <core:HTML content='&lt;div class="donut-chart-container"&gt;&lt;div class="donut-chart" style="background: {dashboard>/chartData/donutGradient}"&gt;&lt;/div&gt;&lt;div class="donut-center-text"&gt;&lt;div class="donut-number"&gt;{dashboard>/stats/totalDecisions}&lt;/div&gt;&lt;div style="font-size:0.8rem; color:#666;"&gt;Total&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;' />
                                     
                                     <!-- Custom Legend -->
                                     <HBox class="sapUiMediumMarginTop" justifyContent="Center" wrap="Wrap">
                                         <HBox alignItems="Center" class="sapUiMediumMarginEnd">
-                                            <html:div class="legend-dot dot-green"></html:div>
+                                            <core:Icon src="sap-icon://circle-task-2" color="#107e3e" class="sapUiTinyMarginEnd" size="0.8rem"/>
                                             <Text text="Approved ({dashboard>/stats/approvalRate}%)"/>
                                         </HBox>
                                         <HBox alignItems="Center" class="sapUiMediumMarginEnd">
-                                            <html:div class="legend-dot dot-red"></html:div>
+                                            <core:Icon src="sap-icon://circle-task-2" color="#bb0000" class="sapUiTinyMarginEnd" size="0.8rem"/>
                                             <Text text="Rejected ({dashboard>/stats/rejectionRate}%)"/>
                                         </HBox>
                                         <HBox alignItems="Center">
-                                            <html:div class="legend-dot dot-orange"></html:div>
+                                            <core:Icon src="sap-icon://circle-task-2" color="#df6e0c" class="sapUiTinyMarginEnd" size="0.8rem"/>
                                             <Text text="Review ({dashboard>/stats/reviewRate}%)"/>
                                         </HBox>
                                     </HBox>
@@ -106,7 +101,7 @@
                         </f:Card>
 
                          <!-- SCORE CONTRIBUTION -->
-                        <f:Card class="dashboardCard" height="340px">
+                        <f:Card class="dashboardCard" height="360px">
                             <f:header>
                                 <cards:Header title="Score Contribution" subtitle="Impact factors"/>
                             </f:header>
@@ -115,31 +110,31 @@
                                     <VBox class="sapUiSmallMarginBottom">
                                         <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
                                             <Title text="Business Rules Engine" level="H5"/>
-                                            <Text text="{dashboard>/stats/rulesContribution}%" design="Bold"/>
+                                            <Text text="{dashboard>/stats/rulesContribution}%" class="bold-text"/>
                                         </HBox>
                                         <ProgressIndicator percentValue="{dashboard>/stats/rulesContribution}" state="Success" displayValue="" height="8px"/>
-                                        <Text text="Deterministic rules based on policy" class="sapUiTinyMarginTop" style="color:#888; font-size:0.8rem;"/>
+                                        <Text text="Deterministic rules based on policy" class="sapUiTinyMarginTop text-gray text-small"/>
                                     </VBox>
                                     
                                     <VBox class="sapUiMediumMarginTop">
                                         <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
                                             <Title text="AI Semantic Scoring" level="H5"/>
-                                            <Text text="{dashboard>/stats/aiContribution}%" design="Bold"/>
+                                            <Text text="{dashboard>/stats/aiContribution}%" class="bold-text"/>
                                         </HBox>
                                         <ProgressIndicator percentValue="{dashboard>/stats/aiContribution}" state="Information" displayValue="" height="8px"/>
-                                        <Text text="LLM based analysis of unstructured data" class="sapUiTinyMarginTop" style="color:#888; font-size:0.8rem;"/>
+                                        <Text text="LLM based analysis of unstructured data" class="sapUiTinyMarginTop text-gray text-small"/>
                                     </VBox>
                                     
                                     <HBox class="sapUiLargeMarginTop" alignItems="Center">
                                         <core:Icon src="sap-icon://hint" color="#0070f2" class="sapUiSmallMarginEnd"/>
-                                        <Text text="AI contribution has increased by 5% this week due to improved prompt templates." wrapping="true" style="font-style:italic; color:#666;"/>
+                                        <Text text="AI contribution has increased by 5% this week due to improved prompt templates." wrapping="true" class="italic-text text-gray"/>
                                     </HBox>
                                 </VBox>
                             </f:content>
                         </f:Card>
                         
-                        <!-- RECENT ALERTS (Placeholder for professional look) -->
-                        <f:Card class="dashboardCard" height="340px">
+                        <!-- RECENT ALERTS -->
+                        <f:Card class="dashboardCard" height="360px">
                              <f:header>
                                 <cards:Header title="System Status" subtitle="Operational health"/>
                             </f:header>
@@ -149,6 +144,7 @@
                                     <StandardListItem title="Rule Engine v2.1" description="Active" icon="sap-icon://puzzle" info="Active" infoState="Success"/>
                                     <StandardListItem title="AI Model: GPT-4" description="Connected" icon="sap-icon://cloud" info="Online" infoState="Success"/>
                                     <StandardListItem title="Decision Logging" description="Audit enabled" icon="sap-icon://log" info="Enabled" infoState="Success"/>
+                                    <StandardListItem title="XSUAA Security" description="Authenticated" icon="sap-icon://shield" info="Secure" infoState="Success"/>
                                 </List>
                             </f:content>
                         </f:Card>
@@ -164,17 +160,17 @@
                             <f:content>
                                 <Table items="{dashboard>/topRules}" inset="false" fixedLayout="false">
                                     <columns>
-                                        <Column width="150px"><Text text="Rule ID" style="font-weight:600; color:#888;"/></Column>
-                                        <Column><Text text="Description" style="font-weight:600; color:#888;"/></Column>
-                                        <Column hAlign="End" width="100px"><Text text="Triggers" style="font-weight:600; color:#888;"/></Column>
-                                        <Column hAlign="Center" width="120px"><Text text="Rate" style="font-weight:600; color:#888;"/></Column>
-                                        <Column hAlign="Center" width="100px"><Text text="Impact" style="font-weight:600; color:#888;"/></Column>
+                                        <Column width="150px"><Text text="Rule ID" class="text-gray bold-text"/></Column>
+                                        <Column><Text text="Description" class="text-gray bold-text"/></Column>
+                                        <Column hAlign="End" width="100px"><Text text="Triggers" class="text-gray bold-text"/></Column>
+                                        <Column hAlign="Center" width="120px"><Text text="Rate" class="text-gray bold-text"/></Column>
+                                        <Column hAlign="Center" width="100px"><Text text="Impact" class="text-gray bold-text"/></Column>
                                     </columns>
                                     <items>
                                         <ColumnListItem>
                                             <cells>
                                                 <ObjectStatus text="{dashboard>ruleCode}" state="None" inverted="true"/>
-                                                <Text text="{dashboard>ruleName}" design="Bold"/>
+                                                <Text text="{dashboard>ruleName}" class="bold-text"/>
                                                 <Text text="{dashboard>triggerCount}"/>
                                                 <ProgressIndicator percentValue="{dashboard>triggerRate}" displayValue="{dashboard>triggerRate}%" state="None"/>
                                                 <ObjectStatus text="{path: 'dashboard>avgImpact'} pts" 

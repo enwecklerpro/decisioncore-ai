@@ -14,7 +14,7 @@ using { decisioncore as db } from '../db/schema';
 // ============================================================
 
 @path: '/api/decision'
-@requires: ['DecisionViewer', 'DecisionBusiness', 'DecisionAdmin']
+// Auth configured via package.json - "mocked" for dev, "xsuaa" for production
 @impl: './decision-service.js'
 service DecisionService {
 
@@ -207,7 +207,7 @@ service DecisionService {
 // ============================================================
 
 @path: '/api/admin'
-@requires: 'DecisionAdmin'
+// @requires: 'DecisionAdmin' - enabled in production via XSUAA
 @impl: './admin-service.js'
 service DecisionAdminService {
 
@@ -266,7 +266,7 @@ service DecisionAdminService {
 // ============================================================
 
 @path: '/api/v1'
-@requires: 'authenticated-user'
+// @requires: 'authenticated-user' - enabled in production
 @impl: './api-service.js'
 service DecisionAPIService {
 

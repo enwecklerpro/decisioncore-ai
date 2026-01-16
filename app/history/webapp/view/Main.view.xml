@@ -1,0 +1,49 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" 
+    xmlns:cards="sap.f.cards" controllerName="decisioncore.history.controller.Main" displayBlock="true">
+    <App id="app">
+        <pages>
+            <Page title="Decision History" class="sapUiContentPadding">
+                <customHeader>
+                    <Bar>
+                        <contentLeft><Title text="Decision Audit Trail" level="H3"/></contentLeft>
+                        <contentRight><Button icon="sap-icon://refresh" press=".onRefresh"/></contentRight>
+                    </Bar>
+                </customHeader>
+                <content>
+                    <f:Card class="sapUiSmallMargin">
+                        <f:header>
+                            <cards:Header title="Recent Decisions" subtitle="Audit log of all decisions"/>
+                        </f:header>
+                        <f:content>
+                            <Table items="{/Outputs}" growing="true" growingThreshold="20">
+                                <columns>
+                                    <Column><Text text="Decision"/></Column>
+                                    <Column><Text text="Confidence"/></Column>
+                                    <Column><Text text="Final Score"/></Column>
+                                    <Column><Text text="Rules Score"/></Column>
+                                    <Column><Text text="AI Score"/></Column>
+                                    <Column><Text text="Processing Time"/></Column>
+                                    <Column><Text text="Status"/></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <ObjectStatus text="{decision}" state="{= ${decision} === 'APPROVED' ? 'Success' : ${decision} === 'REJECTED' ? 'Error' : 'Warning'}"/>
+                                            <ObjectNumber number="{confidence}" unit="%"/>
+                                            <ObjectNumber number="{finalScore}" emphasized="true"/>
+                                            <ObjectNumber number="{rulesScore}"/>
+                                            <ObjectNumber number="{aiScore}"/>
+                                            <Text text="{processingTimeMs} ms"/>
+                                            <Text text="{status}"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </f:content>
+                    </f:Card>
+                </content>
+                <footer><Bar><contentMiddle><Text text="DecisionCore AI - Created by Taha Khattari"/></contentMiddle></Bar></footer>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>

@@ -1,0 +1,68 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" 
+    xmlns:core="sap.ui.core" xmlns:cards="sap.f.cards"
+    controllerName="decisioncore.scenarios.controller.Main" displayBlock="true">
+    
+    <App id="app">
+        <pages>
+            <Page title="Scenario Management" class="sapUiContentPadding">
+                <customHeader>
+                    <Bar>
+                        <contentLeft>
+                            <Title text="Decision Scenarios" level="H3"/>
+                        </contentLeft>
+                        <contentRight>
+                            <Button icon="sap-icon://refresh" press=".onRefresh"/>
+                        </contentRight>
+                    </Bar>
+                </customHeader>
+                
+                <content>
+                    <f:Card class="sapUiSmallMargin">
+                        <f:header>
+                            <cards:Header title="Active Scenarios" subtitle="Decision logic configurations"/>
+                        </f:header>
+                        <f:content>
+                            <Table items="{/Scenarios}" growing="true">
+                                <headerToolbar>
+                                    <OverflowToolbar>
+                                        <Title text="Scenarios"/>
+                                        <ToolbarSpacer/>
+                                        <SearchField width="200px" placeholder="Search..."/>
+                                    </OverflowToolbar>
+                                </headerToolbar>
+                                <columns>
+                                    <Column><Text text="Name"/></Column>
+                                    <Column><Text text="Display Name"/></Column>
+                                    <Column><Text text="Status"/></Column>
+                                    <Column><Text text="Rules Weight"/></Column>
+                                    <Column><Text text="AI Weight"/></Column>
+                                    <Column><Text text="Version"/></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem type="Navigation">
+                                        <cells>
+                                            <ObjectIdentifier title="{name}"/>
+                                            <Text text="{displayName}"/>
+                                            <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}"/>
+                                            <ObjectNumber number="{rulesWeight}" unit="%"/>
+                                            <ObjectNumber number="{aiWeight}" unit="%"/>
+                                            <Text text="v{version}"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </f:content>
+                    </f:Card>
+                </content>
+                
+                <footer>
+                    <Bar>
+                        <contentMiddle>
+                            <Text text="DecisionCore AI - Created by Taha Khattari"/>
+                        </contentMiddle>
+                    </Bar>
+                </footer>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>

@@ -1,0 +1,47 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" 
+    xmlns:cards="sap.f.cards" controllerName="decisioncore.rules.controller.Main" displayBlock="true">
+    <App id="app">
+        <pages>
+            <Page title="Rules Management" class="sapUiContentPadding">
+                <customHeader>
+                    <Bar>
+                        <contentLeft><Title text="Decision Rules" level="H3"/></contentLeft>
+                        <contentRight><Button icon="sap-icon://refresh" press=".onRefresh"/></contentRight>
+                    </Bar>
+                </customHeader>
+                <content>
+                    <f:Card class="sapUiSmallMargin">
+                        <f:header>
+                            <cards:Header title="Business Rules" subtitle="Rule configurations for scoring"/>
+                        </f:header>
+                        <f:content>
+                            <Table items="{/Rules}" growing="true">
+                                <columns>
+                                    <Column><Text text="Rule Code"/></Column>
+                                    <Column><Text text="Rule Name"/></Column>
+                                    <Column><Text text="Status"/></Column>
+                                    <Column><Text text="Priority"/></Column>
+                                    <Column><Text text="Action"/></Column>
+                                    <Column><Text text="Score Modifier"/></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem type="Navigation">
+                                        <cells>
+                                            <ObjectIdentifier title="{ruleCode}"/>
+                                            <Text text="{ruleName}"/>
+                                            <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}"/>
+                                            <ObjectNumber number="{priority}"/>
+                                            <Text text="{action}"/>
+                                            <ObjectNumber number="{scoreModifier}" state="{= ${scoreModifier} >= 0 ? 'Success' : 'Error'}"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </f:content>
+                    </f:Card>
+                </content>
+                <footer><Bar><contentMiddle><Text text="DecisionCore AI - Created by Taha Khattari"/></contentMiddle></Bar></footer>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>

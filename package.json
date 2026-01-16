@@ -34,40 +34,39 @@
           "database": ":memory:"
         }
       },
+      "auth": {
+        "kind": "mocked",
+        "users": {
+          "admin": {
+            "password": "admin",
+            "roles": [
+              "DecisionAdmin",
+              "DecisionBusiness",
+              "DecisionViewer"
+            ]
+          },
+          "business": {
+            "password": "business",
+            "roles": [
+              "DecisionBusiness",
+              "DecisionViewer"
+            ]
+          },
+          "viewer": {
+            "password": "viewer",
+            "roles": [
+              "DecisionViewer"
+            ]
+          },
+          "*": true
+        }
+      },
       "[production]": {
         "db": {
           "kind": "hana"
         },
         "auth": {
           "kind": "xsuaa"
-        }
-      },
-      "[hybrid]": {
-        "auth": {
-          "kind": "mocked",
-          "users": {
-            "admin": {
-              "password": "admin",
-              "roles": [
-                "DecisionAdmin",
-                "DecisionBusiness",
-                "DecisionViewer"
-              ]
-            },
-            "business": {
-              "password": "business",
-              "roles": [
-                "DecisionBusiness",
-                "DecisionViewer"
-              ]
-            },
-            "viewer": {
-              "password": "viewer",
-              "roles": [
-                "DecisionViewer"
-              ]
-            }
-          }
         }
       }
     },

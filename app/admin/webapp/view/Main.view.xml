@@ -1,0 +1,68 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" 
+    xmlns:core="sap.ui.core" xmlns:cards="sap.f.cards"
+    controllerName="decisioncore.admin.controller.Main" displayBlock="true">
+    
+    <App id="app">
+        <pages>
+            <Page title="AI Provider Administration" showNavButton="false" class="sapUiContentPadding">
+                <customHeader>
+                    <Bar>
+                        <contentLeft>
+                            <Title text="AI Provider Admin" level="H3"/>
+                        </contentLeft>
+                        <contentRight>
+                            <Button icon="sap-icon://refresh" press=".onRefresh" tooltip="Refresh"/>
+                        </contentRight>
+                    </Bar>
+                </customHeader>
+                
+                <content>
+                    <f:Card class="sapUiSmallMargin">
+                        <f:header>
+                            <cards:Header title="Configured AI Providers" subtitle="Manage your AI scoring providers"/>
+                        </f:header>
+                        <f:content>
+                            <Table items="{/AIProviders}" growing="true" growingThreshold="10">
+                                <headerToolbar>
+                                    <OverflowToolbar>
+                                        <Title text="Providers"/>
+                                        <ToolbarSpacer/>
+                                        <Button icon="sap-icon://add" text="Add" type="Emphasized"/>
+                                    </OverflowToolbar>
+                                </headerToolbar>
+                                <columns>
+                                    <Column><Text text="Code"/></Column>
+                                    <Column><Text text="Name"/></Column>
+                                    <Column><Text text="Type"/></Column>
+                                    <Column><Text text="Status"/></Column>
+                                    <Column><Text text="Default"/></Column>
+                                    <Column hAlign="End"><Text text="Actions"/></Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <ObjectIdentifier title="{code}"/>
+                                            <Text text="{name}"/>
+                                            <Text text="{providerType}"/>
+                                            <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}"/>
+                                            <core:Icon src="{= ${isDefault} ? 'sap-icon://accept' : ''}"/>
+                                            <Button icon="sap-icon://edit" type="Transparent"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </f:content>
+                    </f:Card>
+                </content>
+                
+                <footer>
+                    <Bar>
+                        <contentMiddle>
+                            <Text text="DecisionCore AI - Created by Taha Khattari"/>
+                        </contentMiddle>
+                    </Bar>
+                </footer>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>

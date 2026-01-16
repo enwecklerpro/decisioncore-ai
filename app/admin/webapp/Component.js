@@ -1,6 +1,13 @@
-sap.ui.define(["sap/fe/core/AppComponent"], function (AppComponent) {
+sap.ui.define([
+    "sap/ui/core/UIComponent"
+], function (UIComponent) {
     "use strict";
-    return AppComponent.extend("decisioncore.admin.Component", {
-        metadata: { manifest: "json" }
+
+    return UIComponent.extend("decisioncore.admin.Component", {
+        metadata: { manifest: "json" },
+
+        init: function () {
+            UIComponent.prototype.init.apply(this, arguments);
+        }
     });
 });

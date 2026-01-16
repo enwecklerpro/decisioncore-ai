@@ -3,12 +3,11 @@
     "sap.app": {
         "id": "decisioncore.history",
         "type": "application",
-        "title": "{{appTitle}}",
-        "description": "{{appDescription}}",
+        "title": "Decision History",
+        "description": "View decision audit trail",
         "applicationVersion": {
             "version": "2.0.0"
         },
-        "i18n": "i18n/i18n.properties",
         "dataSources": {
             "mainService": {
                 "uri": "/api/decision/",
@@ -21,9 +20,6 @@
     },
     "sap.ui": {
         "technology": "UI5",
-        "icons": {
-            "icon": "sap-icon://history"
-        },
         "deviceTypes": {
             "desktop": true,
             "tablet": true,
@@ -31,13 +27,19 @@
         }
     },
     "sap.ui5": {
-        "flexEnabled": true,
+        "flexEnabled": false,
+        "rootView": {
+            "viewName": "decisioncore.history.view.Main",
+            "type": "XML",
+            "id": "mainView"
+        },
         "dependencies": {
             "minUI5Version": "1.120.0",
             "libs": {
                 "sap.m": {},
                 "sap.ui.core": {},
-                "sap.fe.templates": {}
+                "sap.ui.layout": {},
+                "sap.f": {}
             }
         },
         "models": {
@@ -46,59 +48,7 @@
                 "preload": true,
                 "settings": {
                     "synchronizationMode": "None",
-                    "operationMode": "Server",
-                    "autoExpandSelect": true
-                }
-            },
-            "i18n": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "settings": {
-                    "bundleName": "decisioncore.history.i18n.i18n"
-                }
-            }
-        },
-        "routing": {
-            "routes": [
-                {
-                    "pattern": ":?query:",
-                    "name": "OutputsList",
-                    "target": "OutputsList"
-                },
-                {
-                    "pattern": "Outputs({key}):?query:",
-                    "name": "OutputsObjectPage",
-                    "target": "OutputsObjectPage"
-                }
-            ],
-            "targets": {
-                "OutputsList": {
-                    "type": "Component",
-                    "id": "OutputsList",
-                    "name": "sap.fe.templates.ListReport",
-                    "options": {
-                        "settings": {
-                            "contextPath": "/Outputs",
-                            "variantManagement": "Page",
-                            "navigation": {
-                                "Outputs": {
-                                    "detail": {
-                                        "route": "OutputsObjectPage"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "OutputsObjectPage": {
-                    "type": "Component",
-                    "id": "OutputsObjectPage",
-                    "name": "sap.fe.templates.ObjectPage",
-                    "options": {
-                        "settings": {
-                            "contextPath": "/Outputs",
-                            "sectionLayout": "Tabs"
-                        }
-                    }
+                    "operationMode": "Server"
                 }
             }
         }

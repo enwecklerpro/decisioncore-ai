@@ -1,5 +1,5 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" xmlns:l="sap.ui.layout" 
-    xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:cards="sap.f.cards"
     controllerName="decisioncore.execute.controller.Main" displayBlock="true">
     
     <App id="app" busy="{view>/busy}">
@@ -22,7 +22,7 @@
                         <!-- Input Panel -->
                         <f:Card class="sapUiSmallMarginBottom">
                             <f:header>
-                                <f:cards:Header title="Decision Request" subtitle="Configure and submit" xmlns:cards="sap.f.cards"/>
+                                <cards:Header title="Decision Request" subtitle="Configure and submit"/>
                             </f:header>
                             <f:content>
                                 <VBox class="sapUiSmallMargin">
@@ -70,7 +70,7 @@
                         <!-- Result Panel -->
                         <f:Card visible="{view>/hasResult}">
                             <f:header>
-                                <f:cards:Header xmlns:cards="sap.f.cards"
+                                <cards:Header
                                     title="{view>/result/decision}"
                                     subtitle="{= ${view>/isSimulation} ? 'Simulation Result (Not Saved)' : 'Decision Result'}"
                                     statusText="{= 'Score: ' + ${view>/result/finalScore} + '/100'}"

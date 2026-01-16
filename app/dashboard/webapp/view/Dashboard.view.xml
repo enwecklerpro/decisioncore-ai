@@ -1,5 +1,5 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" xmlns:l="sap.ui.layout" 
-    xmlns:core="sap.ui.core" xmlns:mc="sap.suite.ui.microchart"
+    xmlns:core="sap.ui.core" xmlns:cards="sap.f.cards"
     controllerName="decisioncore.dashboard.controller.Dashboard" displayBlock="true">
     
     <App id="app" busy="{dashboard>/loading}">
@@ -30,7 +30,7 @@
                         <!-- Total Decisions -->
                         <f:Card class="dashboardCard">
                             <f:header>
-                                <f:cards:NumericHeader xmlns:cards="sap.f.cards"
+                                <cards:NumericHeader
                                     title="Total Decisions"
                                     subtitle="All time"
                                     number="{dashboard>/stats/totalDecisions}"
@@ -42,7 +42,7 @@
                         <!-- Approval Rate -->
                         <f:Card class="dashboardCard">
                             <f:header>
-                                <f:cards:NumericHeader xmlns:cards="sap.f.cards"
+                                <cards:NumericHeader
                                     title="Approval Rate"
                                     subtitle="% approved"
                                     number="{dashboard>/stats/approvalRate}"
@@ -54,7 +54,7 @@
                         <!-- Average Confidence -->
                         <f:Card class="dashboardCard">
                             <f:header>
-                                <f:cards:NumericHeader xmlns:cards="sap.f.cards"
+                                <cards:NumericHeader
                                     title="Avg Confidence"
                                     subtitle="AI certainty"
                                     number="{dashboard>/stats/avgConfidence}"
@@ -66,7 +66,7 @@
                         <!-- Avg Response Time -->
                         <f:Card class="dashboardCard">
                             <f:header>
-                                <f:cards:NumericHeader xmlns:cards="sap.f.cards"
+                                <cards:NumericHeader
                                     title="Avg Response"
                                     subtitle="Processing time"
                                     number="{dashboard>/stats/avgProcessingMs}"
@@ -82,19 +82,10 @@
                         <!-- Decision Distribution -->
                         <f:Card class="dashboardCard">
                             <f:header>
-                                <f:cards:Header xmlns:cards="sap.f.cards" title="Decision Distribution" subtitle="Approval vs Rejection vs Review"/>
+                                <cards:Header title="Decision Distribution" subtitle="Approval vs Rejection vs Review"/>
                             </f:header>
                             <f:content>
                                 <VBox alignItems="Center" justifyContent="Center" class="chartContainer">
-                                    <mc:HarveyBallMicroChart 
-                                        total="100" 
-                                        totalScale="%"
-                                        size="L"
-                                        showTotal="true">
-                                        <mc:items>
-                                            <mc:HarveyBallMicroChartItem fraction="{dashboard>/stats/approvalRate}" color="Good" fractionScale="%"/>
-                                        </mc:items>
-                                    </mc:HarveyBallMicroChart>
                                     <HBox class="sapUiSmallMarginTop">
                                         <VBox alignItems="Center" class="sapUiSmallMarginEnd">
                                             <ObjectStatus text="{dashboard>/stats/approvalRate}%" state="Success" icon="sap-icon://accept"/>
@@ -116,30 +107,22 @@
                         <!-- Rules vs AI Contribution -->
                         <f:Card class="dashboardCard">
                             <f:header>
-                                <f:cards:Header xmlns:cards="sap.f.cards" title="Score Contribution" subtitle="Rules vs AI Impact"/>
+                                <cards:Header title="Score Contribution" subtitle="Rules vs AI Impact"/>
                             </f:header>
                             <f:content>
                                 <VBox alignItems="Center" justifyContent="Center" class="chartContainer">
-                                    <mc:ComparisonMicroChart size="L" shrinkable="false">
-                                        <mc:data>
-                                            <mc:ComparisonMicroChartData 
-                                                title="Business Rules" 
-                                                value="{dashboard>/stats/rulesContribution}" 
-                                                color="Good"
-                                                displayValue="{dashboard>/stats/rulesContribution}%"/>
-                                            <mc:ComparisonMicroChartData 
-                                                title="AI Scoring" 
-                                                value="{dashboard>/stats/aiContribution}" 
-                                                color="Neutral"
-                                                displayValue="{dashboard>/stats/aiContribution}%"/>
-                                        </mc:data>
-                                    </mc:ComparisonMicroChart>
                                     <HBox class="sapUiSmallMarginTop" alignItems="Center">
                                         <core:Icon src="sap-icon://business-objects-experience" color="#107e3e" class="sapUiTinyMarginEnd"/>
                                         <Text text="Rules: {dashboard>/stats/rulesContribution}%" class="sapUiSmallMarginEnd"/>
                                         <core:Icon src="sap-icon://machine-learning" color="#0a6ed1" class="sapUiTinyMarginEnd"/>
                                         <Text text="AI: {dashboard>/stats/aiContribution}%"/>
                                     </HBox>
+                                    <ProgressIndicator percentValue="{dashboard>/stats/rulesContribution}" 
+                                        displayValue="Rules: {dashboard>/stats/rulesContribution}%" 
+                                        state="Success" class="sapUiMediumMarginTop" width="80%"/>
+                                    <ProgressIndicator percentValue="{dashboard>/stats/aiContribution}" 
+                                        displayValue="AI: {dashboard>/stats/aiContribution}%" 
+                                        state="Information" class="sapUiSmallMarginTop" width="80%"/>
                                 </VBox>
                             </f:content>
                         </f:Card>
@@ -148,7 +131,7 @@
                     <!-- Top Rules Table -->
                     <f:Card class="sapUiSmallMargin dashboardCard">
                         <f:header>
-                            <f:cards:Header xmlns:cards="sap.f.cards" title="Top Triggered Rules" subtitle="Most frequently activated rules"/>
+                            <cards:Header title="Top Triggered Rules" subtitle="Most frequently activated rules"/>
                         </f:header>
                         <f:content>
                             <Table items="{dashboard>/topRules}" growing="true" growingThreshold="5">

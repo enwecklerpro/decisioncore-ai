@@ -4,16 +4,15 @@
     
     <App id="app" busy="{view>/busy}">
         <pages>
-            <Page title="{i18n>appTitle}" showNavButton="false" class="sapUiContentPadding">
+            <Page title="Decision Execution" showNavButton="false" class="sapUiContentPadding">
                 <customHeader>
                     <Bar>
                         <contentLeft>
-                            <Title text="{i18n>appTitle}" level="H4"/>
+                            <Title text="DecisionCore AI - Execute" level="H4"/>
                         </contentLeft>
                         <contentRight>
                             <Switch state="{view>/isSimulation}" customTextOn="SIM" customTextOff="LIVE" type="AcceptReject"/>
-                            <Text text="Simulation Mode" class="sapUiSmallMarginBegin" visible="{view>/isSimulation}"/>
-                            <Text text="Live Mode" class="sapUiSmallMarginBegin" visible="{= !${view>/isSimulation}}"/>
+                            <Text text="Mode" class="sapUiSmallMarginBegin"/>
                         </contentRight>
                     </Bar>
                 </customHeader>
@@ -30,31 +29,31 @@
                                     <form:SimpleForm editable="true" layout="ResponsiveGridLayout" 
                                         labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12">
                                         
-                                        <Label text="{i18n>selectScenario}" required="true"/>
+                                        <Label text="Scenario" required="true"/>
                                         <Select id="scenarioSelect" forceSelection="false" 
                                             selectedKey="{view>/scenarioName}" width="100%"
                                             items="{/Scenarios}">
                                             <core:Item key="{name}" text="{name} - {displayName}"/>
                                         </Select>
                                         
-                                        <Label text="{i18n>correlationId}"/>
+                                        <Label text="Correlation ID"/>
                                         <Input value="{view>/correlationId}" placeholder="Optional tracking ID"/>
                                         
                                     </form:SimpleForm>
                                     
-                                    <Label text="{i18n>enterPayload}" class="sapUiSmallMarginTop sapUiSmallMarginBegin"/>
+                                    <Label text="JSON Payload" class="sapUiSmallMarginTop sapUiSmallMarginBegin"/>
                                     <TextArea id="payloadInput" value="{view>/payload}" rows="12" width="100%" 
-                                        placeholder='{"amount": 5000, "riskLevel": 3, "customerType": "STANDARD"}'
+                                        placeholder='{"amount": 5000, "riskLevel": 3}'
                                         class="sapUiSmallMargin"/>
                                     
                                     <HBox class="sapUiSmallMargin" justifyContent="SpaceBetween">
                                         <HBox>
-                                            <Button text="{i18n>evaluate}" type="Emphasized" press=".onEvaluate" 
+                                            <Button text="Evaluate" type="Emphasized" press=".onEvaluate" 
                                                 icon="sap-icon://play" class="sapUiSmallMarginEnd"/>
-                                            <Button text="{i18n>clear}" type="Transparent" press=".onClear" 
+                                            <Button text="Clear" type="Transparent" press=".onClear" 
                                                 icon="sap-icon://clear-all"/>
                                         </HBox>
-                                        <MenuButton text="Sample Payloads" icon="sap-icon://documents">
+                                        <MenuButton text="Samples" icon="sap-icon://documents">
                                             <menu>
                                                 <Menu>
                                                     <MenuItem text="Credit Application" press=".onLoadCreditSample"/>
@@ -79,44 +78,44 @@
                                 <VBox class="sapUiSmallMargin">
                                     <!-- Decision Status -->
                                     <ObjectStatus 
-                                        title="{i18n>decision}" 
+                                        title="Decision" 
                                         text="{view>/result/decision}" 
                                         class="sapUiSmallMarginBottom"/>
                                     
                                     <!-- Score Grid -->
                                     <l:Grid defaultSpan="XL3 L3 M6 S6" class="sapUiSmallMarginBottom">
                                         <VBox class="sapUiSmallPadding">
-                                            <Label text="{i18n>finalScore}" design="Bold"/>
+                                            <Label text="Final Score" design="Bold"/>
                                             <ObjectNumber number="{view>/result/finalScore}" unit="/ 100" emphasized="true"/>
                                         </VBox>
                                         <VBox class="sapUiSmallPadding">
-                                            <Label text="{i18n>confidence}" design="Bold"/>
+                                            <Label text="Confidence" design="Bold"/>
                                             <ObjectNumber number="{view>/result/confidence}" unit="%"/>
                                         </VBox>
                                         <VBox class="sapUiSmallPadding">
-                                            <Label text="{i18n>rulesScore}" design="Bold"/>
+                                            <Label text="Rules Score" design="Bold"/>
                                             <ObjectNumber number="{view>/result/rulesScore}"/>
                                         </VBox>
                                         <VBox class="sapUiSmallPadding">
-                                            <Label text="{i18n>aiScore}" design="Bold"/>
+                                            <Label text="AI Score" design="Bold"/>
                                             <ObjectNumber number="{view>/result/aiScore}"/>
                                         </VBox>
                                     </l:Grid>
                                     
                                     <HBox class="sapUiSmallMarginBottom">
-                                        <Label text="{i18n>processingTime}:" class="sapUiSmallMarginEnd"/>
+                                        <Label text="Processing Time:" class="sapUiSmallMarginEnd"/>
                                         <Text text="{view>/result/processingTimeMs} ms"/>
                                     </HBox>
                                     
                                     <!-- Explanation -->
-                                    <Panel headerText="{i18n>explanation}" expandable="true" expanded="true">
+                                    <Panel headerText="Explanation" expandable="true" expanded="true">
                                         <content>
                                             <Text text="{view>/result/explanation}"/>
                                         </content>
                                     </Panel>
                                     
                                     <!-- Rules Fired -->
-                                    <Panel headerText="{i18n>rulesFired}" expandable="true" expanded="false" class="sapUiSmallMarginTop">
+                                    <Panel headerText="Rules Fired" expandable="true" expanded="false" class="sapUiSmallMarginTop">
                                         <content>
                                             <Text text="{view>/result/rulesFired}"/>
                                         </content>

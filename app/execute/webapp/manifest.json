@@ -3,12 +3,11 @@
     "sap.app": {
         "id": "decisioncore.execute",
         "type": "application",
-        "title": "{{appTitle}}",
-        "description": "{{appDescription}}",
+        "title": "Decision Execution",
+        "description": "Execute and simulate decisions",
         "applicationVersion": {
             "version": "2.0.0"
         },
-        "i18n": "i18n/i18n.properties",
         "dataSources": {
             "mainService": {
                 "uri": "/api/decision/",
@@ -31,7 +30,7 @@
         }
     },
     "sap.ui5": {
-        "flexEnabled": true,
+        "flexEnabled": false,
         "rootView": {
             "viewName": "decisioncore.execute.view.Main",
             "type": "XML",
@@ -43,8 +42,7 @@
                 "sap.m": {},
                 "sap.ui.core": {},
                 "sap.ui.layout": {},
-                "sap.f": {},
-                "sap.ui.codeeditor": {}
+                "sap.f": {}
             }
         },
         "models": {
@@ -55,42 +53,7 @@
                     "synchronizationMode": "None",
                     "operationMode": "Server"
                 }
-            },
-            "i18n": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "settings": {
-                    "bundleName": "decisioncore.execute.i18n.i18n"
-                }
-            },
-            "view": {
-                "type": "sap.ui.model.json.JSONModel"
             }
-        },
-        "routing": {
-            "config": {
-                "routerClass": "sap.m.routing.Router",
-                "viewType": "XML",
-                "viewPath": "decisioncore.execute.view",
-                "controlId": "app",
-                "controlAggregation": "pages"
-            },
-            "routes": [
-                {
-                    "pattern": "",
-                    "name": "main",
-                    "target": "main"
-                }
-            ],
-            "targets": {
-                "main": {
-                    "viewName": "Main",
-                    "viewLevel": 1
-                }
-            }
-        },
-        "contentDensities": {
-            "compact": true,
-            "cozy": true
         }
     }
 }

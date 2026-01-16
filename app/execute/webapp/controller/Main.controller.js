@@ -7,7 +7,7 @@ sap.ui.define([
     "use strict";
 
     // Sample payloads
-    const SAMPLES = {
+    var SAMPLES = {
         credit: {
             amount: 15000,
             riskLevel: 3,
@@ -59,56 +59,67 @@ sap.ui.define([
             var sPayload = oViewModel.getProperty("/payload");
             var sCorrelationId = oViewModel.getProperty("/correlationId");
             var bSimulation = oViewModel.getProperty("/isSimulation");
+            var that = this;
 
             // Validation
             if (!sScenario) {
-                MessageBox.warning(this._getText("selectScenarioFirst"));
+                MessageBox.warning("Please select a scenario first");
                 return;
             }
 
             try {
                 JSON.parse(sPayload);
             } catch (e) {
-                MessageBox.error(this._getText("invalidJson") + ": " + e.message);
+                MessageBox.error("Invalid JSON: " + e.message);
                 return;
             }
 
             oViewModel.setProperty("/busy", true);
             oViewModel.setProperty("/hasResult", false);
 
-            var oModel = oView.getModel();
-            var oActionContext = oModel.bindContext("/EvaluateDecision(...)");
+            // Use fetch API for reliability
+            fetch("/api/decision/EvaluateDecision", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": "Basic " + btoa("admin:admin")
+                },
+                body: JSON.stringify({
+                    scenarioName: sScenario,
+                    payload: sPayload,
+                    correlationId: sCorrelationId || "test-" + Date.now(),
+                    isSimulation: bSimulation
+                })
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (oResult) {
+                    // Parse JSON strings for display
+                    if (oResult.rulesFired) {
+                        try {
+                            oResult.rulesFired = JSON.stringify(JSON.parse(oResult.rulesFired), null, 2);
+                        } catch (e) { }
+                    }
+                    if (oResult.explanation) {
+                        try {
+                            var exp = JSON.parse(oResult.explanation);
+                            oResult.explanation = JSON.stringify(exp, null, 2);
+                        } catch (e) { }
+                    }
 
-            oActionContext.setParameter("scenarioName", sScenario);
-            oActionContext.setParameter("payload", sPayload);
-            oActionContext.setParameter("correlationId", sCorrelationId || null);
-            oActionContext.setParameter("isSimulation", bSimulation);
+                    oViewModel.setProperty("/result", oResult);
+                    oViewModel.setProperty("/hasResult", true);
+                    oViewModel.setProperty("/busy", false);
 
-            oActionContext.execute().then(function () {
-                var oResult = oActionContext.getBoundContext().getObject();
-
-                // Parse JSON strings for display
-                if (oResult.rulesFired) {
-                    try {
-                        oResult.rulesFired = JSON.stringify(JSON.parse(oResult.rulesFired), null, 2);
-                    } catch (e) { }
-                }
-
-                oViewModel.setProperty("/result", oResult);
-                oViewModel.setProperty("/hasResult", true);
-                oViewModel.setProperty("/busy", false);
-
-                var sMsg = bSimulation ? this._getText("simulationSuccess") : this._getText("success");
-                MessageToast.show(sMsg);
-
-            }.bind(this)).catch(function (oError) {
-                oViewModel.setProperty("/busy", false);
-                var sErrorMsg = oError.message || "Unknown error";
-                if (oError.error && oError.error.message) {
-                    sErrorMsg = oError.error.message;
-                }
-                MessageBox.error(this._getText("errorEvaluating") + ": " + sErrorMsg);
-            }.bind(this));
+                    var sMsg = bSimulation ? "Simulation completed" : "Decision executed";
+                    MessageToast.show(sMsg + ": " + oResult.decision);
+                })
+                .catch(function (oError) {
+                    oViewModel.setProperty("/busy", false);
+                    MessageBox.error("Error: " + oError.message);
+                });
         },
 
         onClear: function () {
@@ -137,10 +148,6 @@ sap.ui.define([
             oViewModel.setProperty("/payload", JSON.stringify(SAMPLES[sType], null, 2));
             oViewModel.setProperty("/scenarioName", sScenario);
             MessageToast.show("Loaded " + sType + " sample");
-        },
-
-        _getText: function (sKey) {
-            return this.getView().getModel("i18n").getResourceBundle().getText(sKey);
         }
     });
 });

@@ -3,12 +3,11 @@
     "sap.app": {
         "id": "decisioncore.dashboard",
         "type": "application",
-        "title": "{{appTitle}}",
-        "description": "{{appDescription}}",
+        "title": "DecisionCore Dashboard",
+        "description": "Executive Dashboard for DecisionCore AI",
         "applicationVersion": {
             "version": "2.0.0"
         },
-        "i18n": "i18n/i18n.properties",
         "dataSources": {
             "mainService": {
                 "uri": "/api/decision/",
@@ -31,7 +30,7 @@
         }
     },
     "sap.ui5": {
-        "flexEnabled": true,
+        "flexEnabled": false,
         "rootView": {
             "viewName": "decisioncore.dashboard.view.Dashboard",
             "type": "XML",
@@ -43,8 +42,7 @@
                 "sap.m": {},
                 "sap.ui.core": {},
                 "sap.ui.layout": {},
-                "sap.f": {},
-                "sap.suite.ui.microchart": {}
+                "sap.f": {}
             }
         },
         "models": {
@@ -56,35 +54,14 @@
                     "operationMode": "Server"
                 }
             },
-            "i18n": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "settings": {
-                    "bundleName": "decisioncore.dashboard.i18n.i18n"
-                }
-            },
             "dashboard": {
-                "type": "sap.ui.model.json.JSONModel"
-            }
-        },
-        "routing": {
-            "config": {
-                "routerClass": "sap.m.routing.Router",
-                "viewType": "XML",
-                "viewPath": "decisioncore.dashboard.view",
-                "controlId": "app",
-                "controlAggregation": "pages"
-            },
-            "routes": [
-                {
-                    "pattern": "",
-                    "name": "main",
-                    "target": "main"
-                }
-            ],
-            "targets": {
-                "main": {
-                    "viewName": "Dashboard",
-                    "viewLevel": 1
+                "type": "sap.ui.model.json.JSONModel",
+                "settings": {
+                    "data": {
+                        "stats": {},
+                        "topRules": [],
+                        "loading": false
+                    }
                 }
             }
         }

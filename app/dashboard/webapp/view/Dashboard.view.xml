@@ -47,7 +47,7 @@
                                     subtitle="% approved"
                                     number="{dashboard>/stats/approvalRate}"
                                     scale="%"
-                                    state="{= ${dashboard>/stats/approvalRate} >= 50 ? 'Good' : 'Error'}"/>
+                                    state="Good"/>
                             </f:header>
                         </f:Card>
                         
@@ -59,7 +59,7 @@
                                     subtitle="AI certainty"
                                     number="{dashboard>/stats/avgConfidence}"
                                     scale="%"
-                                    state="{= ${dashboard>/stats/avgConfidence} >= 70 ? 'Good' : 'Warning'}"/>
+                                    state="Good"/>
                             </f:header>
                         </f:Card>
                         
@@ -71,7 +71,7 @@
                                     subtitle="Processing time"
                                     number="{dashboard>/stats/avgProcessingMs}"
                                     scale="ms"
-                                    state="{= ${dashboard>/stats/avgProcessingMs} <= 500 ? 'Good' : 'Warning'}"/>
+                                    state="Good"/>
                             </f:header>
                         </f:Card>
                     </l:Grid>
@@ -148,8 +148,7 @@
                                             <Text text="{dashboard>ruleName}"/>
                                             <ObjectNumber number="{dashboard>triggerCount}" emphasized="true"/>
                                             <ObjectNumber 
-                                                number="{path: 'dashboard>avgImpact', formatter: '.formatNumber'}" 
-                                                state="{= ${dashboard>avgImpact} >= 0 ? 'Success' : 'Error'}"
+                                                number="{dashboard>avgImpact}" 
                                                 unit="pts"/>
                                         </cells>
                                     </ColumnListItem>
@@ -164,7 +163,7 @@
                     <Bar>
                         <contentMiddle>
                             <VBox alignItems="Center">
-                                <Text text="DecisionCore AI – Explainable Decision Intelligence for SAP"/>
+                                <Text text="DecisionCore AI - Explainable Decision Intelligence for SAP"/>
                                 <Text text="Created by Taha Khattari" class="sapUiTinyMarginTop"/>
                             </VBox>
                         </contentMiddle>

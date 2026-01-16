@@ -12,7 +12,8 @@
                         </contentLeft>
                         <contentRight>
                             <Switch state="{view>/isSimulation}" customTextOn="SIM" customTextOff="LIVE" type="AcceptReject"/>
-                            <Text text="{= ${view>/isSimulation} ? 'Simulation Mode' : 'Live Mode'}" class="sapUiSmallMarginBegin"/>
+                            <Text text="Simulation Mode" class="sapUiSmallMarginBegin" visible="{view>/isSimulation}"/>
+                            <Text text="Live Mode" class="sapUiSmallMarginBegin" visible="{= !${view>/isSimulation}}"/>
                         </contentRight>
                     </Bar>
                 </customHeader>
@@ -32,7 +33,7 @@
                                         <Label text="{i18n>selectScenario}" required="true"/>
                                         <Select id="scenarioSelect" forceSelection="false" 
                                             selectedKey="{view>/scenarioName}" width="100%"
-                                            items="{path: '/Scenarios', filters: [{path: 'status', operator: 'EQ', value1: 'ACTIVE'}]}">
+                                            items="{/Scenarios}">
                                             <core:Item key="{name}" text="{name} - {displayName}"/>
                                         </Select>
                                         
@@ -42,7 +43,7 @@
                                     </form:SimpleForm>
                                     
                                     <Label text="{i18n>enterPayload}" class="sapUiSmallMarginTop sapUiSmallMarginBegin"/>
-                                    <TextArea id="payloadInput" value="{view>/payload}" rows="15" width="100%" 
+                                    <TextArea id="payloadInput" value="{view>/payload}" rows="12" width="100%" 
                                         placeholder='{"amount": 5000, "riskLevel": 3, "customerType": "STANDARD"}'
                                         class="sapUiSmallMargin"/>
                                     
@@ -72,9 +73,7 @@
                             <f:header>
                                 <cards:Header
                                     title="{view>/result/decision}"
-                                    subtitle="{= ${view>/isSimulation} ? 'Simulation Result (Not Saved)' : 'Decision Result'}"
-                                    statusText="{= 'Score: ' + ${view>/result/finalScore} + '/100'}"
-                                    iconSrc="{= ${view>/result/decision} === 'APPROVED' ? 'sap-icon://accept' : ${view>/result/decision} === 'REJECTED' ? 'sap-icon://decline' : 'sap-icon://pending'}"/>
+                                    subtitle="Decision Result"/>
                             </f:header>
                             <f:content>
                                 <VBox class="sapUiSmallMargin">
@@ -82,8 +81,6 @@
                                     <ObjectStatus 
                                         title="{i18n>decision}" 
                                         text="{view>/result/decision}" 
-                                        state="{= ${view>/result/decision} === 'APPROVED' ? 'Success' : ${view>/result/decision} === 'REJECTED' ? 'Error' : 'Warning'}"
-                                        icon="{= ${view>/result/decision} === 'APPROVED' ? 'sap-icon://accept' : ${view>/result/decision} === 'REJECTED' ? 'sap-icon://decline' : 'sap-icon://pending'}"
                                         class="sapUiSmallMarginBottom"/>
                                     
                                     <!-- Score Grid -->
@@ -114,14 +111,14 @@
                                     <!-- Explanation -->
                                     <Panel headerText="{i18n>explanation}" expandable="true" expanded="true">
                                         <content>
-                                            <FormattedText htmlText="&lt;pre style='white-space:pre-wrap;font-family:monospace;font-size:12px;background:#f5f5f5;padding:12px;border-radius:4px;'&gt;{view>/result/explanation}&lt;/pre&gt;"/>
+                                            <Text text="{view>/result/explanation}"/>
                                         </content>
                                     </Panel>
                                     
                                     <!-- Rules Fired -->
                                     <Panel headerText="{i18n>rulesFired}" expandable="true" expanded="false" class="sapUiSmallMarginTop">
                                         <content>
-                                            <FormattedText htmlText="&lt;pre style='font-family:monospace;font-size:11px;'&gt;{view>/result/rulesFired}&lt;/pre&gt;"/>
+                                            <Text text="{view>/result/rulesFired}"/>
                                         </content>
                                     </Panel>
                                 </VBox>

@@ -53,7 +53,7 @@
                         <OverflowToolbar>
                             <Title text="All Scenarios" level="H2"/>
                             <ToolbarSpacer/>
-                            <SearchField width="300px" placeholder="Search scenarios..." search=".onSearch"/>
+                            <SearchField width="300px" placeholder="Search scenarios..." search=".onSearch" liveChange=".onSearch"/>
                             <Button icon="sap-icon://sort" type="Transparent" press=".onSort"/>
                             <Button icon="sap-icon://filter" type="Transparent" press=".onFilter"/>
                             <Button icon="sap-icon://group-2" type="Transparent" press=".onGroup"/>

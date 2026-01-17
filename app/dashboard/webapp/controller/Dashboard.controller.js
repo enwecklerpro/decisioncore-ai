@@ -123,6 +123,11 @@ sap.ui.define([
             var bDark = oEvent.getParameter("state");
             var sTheme = bDark ? "sap_horizon_dark" : "sap_horizon";
             sap.ui.getCore().applyTheme(sTheme);
+
+            if (window.parent) {
+                window.parent.postMessage({ type: "setTheme", theme: sTheme }, "*");
+            }
+
             MessageToast.show("Theme " + (bDark ? "Dark" : "Light") + " applied");
         },
 

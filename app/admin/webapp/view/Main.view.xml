@@ -30,7 +30,7 @@
                         <OverflowToolbar>
                             <Title text="Configured Models"/>
                             <ToolbarSpacer/>
-                            <SearchField width="200px" search=".onSearch"/>
+                            <SearchField width="200px" search=".onSearch" liveChange=".onSearch"/>
                             <Button icon="sap-icon://delete" type="Transparent" text="Delete Selected" press=".onDeleteSelectedProviders"/>
                         </OverflowToolbar>
                     </headerToolbar>

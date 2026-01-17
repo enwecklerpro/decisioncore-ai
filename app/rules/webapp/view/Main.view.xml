@@ -33,7 +33,7 @@
                         <OverflowToolbar>
                             <Title text="Decision Rules"/>
                             <ToolbarSpacer/>
-                            <SearchField width="200px" placeholder="Search..." search=".onSearch"/>
+                            <SearchField width="200px" placeholder="Search..." search=".onSearch" liveChange=".onSearch"/>
                             <Button icon="sap-icon://filter" type="Transparent" press=".onFilter"/>
                             <Button icon="sap-icon://delete" type="Transparent" text="Delete Selected" press=".onDeleteSelectedRules"/>
                         </OverflowToolbar>

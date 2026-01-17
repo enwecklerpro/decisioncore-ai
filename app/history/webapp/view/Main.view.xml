@@ -30,7 +30,7 @@
                         <OverflowToolbar>
                             <Title text="Recent Executions"/>
                             <ToolbarSpacer/>
-                            <SearchField width="300px" placeholder="Search Trace ID..." search=".onSearch"/>
+                            <SearchField width="300px" placeholder="Search Trace ID..." search=".onSearch" liveChange=".onSearch"/>
                         </OverflowToolbar>
                     </headerToolbar>
                     <columns>

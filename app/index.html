@@ -48,6 +48,12 @@
     </style>
 
     <script>
+        window.addEventListener("message", function (event) {
+            if (event.data && event.data.type === "setTheme") {
+                sap.ui.getCore().applyTheme(event.data.theme);
+            }
+        });
+
         sap.ui.getCore().attachInit(function () {
             sap.ui.require([
                 "sap/tnt/ToolPage",

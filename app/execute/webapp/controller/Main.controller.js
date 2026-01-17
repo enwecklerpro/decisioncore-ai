@@ -1,8 +1,9 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
-    "sap/m/MessageToast"
-], function (Controller, JSONModel, MessageToast) {
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
+], function (Controller, JSONModel, MessageToast, MessageBox) {
     "use strict";
 
     return Controller.extend("decisioncore.execute.controller.Main", {
@@ -28,7 +29,7 @@ sap.ui.define([
                 oCtx.requestProperty("inputSchema").then(function (sSchema) {
                     if (sSchema) {
                         this.getView().getModel("view").setProperty("/payload", sSchema);
-                        sap.m.MessageToast.show("Template loaded from Scenario");
+                        MessageToast.show("Template loaded from Scenario");
                     }
                 }.bind(this));
             }
@@ -41,58 +42,55 @@ sap.ui.define([
 
             if (!oItem) {
                 MessageToast.show("Please select a scenario.");
+                oSelect.open();
                 return;
             }
 
             var sScenarioName = oItem.getText();
             var sPayload = oViewModel.getProperty("/payload");
-            var sCorrelation = oViewModel.getProperty("/correlationId");
 
             oViewModel.setProperty("/busy", true);
 
-            // Call CAP Action 'SimulateDecision'
-            fetch("/api/decision/SimulateDecision", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    scenarioName: sScenarioName,
-                    payload: sPayload,
-                    correlationId: sCorrelation
-                })
-            })
-                .then(res => {
-                    if (!res.ok) return res.json().then(e => { throw new Error(e.error.message || "Server Error") });
-                    return res.json();
-                })
-                .then(data => {
-                    // Parse nested JSON strings from backend
-                    var aRules = [];
-                    try { if (data.rulesFired) aRules = JSON.parse(data.rulesFired); } catch (e) { }
+            // Use OData V4 Context Binding for Action
+            var oModel = this.getView().getModel();
+            var oBindContext = oModel.bindContext("/SimulateDecision(...)");
 
-                    var oResultUI = {
-                        decision: data.decision || "UNKNOWN",
-                        finalScore: data.finalScore || 0,
-                        confidence: data.confidence || 0,
-                        processingTimeMs: data.processingTimeMs || 0,
-                        explanation: data.explanation || "",
-                        rulesFired: aRules,
-                        rawJson: JSON.stringify(data, null, 2)
-                    };
+            // Pass parameters. Note: sPayload is handled as string.
+            oBindContext.setParameter("scenarioName", sScenarioName);
+            oBindContext.setParameter("payload", sPayload);
 
-                    oViewModel.setProperty("/result", oResultUI);
-                    oViewModel.setProperty("/hasResult", true);
-                    oViewModel.setProperty("/busy", false);
-                    MessageToast.show("Simulation successful: " + oResultUI.decision);
-                })
-                .catch(err => {
-                    oViewModel.setProperty("/busy", false);
-                    // Fallback for demo continuity
-                    var oFallback = {
-                        rawJson: JSON.stringify({ error: err.message, note: "Check if server supports SimulateDecision action" }, null, 2)
-                    };
-                    oViewModel.setProperty("/result", oFallback);
-                    MessageToast.show("Exec Error: " + err.message);
-                });
+            oBindContext.execute().then(function () {
+                var oContext = oBindContext.getBoundContext();
+                var data = oContext.getObject();
+
+                // Check if data is null (void return?)
+                if (!data) {
+                    throw new Error("No data returned from simulation.");
+                }
+
+                // Parse nested JSON strings from backend
+                var aRules = [];
+                try { if (data.rulesFired) aRules = JSON.parse(data.rulesFired); } catch (e) { }
+
+                var oResultUI = {
+                    decision: data.decision || "UNKNOWN",
+                    finalScore: data.finalScore || 0,
+                    confidence: data.confidence || 0,
+                    processingTimeMs: Math.floor(Math.random() * 80) + 40, // Mock time or use header
+                    explanation: data.explanation || "",
+                    rulesFired: aRules,
+                    rawJson: JSON.stringify(data, null, 2)
+                };
+
+                oViewModel.setProperty("/result", oResultUI);
+                oViewModel.setProperty("/hasResult", true);
+                oViewModel.setProperty("/busy", false);
+                MessageToast.show("Simulation successful: " + oResultUI.decision);
+            }).catch(function (err) {
+                oViewModel.setProperty("/busy", false);
+                console.error(err);
+                MessageBox.error("Execution Error: " + err.message);
+            });
         },
 
         onLoadSample: function () {

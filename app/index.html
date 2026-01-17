@@ -7,7 +7,7 @@
     <title>DecisionCore AI - Launchpad</title>
 
     <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
-        data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m, sap.f, sap.ushell" data-sap-ui-compatVersion="edge"
+        data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m, sap.f, sap.ui.layout" data-sap-ui-compatVersion="edge"
         data-sap-ui-async="true">
         </script>
 
@@ -16,156 +16,83 @@
             sap.ui.require([
                 "sap/m/Shell",
                 "sap/f/ShellBar",
-                "sap/m/Page",
+                "sap/f/GridContainer",
                 "sap/m/GenericTile",
                 "sap/m/TileContent",
-                "sap/m/ImageContent",
                 "sap/m/NumericContent",
-                "sap/f/GridContainer",
-                "sap/f/GridContainerSettings",
-                "sap/m/Title",
+                "sap/m/ImageContent",
                 "sap/ui/layout/cssgrid/GridBoxLayout",
+                "sap/m/Page",
+                "sap/m/Title",
                 "sap/m/Avatar"
-            ], function (Shell, ShellBar, Page, GenericTile, TileContent, ImageContent, NumericContent, GridContainer, GridContainerSettings, Title, GridBoxLayout, Avatar) {
+            ], function (Shell, ShellBar, GridContainer, GenericTile, TileContent, NumericContent, ImageContent, GridBoxLayout, Page, Title, Avatar) {
 
-                // 1. Shell Bar
+                // Shell Bar
                 var oShellBar = new ShellBar({
                     title: "DecisionCore AI",
-                    secondTitle: "Enterprise Decision Intelligence",
+                    secondTitle: "Enterprise Platform",
                     homeIcon: "sap-icon://decision",
-                    showNotifications: true,
-                    notificationsNumber: "2",
-                    profile: new Avatar({ initials: "EP", displaySize: "XS" })
+                    profile: new Avatar({ initials: "EP" })
                 });
 
-                // 2. Content Container
-                var oContainer = new GridContainer({
+                // Grid Container
+                var oGrid = new GridContainer({
                     layout: new GridBoxLayout({ boxMinWidth: "17rem" }),
-                    rows: 4
+                    snapToRow: true
                 });
 
-                // --- SECTION: KPI TILES (Read-Only) ---
+                // Helper to create tile
+                function createTile(title, sub, icon, url, val, scale, color) {
+                    var oTileContent;
+                    if (val) {
+                        oTileContent = new TileContent({
+                            content: new NumericContent({ value: val, scale: scale, icon: icon, valueColor: color || "Neutral" })
+                        });
+                    } else {
+                        oTileContent = new TileContent({
+                            content: new ImageContent({ src: icon })
+                        });
+                    }
 
-                // Total Decisions
-                oContainer.addItem(new GenericTile({
-                    header: "Total Decisions",
-                    subheader: "All time processed",
-                    tileContent: new TileContent({
-                        content: new NumericContent({ value: "12.5k", icon: "sap-icon://line-charts", valueColor: "Good" })
-                    }),
-                    press: function () { window.location.href = "/dashboard/webapp/index.html"; }
-                }));
+                    return new GenericTile({
+                        header: title,
+                        subheader: sub,
+                        tileContent: [oTileContent],
+                        press: function () {
+                            if (url) window.location.href = url;
+                        }
+                    }).addStyleClass("sapUiTinyMargin");
+                }
 
-                // Approval Rate
-                oContainer.addItem(new GenericTile({
-                    header: "Approval Rate",
-                    subheader: "Current automation",
-                    tileContent: new TileContent({
-                        content: new NumericContent({ value: "68", scale: "%", icon: "sap-icon://accept", valueColor: "Good" })
-                    }),
-                    press: function () { window.location.href = "/dashboard/webapp/index.html"; }
-                }));
+                // Add Tiles
+                oGrid.addItem(createTile("Total Decisions", "All time", "sap-icon://line-charts", "/dashboard/webapp/index.html", "12.5k", "", "Good"));
+                oGrid.addItem(createTile("Approval Rate", "Automation", "sap-icon://accept", "/dashboard/webapp/index.html", "68", "%", "Good"));
 
-                // Active Providers
-                oContainer.addItem(new GenericTile({
-                    header: "AI Providers",
-                    subheader: "Connected Models",
-                    tileContent: new TileContent({
-                        content: new NumericContent({ value: "4", icon: "sap-icon://machine-learning", valueColor: "Neutral" })
-                    }),
-                    press: function () { window.location.href = "/admin/webapp/index.html"; }
-                }));
+                oGrid.addItem(createTile("Executive Dashboard", "Analytics", "sap-icon://bbyd-dashboard", "/dashboard/webapp/index.html"));
+                oGrid.addItem(createTile("Scenario Management", "Definitions", "sap-icon://org-chart", "/scenarios/webapp/index.html"));
+                oGrid.addItem(createTile("Rules Management", "Policies", "sap-icon://user-settings", "/rules/webapp/index.html"));
+                oGrid.addItem(createTile("Decision Execution", "Simulation", "sap-icon://media-play", "/execute/webapp/index.html"));
+                oGrid.addItem(createTile("Decision History", "Audit Logs", "sap-icon://history", "/history/webapp/index.html"));
+                oGrid.addItem(createTile("Administration", "Settings", "sap-icon://action-settings", "/admin/webapp/index.html"));
 
-                // --- SECTION: APPLICATIONS ---
-
-                // Executive Dashboard
-                oContainer.addItem(new GenericTile({
-                    header: "Executive Dashboard",
-                    subheader: "Analytics & Insights",
-                    tileContent: new TileContent({
-                        content: new ImageContent({ src: "sap-icon://bbyd-dashboard" })
-                    }),
-                    press: function () { window.location.href = "/dashboard/webapp/index.html"; }
-                }));
-
-                // Scenario Management
-                oContainer.addItem(new GenericTile({
-                    header: "Scenario Management",
-                    subheader: "Define Decision Logic",
-                    tileContent: new TileContent({
-                        content: new ImageContent({ src: "sap-icon://org-chart" })
-                    }),
-                    press: function () { window.location.href = "/scenarios/webapp/index.html"; }
-                }));
-
-                // Rules Management
-                oContainer.addItem(new GenericTile({
-                    header: "Rules Management",
-                    subheader: "Business Policies",
-                    tileContent: new TileContent({
-                        content: new ImageContent({ src: "sap-icon://user-settings" })
-                    }),
-                    press: function () { window.location.href = "/rules/webapp/index.html"; }
-                }));
-
-                // Decision Execution
-                oContainer.addItem(new GenericTile({
-                    header: "Decision Execution",
-                    subheader: "Test & Simulate",
-                    tileContent: new TileContent({
-                        content: new ImageContent({ src: "sap-icon://media-play" })
-                    }),
-                    press: function () { window.location.href = "/execute/webapp/index.html"; }
-                }));
-
-                // Decision History
-                oContainer.addItem(new GenericTile({
-                    header: "Decision History",
-                    subheader: "Audit Logs",
-                    tileContent: new TileContent({
-                        content: new ImageContent({ src: "sap-icon://history" })
-                    }),
-                    press: function () { window.location.href = "/history/webapp/index.html"; }
-                }));
-
-                // Admin
-                oContainer.addItem(new GenericTile({
-                    header: "Administration",
-                    subheader: "AI Providers & Settings",
-                    tileContent: new TileContent({
-                        content: new ImageContent({ src: "sap-icon://action-settings" })
-                    }),
-                    press: function () { window.location.href = "/admin/webapp/index.html"; }
-                }));
-
-                // Layout Page
+                // Page
                 var oPage = new Page({
-                    showHeader: false, // ShellBar replaces header
+                    showHeader: false,
                     content: [
-                        new Title({ text: "Key Performance Indicators", titleStyle: "H4" }).addStyleClass("sapUiSmallMargin"),
-                        oContainer
+                        oShellBar,
+                        new Title({ text: "My Applications", titleStyle: "H3" }).addStyleClass("sapUiMediumMarginTop sapUiMediumMarginBegin"),
+                        oGrid
                     ]
                 });
 
-                // Shell
-                var oShell = new Shell({
-                    app: oPage
-                });
-
-                // Combine ShellBar and Content manually for simple HTML view
-                // (Shell controls usually handle this, but for index.html drift we render direct)
-                oShellBar.placeAt("content");
-                oPage.placeAt("content");
+                // App Shell
+                new Shell({
+                    app: oPage,
+                    appWidthLimited: false
+                }).placeAt("content");
             });
         });
     </script>
-    <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
-    </style>
 </head>
 
 <body class="sapUiBody" id="content">

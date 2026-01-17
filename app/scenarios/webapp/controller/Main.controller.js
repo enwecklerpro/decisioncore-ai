@@ -41,7 +41,7 @@ sap.ui.define([
 
             // 1. We create the scenario entry in the OData model
             var oModel = this.getView().getModel();
-            var oListBinding = oModel.bindList("/DecisionScenarios");
+            var oListBinding = oModel.bindList("/Scenarios");
 
             var oNewContext = oListBinding.create({
                 name: oTemplate.name + " (" + new Date().toLocaleTimeString() + ")", // Auto-name to avoid duplicates

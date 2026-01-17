@@ -45,7 +45,7 @@
                                     selectedKey="{view>/scenario}" 
                                     forceSelection="false" 
                                     width="100%"
-                                    items="{path: '/DecisionScenarios', sorter: { path: 'name' }}"
+                                    items="{path: '/Scenarios', sorter: { path: 'name' }}"
                                     change=".onScenarioChange">
                                     <core:Item key="{ID}" text="{name}"/>
                                 </Select>

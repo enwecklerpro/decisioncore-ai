@@ -54,7 +54,7 @@ sap.ui.define([
             }
 
             // Create via OData v4 list binding
-            var oListBinding = oView.getModel().bindList("/DecisionRules");
+            var oListBinding = oView.getModel().bindList("/Rules");
             var oContext = oListBinding.create({
                 scenario_ID: sScenarioId,
                 ruleCode: oNewRuleData.ruleCode,

@@ -1,0 +1,46 @@
+{
+    "xsappname": "decisioncore-ai",
+    "tenant-mode": "dedicated",
+    "description": "Security configuration for DecisionCore AI",
+    "scopes": [
+        {
+            "name": "$XSAPPNAME.DecisionAdmin",
+            "description": "Administrator Access (Manage Providers, Models)"
+        },
+        {
+            "name": "$XSAPPNAME.DecisionBusiness",
+            "description": "Business User Access (Manage Rules, Scenarios)"
+        },
+        {
+            "name": "$XSAPPNAME.DecisionViewer",
+            "description": "Read Only Access (View Dashboard, History)"
+        }
+    ],
+    "attributes": [],
+    "role-templates": [
+        {
+            "name": "DecisionAdmin",
+            "description": "Full Administration Access",
+            "scope-references": [
+                "$XSAPPNAME.DecisionAdmin",
+                "$XSAPPNAME.DecisionBusiness",
+                "$XSAPPNAME.DecisionViewer"
+            ]
+        },
+        {
+            "name": "DecisionBusiness",
+            "description": "Business Rule Manager",
+            "scope-references": [
+                "$XSAPPNAME.DecisionBusiness",
+                "$XSAPPNAME.DecisionViewer"
+            ]
+        },
+        {
+            "name": "DecisionViewer",
+            "description": "Read Only Viewer",
+            "scope-references": [
+                "$XSAPPNAME.DecisionViewer"
+            ]
+        }
+    ]
+}

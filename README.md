@@ -44,7 +44,41 @@ npm run start
 # Access at http://localhost:4004
 ```
 
-### Test Users (Development)
+---
+
+## ☁️ Deployment to SAP BTP
+
+DecisionCore AI is cloud-native and ready for SAP Business Technology Platform (Cloud Foundry).
+
+### Prerequisites
+- SAP BTP Account (Trial or Enterprise)
+- Cloud Foundry CLI installed
+- Cloud MTA Build Tool (`mbt`) installed
+
+### 1. Build the MTA Archive
+Generate the comprehensive deployment artifact (MTAR):
+
+```bash
+# Build for production
+mbt build -t ./
+```
+
+### 2. Deploy to Cloud Foundry
+Push the application to your SAP BTP space:
+
+```bash
+cf login
+cf deploy decisioncore-ai_2.0.0.mtar
+```
+
+### 3. Assign Roles
+After deployment, go to your **BTP Cockpit** > **Security** > **Users** and assign the role collections:
+- `DecisionCoreAdmin`: For full access
+- `DecisionCoreUser`: For business user access
+
+---
+
+## 🔒 Security & Roles Users (Development)
 | User | Password | Roles |
 |------|----------|-------|
 | admin | admin | Full access |

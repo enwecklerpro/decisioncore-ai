@@ -1,0 +1,79 @@
+_schema-version: '3.1'
+ID: decisioncore-ai
+version: 2.0.0
+description: "DecisionCore AI - Enterprise Decision Intelligence Platform"
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx cds build --production
+
+modules:
+  # --------------------- SERVER MODULE ---------------------
+  - name: decisioncore-srv
+    type: nodejs
+    path: gen/srv
+    requires:
+      - name: decisioncore-db
+      - name: decisioncore-auth
+      - name: decisioncore-dest
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 512M
+      disk-quota: 1024M
+    build-parameters:
+      builder: npm-ci
+
+  # --------------------- DB DEPLOYER ---------------------
+  - name: decisioncore-db-deployer
+    type: hdb
+    path: gen/db
+    requires:
+      - name: decisioncore-db
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 256M
+
+resources:
+  # --------------------- HANA DB ---------------------
+  - name: decisioncore-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
+
+  # --------------------- XSUAA (AUTH) ---------------------
+  - name: decisioncore-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: decisioncore-ai-${org}-${space}
+        tenant-mode: dedicated
+        role-collections:
+          - name: 'DecisionCoreAdmin'
+            description: 'DecisionCore AI Administrator'
+            role-template-references:
+              - '$XSAPPNAME.DecisionAdmin'
+          - name: 'DecisionCoreUser'
+            description: 'DecisionCore AI Business User'
+            role-template-references:
+              - '$XSAPPNAME.DecisionBusiness'
+
+  # --------------------- DESTINATION ---------------------
+  - name: decisioncore-dest
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite

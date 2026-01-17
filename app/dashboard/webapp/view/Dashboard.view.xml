@@ -1,191 +1,166 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" xmlns:l="sap.ui.layout" 
-    xmlns:core="sap.ui.core" xmlns:cards="sap.f.cards" xmlns:html="http://www.w3.org/1999/xhtml"
-    controllerName="decisioncore.dashboard.controller.Dashboard" displayBlock="true">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" 
+    xmlns="sap.m" 
+    xmlns:f="sap.f" 
+    xmlns:l="sap.ui.layout" 
+    xmlns:core="sap.ui.core" 
+    xmlns:cards="sap.f.cards"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    controllerName="decisioncore.dashboard.controller.Dashboard" 
+    displayBlock="true">
     
-    <App id="app" busy="{dashboard>/loading}">
-        <pages>
-            <Page showHeader="false" enableScrolling="true" class="sapUiContentPadding">
+    <f:DynamicPage id="page" fitContent="true" class="sapUiNoContentPadding">
+        
+        <!-- Header -->
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="Executive Dashboard"/>
+                </f:heading>
+                <f:expandedContent>
+                    <Label text="Decision Intelligence Overview"/>
+                </f:expandedContent>
+                <f:snappedContent>
+                    <Label text="Decision Intelligence Overview"/>
+                </f:snappedContent>
+                <f:actions>
+                    <Button icon="sap-icon://refresh" type="Transparent" press=".onRefresh"/>
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <!-- Content -->
+        <f:content>
+            <VBox class="sapUiSmallMargin">
                 
-                <content>
-                    <!-- KEY METRICS ROW -->
-                    <l:Grid defaultSpan="XL3 L3 M6 S12" class="sapUiMediumMarginTop">
-                        
-                        <!-- 1. TOTAL DECISIONS -->
-                        <f:Card class="dashboardCard border-blue">
-                            <f:content>
-                                <VBox class="sapUiMediumMargin">
-                                    <HBox justifyContent="SpaceBetween">
-                                        <Text text="TOTAL DECISIONS" class="kpi-label"/>
-                                        <core:Icon src="sap-icon://line-charts" color="#0070f2"/>
-                                    </HBox>
-                                    <Text text="{path: 'dashboard>/stats/totalDecisions', formatter: '.formatNumber'}" class="kpi-h1 sapUiTinyMarginTop"/>
-                                    <ObjectStatus text="+12% vs last week" state="Success" icon="sap-icon://trend-up" class="sapUiTinyMarginTop"/>
-                                </VBox>
-                            </f:content>
-                        </f:Card>
-                        
-                        <!-- 2. APPROVAL RATE -->
-                        <f:Card class="dashboardCard border-green">
-                            <f:content>
-                                <VBox class="sapUiMediumMargin">
-                                    <HBox justifyContent="SpaceBetween">
-                                        <Text text="APPROVAL RATE" class="kpi-label"/>
-                                        <core:Icon src="sap-icon://accept" color="#107e3e"/>
-                                    </HBox>
-                                    <Text text="{dashboard>/stats/approvalRate}%" class="kpi-h1 sapUiTinyMarginTop"/>
-                                    <ProgressIndicator percentValue="{dashboard>/stats/approvalRate}" state="Success" displayValue="" height="6px" class="sapUiSmallMarginTop"/>
-                                </VBox>
-                            </f:content>
-                        </f:Card>
-                        
-                        <!-- 3. AUTOMATION RATE (Derived from AI) -->
-                        <f:Card class="dashboardCard border-teal">
-                            <f:content>
-                                <VBox class="sapUiMediumMargin">
-                                    <HBox justifyContent="SpaceBetween">
-                                        <Text text="AVG CONFIDENCE" class="kpi-label"/>
-                                        <core:Icon src="sap-icon://robot" color="#008f8f"/>
-                                    </HBox>
-                                    <Text text="{dashboard>/stats/avgConfidence}%" class="kpi-h1 sapUiTinyMarginTop"/>
-                                    <ProgressIndicator percentValue="{dashboard>/stats/avgConfidence}" state="Information" displayValue="" height="6px" class="sapUiSmallMarginTop"/>
-                                </VBox>
-                            </f:content>
-                        </f:Card>
-                        
-                        <!-- 4. REJECTION RATE -->
-                        <f:Card class="dashboardCard border-orange">
-                            <f:content>
-                                <VBox class="sapUiMediumMargin">
-                                    <HBox justifyContent="SpaceBetween">
-                                        <Text text="REJECTION RATE" class="kpi-label"/>
-                                        <core:Icon src="sap-icon://decline" color="#bb0000"/>
-                                    </HBox>
-                                    <Text text="{dashboard>/stats/rejectionRate}%" class="kpi-h1 sapUiTinyMarginTop"/>
-                                    <ObjectStatus text="Requires attention" state="Warning" icon="sap-icon://alert" class="sapUiTinyMarginTop"/>
-                                </VBox>
-                            </f:content>
-                        </f:Card>
-                    </l:Grid>
-                    
-                    <!-- CHARTS ROW -->
-                    <l:Grid defaultSpan="XL4 L4 M12 S12" class="sapUiTinyMarginTop">
-                        
-                        <!-- DONUT CHART: Decision Distribution -->
-                        <f:Card class="dashboardCard" height="360px">
-                            <f:header>
-                                <cards:Header title="Decision Outcomes" subtitle="Distribution of results"/>
-                            </f:header>
-                            <f:content>
-                                <VBox alignItems="Center" justifyContent="Center" height="100%">
-                                    
-                                    <!-- Using core:HTML for robust CSS dynamic binding -->
-                                    <core:HTML content='&lt;div class="donut-chart-container"&gt;&lt;div class="donut-chart" style="background: {dashboard>/chartData/donutGradient}"&gt;&lt;/div&gt;&lt;div class="donut-center-text"&gt;&lt;div class="donut-number"&gt;{dashboard>/stats/totalDecisions}&lt;/div&gt;&lt;div style="font-size:0.8rem; color:#666;"&gt;Total&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;' />
-                                    
-                                    <!-- Custom Legend -->
-                                    <HBox class="sapUiMediumMarginTop" justifyContent="Center" wrap="Wrap">
-                                        <HBox alignItems="Center" class="sapUiMediumMarginEnd">
-                                            <core:Icon src="sap-icon://circle-task-2" color="#107e3e" class="sapUiTinyMarginEnd" size="0.8rem"/>
-                                            <Text text="Approved ({dashboard>/stats/approvalRate}%)"/>
-                                        </HBox>
-                                        <HBox alignItems="Center" class="sapUiMediumMarginEnd">
-                                            <core:Icon src="sap-icon://circle-task-2" color="#bb0000" class="sapUiTinyMarginEnd" size="0.8rem"/>
-                                            <Text text="Rejected ({dashboard>/stats/rejectionRate}%)"/>
-                                        </HBox>
-                                        <HBox alignItems="Center">
-                                            <core:Icon src="sap-icon://circle-task-2" color="#df6e0c" class="sapUiTinyMarginEnd" size="0.8rem"/>
-                                            <Text text="Review ({dashboard>/stats/reviewRate}%)"/>
-                                        </HBox>
-                                    </HBox>
-                                </VBox>
-                            </f:content>
-                        </f:Card>
+                <!-- KPIs Row -->
+                <l:Grid defaultSpan="XL3 L3 M6 S12" class="sapUiSmallMarginBottom">
+                    <!-- Total Decisions -->
+                    <f:Card>
+                        <f:header>
+                            <cards:Header title="Total Decisions" subtitle="All time" iconSrc="sap-icon://line-charts"/>
+                        </f:header>
+                        <f:content>
+                            <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiMediumMargin">
+                                <Title text="{path: 'dashboard>/stats/totalDecisions', formatter: '.formatNumber'}" titleStyle="H2"/>
+                                <ObjectStatus text="+12%" state="Success" icon="sap-icon://trend-up"/>
+                            </HBox>
+                        </f:content>
+                    </f:Card>
 
-                         <!-- SCORE CONTRIBUTION -->
-                        <f:Card class="dashboardCard" height="360px">
-                            <f:header>
-                                <cards:Header title="Score Contribution" subtitle="Impact factors"/>
-                            </f:header>
-                            <f:content>
-                                <VBox class="sapUiMediumMargin">
-                                    <VBox class="sapUiSmallMarginBottom">
-                                        <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
-                                            <Title text="Business Rules Engine" level="H5"/>
-                                            <Text text="{dashboard>/stats/rulesContribution}%" class="bold-text"/>
-                                        </HBox>
-                                        <ProgressIndicator percentValue="{dashboard>/stats/rulesContribution}" state="Success" displayValue="" height="8px"/>
-                                        <Text text="Deterministic rules based on policy" class="sapUiTinyMarginTop text-gray text-small"/>
-                                    </VBox>
-                                    
-                                    <VBox class="sapUiMediumMarginTop">
-                                        <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
-                                            <Title text="AI Semantic Scoring" level="H5"/>
-                                            <Text text="{dashboard>/stats/aiContribution}%" class="bold-text"/>
-                                        </HBox>
-                                        <ProgressIndicator percentValue="{dashboard>/stats/aiContribution}" state="Information" displayValue="" height="8px"/>
-                                        <Text text="LLM based analysis of unstructured data" class="sapUiTinyMarginTop text-gray text-small"/>
-                                    </VBox>
-                                    
-                                    <HBox class="sapUiLargeMarginTop" alignItems="Center">
-                                        <core:Icon src="sap-icon://hint" color="#0070f2" class="sapUiSmallMarginEnd"/>
-                                        <Text text="AI contribution has increased by 5% this week due to improved prompt templates." wrapping="true" class="italic-text text-gray"/>
-                                    </HBox>
-                                </VBox>
-                            </f:content>
-                        </f:Card>
-                        
-                        <!-- RECENT ALERTS -->
-                        <f:Card class="dashboardCard" height="360px">
-                             <f:header>
-                                <cards:Header title="System Status" subtitle="Operational health"/>
-                            </f:header>
-                            <f:content>
-                                <List showSeparators="Inner" class="sapUiContentPadding">
-                                    <StandardListItem title="API Latency" description="Optimum (145ms)" icon="sap-icon://performance" info="Good" infoState="Success"/>
-                                    <StandardListItem title="Rule Engine v2.1" description="Active" icon="sap-icon://puzzle" info="Active" infoState="Success"/>
-                                    <StandardListItem title="AI Model: GPT-4" description="Connected" icon="sap-icon://cloud" info="Online" infoState="Success"/>
-                                    <StandardListItem title="Decision Logging" description="Audit enabled" icon="sap-icon://log" info="Enabled" infoState="Success"/>
-                                    <StandardListItem title="XSUAA Security" description="Authenticated" icon="sap-icon://shield" info="Secure" infoState="Success"/>
-                                </List>
-                            </f:content>
-                        </f:Card>
+                    <!-- Approval Rate -->
+                    <f:Card>
+                        <f:header>
+                            <cards:Header title="Approval Rate" subtitle="Automation Level" iconSrc="sap-icon://accept"/>
+                        </f:header>
+                        <f:content>
+                            <VBox class="sapUiMediumMargin">
+                                <Title text="{dashboard>/stats/approvalRate}%" titleStyle="H2"/>
+                                <ProgressIndicator percentValue="{dashboard>/stats/approvalRate}" state="Success" displayValue="" height="0.5rem"/>
+                            </VBox>
+                        </f:content>
+                    </f:Card>
 
-                    </l:Grid>
-                    
-                    <!-- TABLE SECTION -->
-                    <l:Grid defaultSpan="XL12 L12 M12 S12">
-                        <f:Card class="dashboardCard">
-                            <f:header>
-                                <cards:Header title="Top Triggered Business Rules" subtitle="Performance analysis" iconSrc="sap-icon://list"/>
-                            </f:header>
-                            <f:content>
-                                <Table items="{dashboard>/topRules}" inset="false" fixedLayout="false">
-                                    <columns>
-                                        <Column width="150px"><Text text="Rule ID" class="text-gray bold-text"/></Column>
-                                        <Column><Text text="Description" class="text-gray bold-text"/></Column>
-                                        <Column hAlign="End" width="100px"><Text text="Triggers" class="text-gray bold-text"/></Column>
-                                        <Column hAlign="Center" width="120px"><Text text="Rate" class="text-gray bold-text"/></Column>
-                                        <Column hAlign="Center" width="100px"><Text text="Impact" class="text-gray bold-text"/></Column>
-                                    </columns>
-                                    <items>
-                                        <ColumnListItem>
-                                            <cells>
-                                                <ObjectStatus text="{dashboard>ruleCode}" state="None" inverted="true"/>
-                                                <Text text="{dashboard>ruleName}" class="bold-text"/>
-                                                <Text text="{dashboard>triggerCount}"/>
-                                                <ProgressIndicator percentValue="{dashboard>triggerRate}" displayValue="{dashboard>triggerRate}%" state="None"/>
-                                                <ObjectStatus text="{path: 'dashboard>avgImpact'} pts" 
-                                                       state="{= ${dashboard>avgImpact} > 0 ? 'Success' : 'Error'}"
-                                                       inverted="true"/>
-                                            </cells>
-                                        </ColumnListItem>
-                                    </items>
-                                </Table>
-                            </f:content>
-                        </f:Card>
-                    
-                    </l:Grid>
-                </content>
-            </Page>
-        </pages>
-    </App>
+                    <!-- Avg Confidence -->
+                    <f:Card>
+                        <f:header>
+                            <cards:Header title="Avg Confidence" subtitle="AI Reliability" iconSrc="sap-icon://robot"/>
+                        </f:header>
+                        <f:content>
+                            <VBox class="sapUiMediumMargin">
+                                <Title text="{dashboard>/stats/avgConfidence}%" titleStyle="H2"/>
+                                <ProgressIndicator percentValue="{dashboard>/stats/avgConfidence}" state="Information" displayValue="" height="0.5rem"/>
+                            </VBox>
+                        </f:content>
+                    </f:Card>
+
+                     <!-- Response Time -->
+                    <f:Card>
+                        <f:header>
+                            <cards:Header title="Avg Processing" subtitle="Performance" iconSrc="sap-icon://time-overtime"/>
+                        </f:header>
+                        <f:content>
+                             <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiMediumMargin">
+                                <Title text="{dashboard>/stats/avgProcessingMs} ms" titleStyle="H2"/>
+                                <ObjectStatus text="Optimum" state="Success"/>
+                            </HBox>
+                        </f:content>
+                    </f:Card>
+                </l:Grid>
+
+                <!-- Charts Row -->
+                 <l:Grid defaultSpan="XL6 L6 M12 S12">
+                     <!-- Decision Distribution Chart -->
+                    <f:Card height="400px">
+                        <f:header>
+                            <cards:Header title="Decision Outcomes" subtitle="Status Distribution"/>
+                        </f:header>
+                        <f:content>
+                            <viz:VizFrame id="idVizFramePie" uiConfig="{applicationSet:'fiori'}" height="100%" width="100%" vizType="donut">
+                                <viz:dataset>
+                                    <viz.data:FlattenedDataset data="{dashboard>/vizData/decisions}">
+                                        <viz.data:dimensions>
+                                            <viz.data:DimensionDefinition name="Status" value="{Status}" />
+                                        </viz.data:dimensions>
+                                        <viz.data:measures>
+                                            <viz.data:MeasureDefinition name="Count" value="{Count}" />
+                                        </viz.data:measures>
+                                    </viz.data:FlattenedDataset>
+                                </viz:dataset>
+                                <viz:feeds>
+                                    <viz.feeds:FeedItem uid="size" type="Measure" values="Count" />
+                                    <viz.feeds:FeedItem uid="color" type="Dimension" values="Status" />
+                                </viz:feeds>
+                            </viz:VizFrame>
+                        </f:content>
+                    </f:Card>
+
+                    <!-- Score Contribution -->
+                    <f:Card height="400px">
+                        <f:header>
+                             <cards:Header title="Score Contribution" subtitle="Rules vs AI"/>
+                        </f:header>
+                        <f:content>
+                            <VBox class="sapUiMediumMargin">
+                                 <!-- Simple Progress Bars instead of VizFrame for cleaner comparison -->
+                                <Label text="Business Rules Engine" design="Bold" class="sapUiSmallMarginBottom"/>
+                                <ProgressIndicator percentValue="{dashboard>/stats/rulesContribution}" displayValue="{dashboard>/stats/rulesContribution}%" state="Success" height="1.5rem" class="sapUiMediumMarginBottom"/>
+
+                                <Label text="AI Scoring Model" design="Bold" class="sapUiSmallMarginBottom"/>
+                                <ProgressIndicator percentValue="{dashboard>/stats/aiContribution}" displayValue="{dashboard>/stats/aiContribution}%" state="Information" height="1.5rem"/>
+                                
+                                <MessageStrip text="AI contribution stable within tolerance limits." type="Information" showIcon="true" class="sapUiMediumMarginTop"/>
+                            </VBox>
+                        </f:content>
+                    </f:Card>
+                </l:Grid>
+
+                <!-- Tables Row -->
+                <Title text="Top Performing Rules" level="H3" class="sapUiSmallMarginTop sapUiSmallMarginBottom"/>
+                <Table items="{dashboard>/topRules}" growing="true" inset="false" class="sapUiSmallMarginBottom">
+                    <columns>
+                        <Column width="20%"><Text text="Rule Code"/></Column>
+                        <Column><Text text="Description"/></Column>
+                        <Column width="15%" hAlign="Center"><Text text="Triggers"/></Column>
+                        <Column width="15%" hAlign="Center"><Text text="Rate"/></Column>
+                        <Column width="15%" hAlign="End"><Text text="Impact"/></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier title="{dashboard>ruleCode}"/>
+                                <Text text="{dashboard>ruleName}"/>
+                                <ObjectNumber number="{dashboard>triggerCount}"/>
+                                <Text text="{dashboard>triggerRate}%"/>
+                                <ObjectStatus text="{dashboard>avgImpact} pts" state="{= ${dashboard>avgImpact} > 0 ? 'Success' : 'Error'}"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+            </VBox>
+        </f:content>
+
+    </f:DynamicPage>
 </mvc:View>

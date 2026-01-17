@@ -4,6 +4,12 @@
 <head>
     <meta charset="utf-8">
     <title>Rules Management</title>
+    <script>
+        var sTheme = localStorage.getItem("ui5-theme");
+        if (sTheme) {
+            window["sap-ui-config"] = { theme: sTheme };
+        }
+    </script>
     <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
         data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m, sap.f, sap.ui.layout, sap.ui.table"
         data-sap-ui-compatVersion="edge" data-sap-ui-async="true"

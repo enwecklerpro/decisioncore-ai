@@ -55,6 +55,12 @@
         });
 
         sap.ui.getCore().attachInit(function () {
+            // Restore Theme
+            var sStoredTheme = localStorage.getItem("ui5-theme");
+            if (sStoredTheme) {
+                sap.ui.getCore().applyTheme(sStoredTheme);
+            }
+
             sap.ui.require([
                 "sap/tnt/ToolPage",
                 "sap/tnt/ToolHeader",
@@ -237,7 +243,12 @@
                                 var sCurrent = sap.ui.getCore().getConfiguration().getTheme();
                                 var bIsDark = sCurrent.includes("dark");
                                 var sNew = bIsDark ? "sap_horizon" : "sap_horizon_dark";
+
+                                // Apply and Persist
                                 sap.ui.getCore().applyTheme(sNew);
+                                localStorage.setItem("ui5-theme", sNew); // Persist
+
+                                // Broadcast to frames
                                 var fs = document.getElementsByTagName("iframe");
                                 for (var i = 0; i < fs.length; i++) {
                                     fs[i].contentWindow.postMessage({ type: "setTheme", theme: sNew }, "*");

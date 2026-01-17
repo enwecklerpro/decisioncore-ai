@@ -44,7 +44,7 @@
                     <items>
                         <ColumnListItem type="Navigation">
                             <cells>
-                                <ObjectIdentifier title="{id}"/>
+                                <ObjectIdentifier title="{ID}"/>
                                 <ObjectStatus text="{decision}" state="{= ${decision} === 'APPROVED' ? 'Success' : ${decision} === 'REJECTED' ? 'Error' : 'Warning'}" inverted="true"/>
                                 <ObjectNumber number="{confidence}" unit="%"/>
                                 <ObjectNumber number="{finalScore}" emphasized="true"/>

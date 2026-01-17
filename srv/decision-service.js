@@ -128,12 +128,12 @@ module.exports = class DecisionServiceHandler extends cds.ApplicationService {
                 return req.error(400, 'Invalid JSON payload');
             }
 
-            // Load scenario
+            // Load scenario (allow DRAFT for simulation)
             const scenario = await SELECT.one.from(DecisionScenarios)
-                .where({ name: scenarioName, status: 'ACTIVE' });
+                .where({ name: scenarioName });
 
-            if (!scenario) {
-                return req.error(404, `Scenario "${scenarioName}" not found or not active`);
+            if (!scenario || scenario.status === 'ARCHIVED') {
+                return req.error(404, `Scenario "${scenarioName}" not found or archived`);
             }
 
             // Check simulation allowed

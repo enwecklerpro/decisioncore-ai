@@ -230,6 +230,21 @@
                             }
                         }),
                         new Button({
+                            icon: "sap-icon://palette",
+                            type: "Transparent",
+                            tooltip: "Toggle Theme",
+                            press: function () {
+                                var sCurrent = sap.ui.getCore().getConfiguration().getTheme();
+                                var bIsDark = sCurrent.includes("dark");
+                                var sNew = bIsDark ? "sap_horizon" : "sap_horizon_dark";
+                                sap.ui.getCore().applyTheme(sNew);
+                                var fs = document.getElementsByTagName("iframe");
+                                for (var i = 0; i < fs.length; i++) {
+                                    fs[i].contentWindow.postMessage({ type: "setTheme", theme: sNew }, "*");
+                                }
+                            }
+                        }),
+                        new Button({
                             icon: "sap-icon://bell",
                             type: "Transparent",
                             press: function () { sap.m.MessageToast.show("No new notifications"); }

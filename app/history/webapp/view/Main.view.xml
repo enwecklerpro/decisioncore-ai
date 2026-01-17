@@ -25,7 +25,7 @@
                 </f:DynamicPageHeader>
             </f:header>
             <f:content>
-                <Table items="{/Outputs}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                <Table id="historyTable" items="{/Outputs}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
                     <headerToolbar>
                         <OverflowToolbar>
                             <Title text="Recent Executions"/>

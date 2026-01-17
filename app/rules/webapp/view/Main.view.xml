@@ -28,13 +28,14 @@
             </f:header>
             <!-- Content -->
             <f:content>
-                <Table items="{/Rules}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                <Table id="rulesTable" mode="MultiSelect" items="{/Rules}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
                     <headerToolbar>
                         <OverflowToolbar>
                             <Title text="Decision Rules"/>
                             <ToolbarSpacer/>
-                            <SearchField width="300px" placeholder="Search by Rule Code or Name..." search=".onSearch"/>
+                            <SearchField width="200px" placeholder="Search..." search=".onSearch"/>
                             <Button icon="sap-icon://filter" type="Transparent" press=".onFilter"/>
+                            <Button icon="sap-icon://delete" type="Transparent" text="Delete Selected" press=".onDeleteSelectedRules"/>
                         </OverflowToolbar>
                     </headerToolbar>
                     <columns>

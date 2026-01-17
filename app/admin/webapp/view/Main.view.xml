@@ -25,12 +25,13 @@
                 </f:DynamicPageHeader>
             </f:header>
             <f:content>
-                <Table id="providersTable" items="{/AIProviders}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                <Table id="providersTable" mode="MultiSelect" items="{/AIProviders}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
                     <headerToolbar>
                         <OverflowToolbar>
                             <Title text="Configured Models"/>
                             <ToolbarSpacer/>
-                            <SearchField width="200px"/>
+                            <SearchField width="200px" search=".onSearch"/>
+                            <Button icon="sap-icon://delete" type="Transparent" text="Delete Selected" press=".onDeleteSelectedProviders"/>
                         </OverflowToolbar>
                     </headerToolbar>
                     <columns>

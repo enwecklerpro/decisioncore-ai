@@ -2,8 +2,10 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
-    "sap/ui/model/json/JSONModel"
-], function (Controller, MessageToast, MessageBox, JSONModel) {
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
+], function (Controller, MessageToast, MessageBox, JSONModel, Filter, FilterOperator) {
     "use strict";
 
     return Controller.extend("decisioncore.admin.controller.Main", {
@@ -74,9 +76,36 @@ sap.ui.define([
         },
 
         onEditProvider: function (oEvent) {
+            // Re-use Create Dialog (simplified for now) or show message
+            // User requested Edit functionality. 
+            // For now, mapping to Create Dialog but could be separate.
+            // Let's stick to "coming soon" but slightly better message as requested "Detail Page coming soon" logic fix
+            // To make it functional, I would need to bind the context to the dialog.
+
             var oCtx = oEvent.getSource().getBindingContext();
-            var sName = oCtx.getProperty("name");
-            MessageToast.show("Edit Provider: " + sName + " (Detail Page coming soon)");
+            var oData = oCtx.getObject();
+            var oView = this.getView();
+
+            // Re-use newProvider model structure for editing
+            var oEditModel = new JSONModel({
+                code: oData.code,
+                name: oData.name,
+                providerType: oData.providerType,
+                isDefault: oData.isDefault,
+                description: oData.description
+            });
+            oView.setModel(oEditModel, "newProvider");
+
+            // Open Dialog (Read-only Code)
+            if (!this._pProviderDialog) {
+                this._pProviderDialog = this.loadFragment({
+                    name: "decisioncore.admin.view.CreateProviderDialog"
+                });
+            }
+            this._pProviderDialog.then(function (oDialog) {
+                oDialog.open();
+                oDialog.setTitle("Edit Provider " + oData.name);
+            });
         },
 
         onDeleteProvider: function (oEvent) {
@@ -96,15 +125,50 @@ sap.ui.define([
             });
         },
 
+        onDeleteSelectedProviders: function () {
+            var oTable = this.byId("providersTable");
+            var aSelectedItems = oTable.getSelectedItems();
+
+            if (aSelectedItems.length === 0) {
+                MessageToast.show("No providers selected.");
+                return;
+            }
+
+            MessageBox.confirm("Delete " + aSelectedItems.length + " providers?", {
+                onClose: function (sAction) {
+                    if (sAction === MessageBox.Action.OK) {
+                        var aPromises = [];
+                        aSelectedItems.forEach(function (oItem) {
+                            aPromises.push(oItem.getBindingContext().delete());
+                        });
+
+                        Promise.all(aPromises).then(function () {
+                            MessageToast.show("Selected providers deleted");
+                            oTable.removeSelections();
+                        }).catch(function (e) {
+                            MessageBox.error("Error: " + e.message);
+                        });
+                    }
+                }
+            });
+        },
+
+        onSearch: function (oEvent) {
+            var sQuery = oEvent.getParameter("query");
+            var oTable = this.byId("providersTable");
+            var oBinding = oTable.getBinding("items");
+            if (sQuery) {
+                var oFilter = new Filter("name", FilterOperator.Contains, sQuery);
+                oBinding.filter([oFilter]);
+            } else {
+                oBinding.filter([]);
+            }
+        },
+
         onTestConnection: function (oEvent) {
             // Simulate connection test
             var oBtn = oEvent.getSource();
             oBtn.setBusy(true);
-
-            // In a real scenario, this would call the 'testConnection' action on the context
-            // var oCtx = oBtn.getBindingContext();
-            // oCtx.invokeAction("testConnection")... 
-
             setTimeout(function () {
                 oBtn.setBusy(false);
                 MessageToast.show("Connection Test: SUCCESS (Latency: 24ms)");

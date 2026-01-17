@@ -2,13 +2,16 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
     "sap/ui/model/json/JSONModel",
-    "sap/m/MessageBox"
-], function (Controller, MessageToast, JSONModel, MessageBox) {
+    "sap/m/MessageBox",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
+], function (Controller, MessageToast, JSONModel, MessageBox, Filter, FilterOperator) {
     "use strict";
 
     return Controller.extend("decisioncore.rules.controller.Main", {
 
         onInit: function () {
+            this._bFiltered = false;
         },
 
         onOpenCreateRuleDialog: function () {
@@ -86,11 +89,30 @@ sap.ui.define([
         },
 
         onSearch: function (oEvent) {
-            MessageToast.show("Search: " + oEvent.getParameter("query"));
+            var sQuery = oEvent.getParameter("query");
+            var oTable = this.byId("rulesTable");
+            var oBinding = oTable.getBinding("items");
+            if (sQuery) {
+                var oFilter = new Filter("ruleCode", FilterOperator.Contains, sQuery);
+                oBinding.filter([oFilter]);
+            } else {
+                oBinding.filter([]);
+            }
         },
 
         onFilter: function () {
-            MessageToast.show("Filter Dialog not implemented yet");
+            var oTable = this.byId("rulesTable");
+            var oBinding = oTable.getBinding("items");
+
+            if (this._bFiltered) {
+                oBinding.filter([]);
+                this._bFiltered = false;
+                MessageToast.show("Filter cleared");
+            } else {
+                oBinding.filter([new Filter("status", FilterOperator.EQ, "ACTIVE")]);
+                this._bFiltered = true;
+                MessageToast.show("Filtered: ACTIVE");
+            }
         },
 
         onDeleteRule: function (oEvent) {
@@ -103,6 +125,35 @@ sap.ui.define([
                             MessageToast.show("Rule deleted");
                         }).catch(function (e) {
                             MessageToast.show("Error: " + e.message);
+                        });
+                    }
+                }
+            });
+        },
+
+        onDeleteSelectedRules: function () {
+            var oTable = this.byId("rulesTable");
+            var aSelectedItems = oTable.getSelectedItems();
+
+            if (aSelectedItems.length === 0) {
+                MessageToast.show("No rules selected.");
+                return;
+            }
+
+            MessageBox.confirm("Delete " + aSelectedItems.length + " rules?", {
+                onClose: function (sAction) {
+                    if (sAction === MessageBox.Action.OK) {
+                        var aPromises = [];
+                        aSelectedItems.forEach(function (oItem) {
+                            aPromises.push(oItem.getBindingContext().delete());
+                        });
+
+                        // Wait for all deletes
+                        Promise.all(aPromises).then(function () {
+                            MessageToast.show("Selected rules deleted");
+                            oTable.removeSelections();
+                        }).catch(function (e) {
+                            MessageBox.error("Error during deletion: " + e.message);
                         });
                     }
                 }

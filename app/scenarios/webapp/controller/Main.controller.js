@@ -119,8 +119,64 @@ sap.ui.define([
 
         onEditScenario: function (oEvent) {
             var oCtx = oEvent.getSource().getBindingContext();
+            this._oConfigContext = oCtx; // Keep reference to OData Context
+
+            var oData = oCtx.getObject();
+            var oEditModel = new JSONModel({
+                name: oData.name,
+                displayName: oData.displayName || oData.name,
+                description: oData.description,
+                rulesWeight: oData.rulesWeight,
+                aiWeight: oData.aiWeight,
+                approvalThreshold: oData.approvalThreshold,
+                reviewThreshold: oData.reviewThreshold
+            });
+            this.getView().setModel(oEditModel, "editScenario");
+
+            if (!this._pEditDialog) {
+                this._pEditDialog = this.loadFragment({
+                    name: "decisioncore.scenarios.view.EditScenarioDialog"
+                });
+            }
+            this._pEditDialog.then(function (oDialog) {
+                oDialog.open();
+            });
+        },
+
+        onEditScenarioSave: function () {
+            var oData = this.getView().getModel("editScenario").getData();
+
+            // Update OData Context fields
+            this._oConfigContext.setProperty("displayName", oData.displayName);
+            this._oConfigContext.setProperty("description", oData.description);
+            this._oConfigContext.setProperty("rulesWeight", oData.rulesWeight);
+            this._oConfigContext.setProperty("aiWeight", oData.aiWeight);
+            this._oConfigContext.setProperty("approvalThreshold", parseInt(oData.approvalThreshold));
+            this._oConfigContext.setProperty("reviewThreshold", parseInt(oData.reviewThreshold));
+
+            this.byId("editScenarioDialog").close();
+            MessageToast.show("Configuration saved.");
+        },
+
+        onEditScenarioCancel: function () {
+            this.byId("editScenarioDialog").close();
+        },
+
+        onDeleteScenario: function (oEvent) {
+            var oCtx = oEvent.getSource().getBindingContext();
             var sName = oCtx.getProperty("name");
-            MessageBox.information("Edit mode for '" + sName + "' opened. (Functionality coming in Detail Page update)");
+
+            MessageBox.confirm("Permanently delete scenario '" + sName + "'? This will remove all associated rules.", {
+                onClose: function (sAction) {
+                    if (sAction === MessageBox.Action.OK) {
+                        oCtx.delete().then(function () {
+                            MessageToast.show("Scenario deleted");
+                        }).catch(function (e) {
+                            MessageBox.error("Delete failed: " + e.message);
+                        });
+                    }
+                }
+            });
         },
 
         onGenericAction: function () {

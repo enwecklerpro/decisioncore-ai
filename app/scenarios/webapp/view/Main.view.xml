@@ -75,7 +75,8 @@
                                 <ObjectNumber number="{rulesWeight}" unit="%" state="Information"/>
                                 <ObjectNumber number="{aiWeight}" unit="%" state="Information"/>
                                 <ObjectStatus text="v{version}" state="Indication06" active="true"/>
-                                <Button icon="sap-icon://edit" type="Transparent" press=".onEditScenario"/>
+                                <Button icon="sap-icon://edit" type="Transparent" press=".onEditScenario" tooltip="Edit Configuration"/>
+                                <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteScenario" tooltip="Delete Scenario"/>
                             </cells>
                         </ColumnListItem>
                     </items>

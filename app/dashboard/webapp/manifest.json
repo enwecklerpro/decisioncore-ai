@@ -43,8 +43,7 @@
                 "sap.m": {},
                 "sap.ui.core": {},
                 "sap.ui.layout": {},
-                "sap.f": {},
-                "sap.viz": {}
+                "sap.f": {}
             }
         },
         "models": {

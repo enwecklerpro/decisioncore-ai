@@ -5,15 +5,27 @@
     <meta charset="utf-8">
     <title>Executive Dashboard</title>
     <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
-        data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m, sap.f, sap.ui.layout, sap.viz"
-        data-sap-ui-compatVersion="edge" data-sap-ui-async="true"
-        data-sap-ui-resourceroots='{"decisioncore.dashboard": "./"}' data-sap-ui-xx-componentPreload="off"
-        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport">
+        data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m, sap.f, sap.ui.layout" data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true" data-sap-ui-resourceroots='{"decisioncore.dashboard": "./"}'
+        data-sap-ui-xx-componentPreload="off" data-sap-ui-oninit="module:sap/ui/core/ComponentSupport">
         </script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #container {
+            height: 100%;
+        }
+    </style>
 </head>
 
 <body class="sapUiBody">
-    <div data-sap-ui-component data-name="decisioncore.dashboard" data-id="container"></div>
+    <div data-sap-ui-component data-name="decisioncore.dashboard" data-id="container"
+        data-settings='{"componentData": {}}' style="height: 100%;"></div>
 </body>
 
 </html>

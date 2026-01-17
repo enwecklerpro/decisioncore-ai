@@ -1,102 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="utf-8">
     <title>DecisionCore AI - Launchpad</title>
     <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
-        data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m, sap.f, sap.ui.layout" data-sap-ui-compatVersion="edge"
+        data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m,sap.f" data-sap-ui-compatVersion="edge"
         data-sap-ui-async="true">
         </script>
     <script>
         sap.ui.getCore().attachInit(function () {
-            sap.ui.require(["sap/ui/core/mvc/XMLView", "sap/m/Shell"], function (XMLView, Shell) {
-                var sView = `
-                <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" xmlns:grid="sap.ui.layout.cssgrid" displayBlock="true">
-                    <Shell appWidthLimited="false">
-                        <App>
-                            <Page showHeader="false">
-                                <f:ShellBar title="DecisionCore AI" secondTitle="Enterprise Platform" homeIcon="sap-icon://decision" showNotifications="true" notificationsNumber="2">
-                                    <f:profile>
-                                        <Avatar initials="EP"/>
-                                    </f:profile>
-                                </f:ShellBar>
-                                <f:GridContainer snapToRow="true" class="sapUiSmallMargin">
-                                    <f:layout>
-                                        <grid:GridBoxLayout boxMinWidth="17rem"/>
-                                    </f:layout>
-                                    
-                                    <!-- TILES -->
-                                    <GenericTile header="Total Decisions" subheader="All time" press="onPressDashboard" class="sapUiTinyMargin">
-                                        <TileContent>
-                                            <NumericContent value="12.5k" icon="sap-icon://line-charts" valueColor="Good"/>
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    <GenericTile header="Approval Rate" subheader="Automation" press="onPressDashboard" class="sapUiTinyMargin">
-                                        <TileContent>
-                                            <NumericContent value="68" scale="%" icon="sap-icon://accept" valueColor="Good"/>
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    <GenericTile header="Executive Dashboard" subheader="Analytics" press="onPressDashboard" class="sapUiTinyMargin">
-                                        <TileContent>
-                                            <ImageContent src="sap-icon://bbyd-dashboard"/>
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    <GenericTile header="Scenario Management" subheader="Definitions" press="onPressScenarios" class="sapUiTinyMargin">
-                                        <TileContent>
-                                            <ImageContent src="sap-icon://org-chart"/>
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    <GenericTile header="Rules Management" subheader="Policies" press="onPressRules" class="sapUiTinyMargin">
-                                        <TileContent>
-                                            <ImageContent src="sap-icon://user-settings"/>
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    <GenericTile header="Decision Execution" subheader="Simulation" press="onPressExecute" class="sapUiTinyMargin">
-                                        <TileContent>
-                                            <ImageContent src="sap-icon://media-play"/>
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    <GenericTile header="Decision History" subheader="Audit Logs" press="onPressHistory" class="sapUiTinyMargin">
-                                        <TileContent>
-                                            <ImageContent src="sap-icon://history"/>
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    <GenericTile header="Administration" subheader="Settings" press="onPressAdmin" class="sapUiTinyMargin">
-                                        <TileContent>
-                                            <ImageContent src="sap-icon://action-settings"/>
-                                        </TileContent>
-                                    </GenericTile>
-
-                                </f:GridContainer>
-                            </Page>
-                        </App>
-                    </Shell>
-                </mvc:View>`;
-
-                XMLView.create({
-                    definition: sView,
-                    controller: {
-                        onPressDashboard: function () { window.location.href = "/dashboard/webapp/index.html"; },
-                        onPressScenarios: function () { window.location.href = "/scenarios/webapp/index.html"; },
-                        onPressRules: function () { window.location.href = "/rules/webapp/index.html"; },
-                        onPressExecute: function () { window.location.href = "/execute/webapp/index.html"; },
-                        onPressHistory: function () { window.location.href = "/history/webapp/index.html"; },
-                        onPressAdmin: function () { window.location.href = "/admin/webapp/index.html"; }
-                    }
-                }).then(function (oView) {
-                    oView.placeAt("content");
-                });
+            // Simple FlexBox layout - most robust
+            var oTileContainer = new sap.m.FlexBox({
+                wrap: "Wrap",
+                justifyContent: "Start",
+                alignItems: "Start"
             });
+
+            // Helper function
+            function addTile(header, subheader, icon, url, value, scale, color) {
+                var content;
+                if (value) {
+                    content = new sap.m.NumericContent({ value: value, scale: scale || "", icon: icon, valueColor: color || "Neutral" });
+                } else {
+                    content = new sap.m.ImageContent({ src: icon });
+                }
+
+                oTileContainer.addItem(new sap.m.GenericTile({
+                    header: header,
+                    subheader: subheader,
+                    tileContent: new sap.m.TileContent({ content: content }),
+                    press: function () { if (url) window.location.href = url; }
+                }).addStyleClass("sapUiTinyMargin"));
+            }
+
+            // KPI Tiles
+            addTile("Total Decisions", "All Time", "sap-icon://performance", "/dashboard/webapp/index.html", "12.5k", "", "Good");
+            addTile("Approval Rate", "Automation Level", "sap-icon://accept", "/dashboard/webapp/index.html", "68", "%", "Good");
+            addTile("AI Providers", "Active Models", "sap-icon://machine-learning", "/admin/webapp/index.html", "4", "", "Neutral");
+
+            // App Tiles
+            addTile("Executive Dashboard", "Analytics & KPIs", "sap-icon://bbyd-dashboard", "/dashboard/webapp/index.html");
+            addTile("Scenario Management", "Define Decision Logic", "sap-icon://org-chart", "/scenarios/webapp/index.html");
+            addTile("Rules Management", "Business Policies", "sap-icon://user-settings", "/rules/webapp/index.html");
+            addTile("Decision Execution", "Test & Simulate", "sap-icon://media-play", "/execute/webapp/index.html");
+            addTile("Decision History", "Audit & Compliance", "sap-icon://history", "/history/webapp/index.html");
+            addTile("Administration", "AI Provider Config", "sap-icon://action-settings", "/admin/webapp/index.html");
+
+            // Shell Bar
+            var oShellBar = new sap.f.ShellBar({
+                title: "DecisionCore AI",
+                secondTitle: "Enterprise Decision Intelligence",
+                homeIcon: "sap-icon://decision",
+                showNotifications: true,
+                notificationsNumber: "2",
+                profile: new sap.m.Avatar({ initials: "EP", displaySize: "XS" })
+            });
+
+            // Page
+            var oPage = new sap.m.Page({
+                showHeader: false,
+                enableScrolling: true,
+                content: [
+                    oShellBar,
+                    new sap.m.Title({ text: "Key Performance Indicators", titleStyle: "H4" }).addStyleClass("sapUiSmallMargin"),
+                    oTileContainer
+                ]
+            });
+
+            // Shell
+            var oShell = new sap.m.Shell({
+                app: new sap.m.App({ pages: [oPage] }),
+                appWidthLimited: false
+            });
+
+            oShell.placeAt("content");
         });
     </script>
+    <style>
+        html,
+        body,
+        #content {
+            height: 100%;
+            margin: 0;
+        }
+    </style>
 </head>
 
 <body class="sapUiBody" id="content">

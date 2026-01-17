@@ -2,94 +2,98 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
     <title>DecisionCore AI - Launchpad</title>
-
     <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
         data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m, sap.f, sap.ui.layout" data-sap-ui-compatVersion="edge"
         data-sap-ui-async="true">
         </script>
-
     <script>
         sap.ui.getCore().attachInit(function () {
-            sap.ui.require([
-                "sap/m/Shell",
-                "sap/f/ShellBar",
-                "sap/f/GridContainer",
-                "sap/m/GenericTile",
-                "sap/m/TileContent",
-                "sap/m/NumericContent",
-                "sap/m/ImageContent",
-                "sap/ui/layout/cssgrid/GridBoxLayout",
-                "sap/m/Page",
-                "sap/m/Title",
-                "sap/m/Avatar"
-            ], function (Shell, ShellBar, GridContainer, GenericTile, TileContent, NumericContent, ImageContent, GridBoxLayout, Page, Title, Avatar) {
+            sap.ui.require(["sap/ui/core/mvc/XMLView", "sap/m/Shell"], function (XMLView, Shell) {
+                var sView = `
+                <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" xmlns:grid="sap.ui.layout.cssgrid" displayBlock="true">
+                    <Shell appWidthLimited="false">
+                        <App>
+                            <Page showHeader="false">
+                                <f:ShellBar title="DecisionCore AI" secondTitle="Enterprise Platform" homeIcon="sap-icon://decision" showNotifications="true" notificationsNumber="2">
+                                    <f:profile>
+                                        <Avatar initials="EP"/>
+                                    </f:profile>
+                                </f:ShellBar>
+                                <f:GridContainer snapToRow="true" class="sapUiSmallMargin">
+                                    <f:layout>
+                                        <grid:GridBoxLayout boxMinWidth="17rem"/>
+                                    </f:layout>
+                                    
+                                    <!-- TILES -->
+                                    <GenericTile header="Total Decisions" subheader="All time" press="onPressDashboard" class="sapUiTinyMargin">
+                                        <TileContent>
+                                            <NumericContent value="12.5k" icon="sap-icon://line-charts" valueColor="Good"/>
+                                        </TileContent>
+                                    </GenericTile>
 
-                // Shell Bar
-                var oShellBar = new ShellBar({
-                    title: "DecisionCore AI",
-                    secondTitle: "Enterprise Platform",
-                    homeIcon: "sap-icon://decision",
-                    profile: new Avatar({ initials: "EP" })
-                });
+                                    <GenericTile header="Approval Rate" subheader="Automation" press="onPressDashboard" class="sapUiTinyMargin">
+                                        <TileContent>
+                                            <NumericContent value="68" scale="%" icon="sap-icon://accept" valueColor="Good"/>
+                                        </TileContent>
+                                    </GenericTile>
 
-                // Grid Container
-                var oGrid = new GridContainer({
-                    layout: new GridBoxLayout({ boxMinWidth: "17rem" }),
-                    snapToRow: true
-                });
+                                    <GenericTile header="Executive Dashboard" subheader="Analytics" press="onPressDashboard" class="sapUiTinyMargin">
+                                        <TileContent>
+                                            <ImageContent src="sap-icon://bbyd-dashboard"/>
+                                        </TileContent>
+                                    </GenericTile>
 
-                // Helper to create tile
-                function createTile(title, sub, icon, url, val, scale, color) {
-                    var oTileContent;
-                    if (val) {
-                        oTileContent = new TileContent({
-                            content: new NumericContent({ value: val, scale: scale, icon: icon, valueColor: color || "Neutral" })
-                        });
-                    } else {
-                        oTileContent = new TileContent({
-                            content: new ImageContent({ src: icon })
-                        });
+                                    <GenericTile header="Scenario Management" subheader="Definitions" press="onPressScenarios" class="sapUiTinyMargin">
+                                        <TileContent>
+                                            <ImageContent src="sap-icon://org-chart"/>
+                                        </TileContent>
+                                    </GenericTile>
+
+                                    <GenericTile header="Rules Management" subheader="Policies" press="onPressRules" class="sapUiTinyMargin">
+                                        <TileContent>
+                                            <ImageContent src="sap-icon://user-settings"/>
+                                        </TileContent>
+                                    </GenericTile>
+
+                                    <GenericTile header="Decision Execution" subheader="Simulation" press="onPressExecute" class="sapUiTinyMargin">
+                                        <TileContent>
+                                            <ImageContent src="sap-icon://media-play"/>
+                                        </TileContent>
+                                    </GenericTile>
+
+                                    <GenericTile header="Decision History" subheader="Audit Logs" press="onPressHistory" class="sapUiTinyMargin">
+                                        <TileContent>
+                                            <ImageContent src="sap-icon://history"/>
+                                        </TileContent>
+                                    </GenericTile>
+
+                                    <GenericTile header="Administration" subheader="Settings" press="onPressAdmin" class="sapUiTinyMargin">
+                                        <TileContent>
+                                            <ImageContent src="sap-icon://action-settings"/>
+                                        </TileContent>
+                                    </GenericTile>
+
+                                </f:GridContainer>
+                            </Page>
+                        </App>
+                    </Shell>
+                </mvc:View>`;
+
+                XMLView.create({
+                    definition: sView,
+                    controller: {
+                        onPressDashboard: function () { window.location.href = "/dashboard/webapp/index.html"; },
+                        onPressScenarios: function () { window.location.href = "/scenarios/webapp/index.html"; },
+                        onPressRules: function () { window.location.href = "/rules/webapp/index.html"; },
+                        onPressExecute: function () { window.location.href = "/execute/webapp/index.html"; },
+                        onPressHistory: function () { window.location.href = "/history/webapp/index.html"; },
+                        onPressAdmin: function () { window.location.href = "/admin/webapp/index.html"; }
                     }
-
-                    return new GenericTile({
-                        header: title,
-                        subheader: sub,
-                        tileContent: [oTileContent],
-                        press: function () {
-                            if (url) window.location.href = url;
-                        }
-                    }).addStyleClass("sapUiTinyMargin");
-                }
-
-                // Add Tiles
-                oGrid.addItem(createTile("Total Decisions", "All time", "sap-icon://line-charts", "/dashboard/webapp/index.html", "12.5k", "", "Good"));
-                oGrid.addItem(createTile("Approval Rate", "Automation", "sap-icon://accept", "/dashboard/webapp/index.html", "68", "%", "Good"));
-
-                oGrid.addItem(createTile("Executive Dashboard", "Analytics", "sap-icon://bbyd-dashboard", "/dashboard/webapp/index.html"));
-                oGrid.addItem(createTile("Scenario Management", "Definitions", "sap-icon://org-chart", "/scenarios/webapp/index.html"));
-                oGrid.addItem(createTile("Rules Management", "Policies", "sap-icon://user-settings", "/rules/webapp/index.html"));
-                oGrid.addItem(createTile("Decision Execution", "Simulation", "sap-icon://media-play", "/execute/webapp/index.html"));
-                oGrid.addItem(createTile("Decision History", "Audit Logs", "sap-icon://history", "/history/webapp/index.html"));
-                oGrid.addItem(createTile("Administration", "Settings", "sap-icon://action-settings", "/admin/webapp/index.html"));
-
-                // Page
-                var oPage = new Page({
-                    showHeader: false,
-                    content: [
-                        oShellBar,
-                        new Title({ text: "My Applications", titleStyle: "H3" }).addStyleClass("sapUiMediumMarginTop sapUiMediumMarginBegin"),
-                        oGrid
-                    ]
+                }).then(function (oView) {
+                    oView.placeAt("content");
                 });
-
-                // App Shell
-                new Shell({
-                    app: oPage,
-                    appWidthLimited: false
-                }).placeAt("content");
             });
         });
     </script>

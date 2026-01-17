@@ -1,47 +1,72 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" 
-    xmlns:cards="sap.f.cards" controllerName="decisioncore.rules.controller.Main" displayBlock="true">
+    xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout"
+    controllerName="decisioncore.rules.controller.Main" displayBlock="true">
     <App id="app">
-        <pages>
-            <Page title="Rules Management" class="sapUiContentPadding">
-                <customHeader>
-                    <Bar>
-                        <contentLeft><Title text="Decision Rules" level="H3"/></contentLeft>
-                        <contentRight><Button icon="sap-icon://refresh" press=".onRefresh"/></contentRight>
-                    </Bar>
-                </customHeader>
-                <content>
-                    <f:Card class="sapUiSmallMargin">
-                        <f:header>
-                            <cards:Header title="Business Rules" subtitle="Rule configurations for scoring"/>
-                        </f:header>
-                        <f:content>
-                            <Table items="{/Rules}" growing="true">
-                                <columns>
-                                    <Column><Text text="Rule Code"/></Column>
-                                    <Column><Text text="Rule Name"/></Column>
-                                    <Column><Text text="Status"/></Column>
-                                    <Column><Text text="Priority"/></Column>
-                                    <Column><Text text="Action"/></Column>
-                                    <Column><Text text="Score Modifier"/></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem type="Navigation">
-                                        <cells>
-                                            <ObjectIdentifier title="{ruleCode}"/>
-                                            <Text text="{ruleName}"/>
-                                            <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}"/>
-                                            <ObjectNumber number="{priority}"/>
-                                            <Text text="{action}"/>
-                                            <ObjectNumber number="{scoreModifier}" state="{= ${scoreModifier} >= 0 ? 'Success' : 'Error'}"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                        </f:content>
-                    </f:Card>
-                </content>
-                <footer><Bar><contentMiddle><Text text="DecisionCore AI - Created by Taha Khattari"/></contentMiddle></Bar></footer>
-            </Page>
-        </pages>
+        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="true">
+            <!-- Title -->
+            <f:title>
+                <f:DynamicPageTitle>
+                    <f:heading><Title text="Rules Management"/></f:heading>
+                    <f:expandedContent><Label text="Configure business rules and policies"/></f:expandedContent>
+                    <f:actions>
+                        <Button text="New Rule" type="Emphasized" icon="sap-icon://add"/>
+                    </f:actions>
+                </f:DynamicPageTitle>
+            </f:title>
+            <!-- Header -->
+            <f:header>
+                <f:DynamicPageHeader pinnable="true">
+                    <layout:HorizontalLayout allowWrapping="true">
+                         <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Total Rules" text="156"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Avg. Impact" text="+45 pts"/>
+                        </layout:VerticalLayout>
+                    </layout:HorizontalLayout>
+                </f:DynamicPageHeader>
+            </f:header>
+            <!-- Content -->
+            <f:content>
+                <Table items="{/Rules}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="Decision Rules"/>
+                            <ToolbarSpacer/>
+                            <SearchField width="300px" placeholder="Search by Rule Code or Name..."/>
+                            <Button icon="sap-icon://filter" type="Transparent"/>
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column width="12rem"><Text text="Rule Code"/></Column>
+                        <Column><Text text="Description"/></Column>
+                        <Column width="8rem"><Text text="Status"/></Column>
+                        <Column width="6rem" hAlign="End"><Text text="Priority"/></Column>
+                        <Column width="8rem"><Text text="Action"/></Column>
+                        <Column width="8rem" hAlign="End"><Text text="Score Impact"/></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem type="Navigation">
+                            <cells>
+                                <ObjectIdentifier title="{ruleCode}"/>
+                                <Text text="{ruleName}"/>
+                                <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}" inverted="true"/>
+                                <ObjectNumber number="{priority}"/>
+                                <ObjectStatus text="{action}" state="{= ${action} === 'REJECT' ? 'Error' : 'None'}" icon="{= ${action} === 'REJECT' ? 'sap-icon://decline' : 'sap-icon://accept'}"/>
+                                <ObjectNumber number="{scoreModifier}" state="{= ${scoreModifier} >= 0 ? 'Success' : 'Error'}" unit="pts"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </f:content>
+            <!-- Footer -->
+            <f:footer>
+                <OverflowToolbar>
+                    <ToolbarSpacer/>
+                    <Text text="DecisionCore AI - Created by Taha Khattari"/>
+                    <ToolbarSpacer/>
+                </OverflowToolbar>
+            </f:footer>
+        </f:DynamicPage>
     </App>
-</mvc:View>
+</mvc:View> 

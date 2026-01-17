@@ -1,68 +1,96 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" 
-    xmlns:core="sap.ui.core" xmlns:cards="sap.f.cards"
+    xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout"
     controllerName="decisioncore.scenarios.controller.Main" displayBlock="true">
     
     <App id="app">
-        <pages>
-            <Page title="Scenario Management" class="sapUiContentPadding">
-                <customHeader>
-                    <Bar>
-                        <contentLeft>
-                            <Title text="Decision Scenarios" level="H3"/>
-                        </contentLeft>
-                        <contentRight>
-                            <Button icon="sap-icon://refresh" press=".onRefresh"/>
-                        </contentRight>
-                    </Bar>
-                </customHeader>
-                
-                <content>
-                    <f:Card class="sapUiSmallMargin">
-                        <f:header>
-                            <cards:Header title="Active Scenarios" subtitle="Decision logic configurations"/>
-                        </f:header>
-                        <f:content>
-                            <Table items="{/Scenarios}" growing="true">
-                                <headerToolbar>
-                                    <OverflowToolbar>
-                                        <Title text="Scenarios"/>
-                                        <ToolbarSpacer/>
-                                        <SearchField width="200px" placeholder="Search..."/>
-                                    </OverflowToolbar>
-                                </headerToolbar>
-                                <columns>
-                                    <Column><Text text="Name"/></Column>
-                                    <Column><Text text="Display Name"/></Column>
-                                    <Column><Text text="Status"/></Column>
-                                    <Column><Text text="Rules Weight"/></Column>
-                                    <Column><Text text="AI Weight"/></Column>
-                                    <Column><Text text="Version"/></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem type="Navigation">
-                                        <cells>
-                                            <ObjectIdentifier title="{name}"/>
-                                            <Text text="{displayName}"/>
-                                            <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}"/>
-                                            <ObjectNumber number="{rulesWeight}" unit="%"/>
-                                            <ObjectNumber number="{aiWeight}" unit="%"/>
-                                            <Text text="v{version}"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                        </f:content>
-                    </f:Card>
-                </content>
-                
-                <footer>
-                    <Bar>
-                        <contentMiddle>
-                            <Text text="DecisionCore AI - Created by Taha Khattari"/>
-                        </contentMiddle>
-                    </Bar>
-                </footer>
-            </Page>
-        </pages>
+        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="true">
+            <!-- Dynamic Title -->
+            <f:title>
+                <f:DynamicPageTitle>
+                    <f:heading>
+                        <Title text="Scenario Management"/>
+                    </f:heading>
+                    <f:expandedContent>
+                        <Label text="Define and manage decision logic strategies"/>
+                    </f:expandedContent>
+                    <f:snappedContent>
+                        <Label text="Define and manage decision logic strategies"/>
+                    </f:snappedContent>
+                    <f:content>
+                        <OverflowToolbar>
+                            <GenericTag text="System Status" status="Success" press="onPressOpenPopover">
+                                <ObjectNumber number="Online" state="Success"/>
+                            </GenericTag>
+                        </OverflowToolbar>
+                    </f:content>
+                    <f:actions>
+                        <Button text="Create Scenario" type="Emphasized" icon="sap-icon://add"/>
+                        <Button icon="sap-icon://action" type="Transparent"/>
+                    </f:actions>
+                </f:DynamicPageTitle>
+            </f:title>
+
+            <!-- Dynamic Header -->
+            <f:header>
+                <f:DynamicPageHeader pinnable="true">
+                    <layout:HorizontalLayout allowWrapping="true">
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Active Scenarios" text="3"/>
+                            <ObjectAttribute title="Total Drafts" text="2"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Last Updated" text="Just now"/>
+                            <ObjectAttribute title="Validation" text="Passed"/>
+                        </layout:VerticalLayout>
+                    </layout:HorizontalLayout>
+                </f:DynamicPageHeader>
+            </f:header>
+
+            <!-- Content Area -->
+            <f:content>
+                <Table items="{/Scenarios}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="All Scenarios" level="H2"/>
+                            <ToolbarSpacer/>
+                            <SearchField width="300px" placeholder="Search scenarios..."/>
+                            <Button icon="sap-icon://sort" type="Transparent"/>
+                            <Button icon="sap-icon://filter" type="Transparent"/>
+                            <Button icon="sap-icon://group-2" type="Transparent"/>
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column><Text text="Scenario Name"/></Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Status"/></Column>
+                        <Column hAlign="End" minScreenWidth="Desktop" demandPopin="true"><Text text="Business Rules"/></Column>
+                        <Column hAlign="End" minScreenWidth="Desktop" demandPopin="true"><Text text="AI Models"/></Column>
+                        <Column hAlign="End"><Text text="Version"/></Column>
+                        <Column hAlign="End"><Text text="Action"/></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem type="Navigation">
+                            <cells>
+                                <ObjectIdentifier title="{displayName}" text="{name}"/>
+                                <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}" icon="{= ${status} === 'ACTIVE' ? 'sap-icon://sys-enter-2' : 'sap-icon://alert'}"/>
+                                <ObjectNumber number="{rulesWeight}" unit="%" state="Information"/>
+                                <ObjectNumber number="{aiWeight}" unit="%" state="Information"/>
+                                <ObjectStatus text="v{version}" state="Indication06" active="true"/>
+                                <Button icon="sap-icon://edit" type="Transparent"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </f:content>
+
+            <!-- Footer -->
+            <f:footer>
+                <OverflowToolbar>
+                    <ToolbarSpacer/>
+                    <Text text="DecisionCore AI - Created by Taha Khattari"/>
+                    <ToolbarSpacer/>
+                </OverflowToolbar>
+            </f:footer>
+
+        </f:DynamicPage>
     </App>
 </mvc:View>

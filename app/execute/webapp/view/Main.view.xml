@@ -2,19 +2,42 @@
     controllerName="decisioncore.execute.controller.Main" displayBlock="true">
     
     <App>
-        <Page title="Decision Execution" showNavButton="false" enableScrolling="true">
-            <headerContent>
-                <Button text="Load Sample" icon="sap-icon://sys-help-2" press=".onLoadSample"/>
-                <Button text="Clear" icon="sap-icon://reset" press=".onClear"/>
-                <Button text="Execute" type="Emphasized" icon="sap-icon://media-play" press=".onEvaluate"/>
-            </headerContent>
-            
-            <content>
-                <l:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1">
+        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="true" fitContent="true">
+             <f:title>
+                <f:DynamicPageTitle>
+                    <f:heading>
+                        <Title text="Decision Execution"/>
+                    </f:heading>
+                    <f:expandedContent>
+                         <Label text="Simulate and test decision logic with real-time feedback"/>
+                    </f:expandedContent>
+                    <f:actions>
+                        <Button text="Load Sample" icon="sap-icon://sys-help-2" press=".onLoadSample"/>
+                        <Button text="Clear" icon="sap-icon://reset" press=".onClear"/>
+                        <Button text="Execute" type="Emphasized" icon="sap-icon://media-play" press=".onEvaluate"/>
+                    </f:actions>
+                </f:DynamicPageTitle>
+            </f:title>
+
+            <f:header>
+                <f:DynamicPageHeader pinnable="true">
+                     <l:HorizontalLayout allowWrapping="true">
+                        <l:VerticalLayout class="sapUiMediumMarginEnd">
+                             <ObjectAttribute title="Selected Scenario" text="{view>/scenario}"/>
+                        </l:VerticalLayout>
+                        <l:VerticalLayout class="sapUiMediumMarginEnd">
+                             <ObjectAttribute title="Trace Status" text="Active"/>
+                        </l:VerticalLayout>
+                    </l:HorizontalLayout>
+                </f:DynamicPageHeader>
+            </f:header>
+
+            <f:content>
+                <l:Grid defaultSpan="XL6 L6 M12 S12" hSpacing="1" vSpacing="1" class="sapUiSmallMarginTop">
                     
                     <!-- LEFT: INPUT -->
                     <VBox class="sapUiSmallMargin">
-                        <Panel headerText="Input Parameters" expandable="false">
+                        <Panel headerText="Input Parameters" expandable="false" width="auto" class="sapUiResponsiveMargin">
                             <VBox class="sapUiSmallMargin">
                                 
                                 <Label text="Scenario" required="true"/>
@@ -28,14 +51,14 @@
                                 <Input value="{view>/correlationId}" placeholder="Trace ID (optional)"/>
                                 
                                 <Label text="Payload (JSON)" class="sapUiSmallMarginTop" required="true"/>
-                                <TextArea value="{view>/payload}" rows="15" width="100%" placeholder="Enter JSON payload..."/>
+                                <TextArea value="{view>/payload}" rows="15" width="100%" placeholder="Enter JSON payload..." growing="true"/>
                             </VBox>
                         </Panel>
                     </VBox>
                     
                     <!-- RIGHT: RESULT -->
                     <VBox class="sapUiSmallMargin">
-                        <Panel headerText="Decision Result" expandable="false">
+                        <Panel headerText="Decision Result" expandable="false" width="auto" class="sapUiResponsiveMargin">
                             
                             <!-- Empty State -->
                             <IllustratedMessage illustrationType="sapIllus-EmptyList" title="No Result" description="Run a simulation to see decision details"
@@ -49,7 +72,7 @@
                                     text="Decision: {view>/result/decision}" 
                                     state="{= ${view>/result/decision} === 'APPROVED' ? 'Success' : ${view>/result/decision} === 'REJECTED' ? 'Error' : 'Warning'}" 
                                     icon="sap-icon://complete"
-                                    class="sapUiSmallMarginBottom"/>
+                                    class="sapUiSmallMarginBottom sapMObjectStatusLarge"/>
                                 
                                 <!-- Key Metrics -->
                                 <l:Grid defaultSpan="XL6 L6 M6 S12" class="sapUiSmallMarginTop">
@@ -63,7 +86,7 @@
                                     </VBox>
                                 </l:Grid>
                                 
-                                <List headerText="Logic Trace" class="sapUiSmallMarginTop">
+                                <List headerText="Logic Trace" class="sapUiSmallMarginTop" inset="false">
                                     <StandardListItem title="Business Score" description="Calculated from Rules" info="{view>/result/rulesScore}" infoState="Success" icon="sap-icon://business-objects-experience"/>
                                     <StandardListItem title="AI Score" description="Semantic Analysis" info="{view>/result/aiScore}" infoState="Information" icon="sap-icon://machine-learning"/>
                                 </List>
@@ -83,14 +106,15 @@
                     </VBox>
 
                 </l:Grid>
-            </content>
-            <footer>
-                <Bar>
-                    <contentMiddle>
-                        <Text text="DecisionCore AI - Created by Taha Khattari"/>
-                    </contentMiddle>
-                </Bar>
-            </footer>
-        </Page>
+            </f:content>
+
+            <f:footer>
+                <OverflowToolbar>
+                    <ToolbarSpacer/>
+                    <Text text="DecisionCore AI - Created by Taha Khattari"/>
+                    <ToolbarSpacer/>
+                </OverflowToolbar>
+            </f:footer>
+        </f:DynamicPage>
     </App>
 </mvc:View>

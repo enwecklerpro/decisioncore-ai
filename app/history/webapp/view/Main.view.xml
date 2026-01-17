@@ -1,49 +1,67 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" 
-    xmlns:cards="sap.f.cards" controllerName="decisioncore.history.controller.Main" displayBlock="true">
+    xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout"
+    controllerName="decisioncore.history.controller.Main" displayBlock="true">
     <App id="app">
-        <pages>
-            <Page title="Decision History" class="sapUiContentPadding">
-                <customHeader>
-                    <Bar>
-                        <contentLeft><Title text="Decision Audit Trail" level="H3"/></contentLeft>
-                        <contentRight><Button icon="sap-icon://refresh" press=".onRefresh"/></contentRight>
-                    </Bar>
-                </customHeader>
-                <content>
-                    <f:Card class="sapUiSmallMargin">
-                        <f:header>
-                            <cards:Header title="Recent Decisions" subtitle="Audit log of all decisions"/>
-                        </f:header>
-                        <f:content>
-                            <Table items="{/Outputs}" growing="true" growingThreshold="20">
-                                <columns>
-                                    <Column><Text text="Decision"/></Column>
-                                    <Column><Text text="Confidence"/></Column>
-                                    <Column><Text text="Final Score"/></Column>
-                                    <Column><Text text="Rules Score"/></Column>
-                                    <Column><Text text="AI Score"/></Column>
-                                    <Column><Text text="Processing Time"/></Column>
-                                    <Column><Text text="Status"/></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem>
-                                        <cells>
-                                            <ObjectStatus text="{decision}" state="{= ${decision} === 'APPROVED' ? 'Success' : ${decision} === 'REJECTED' ? 'Error' : 'Warning'}"/>
-                                            <ObjectNumber number="{confidence}" unit="%"/>
-                                            <ObjectNumber number="{finalScore}" emphasized="true"/>
-                                            <ObjectNumber number="{rulesScore}"/>
-                                            <ObjectNumber number="{aiScore}"/>
-                                            <Text text="{processingTimeMs} ms"/>
-                                            <Text text="{status}"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                        </f:content>
-                    </f:Card>
-                </content>
-                <footer><Bar><contentMiddle><Text text="DecisionCore AI - Created by Taha Khattari"/></contentMiddle></Bar></footer>
-            </Page>
-        </pages>
+        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="true">
+            <f:title>
+                <f:DynamicPageTitle>
+                    <f:heading><Title text="Decision Audit Trail"/></f:heading>
+                    <f:expandedContent><Label text="Monitor and audit AI decision execution"/></f:expandedContent>
+                    <f:actions>
+                        <Button text="Export Logs" icon="sap-icon://excel-attachment"/>
+                    </f:actions>
+                </f:DynamicPageTitle>
+            </f:title>
+            <f:header>
+                <f:DynamicPageHeader pinnable="true">
+                    <layout:HorizontalLayout allowWrapping="true">
+                         <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Decisions Today" text="1,245"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Avg. Confidence" text="98%"/>
+                        </layout:VerticalLayout>
+                    </layout:HorizontalLayout>
+                </f:DynamicPageHeader>
+            </f:header>
+            <f:content>
+                <Table items="{/Outputs}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="Recent Executions"/>
+                            <ToolbarSpacer/>
+                            <SearchField width="300px" placeholder="Search Trace ID..."/>
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column width="15rem"><Text text="Decision ID"/></Column>
+                        <Column><Text text="Outcome"/></Column>
+                        <Column hAlign="End"><Text text="Confidence"/></Column>
+                        <Column hAlign="End"><Text text="Score"/></Column>
+                        <Column hAlign="End"><Text text="Processing"/></Column>
+                        <Column hAlign="End"><Text text="Timestamp"/></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem type="Navigation">
+                            <cells>
+                                <ObjectIdentifier title="{id}"/>
+                                <ObjectStatus text="{decision}" state="{= ${decision} === 'APPROVED' ? 'Success' : ${decision} === 'REJECTED' ? 'Error' : 'Warning'}" inverted="true"/>
+                                <ObjectNumber number="{confidence}" unit="%"/>
+                                <ObjectNumber number="{finalScore}" emphasized="true"/>
+                                <Text text="{processingTimeMs} ms"/>
+                                <Text text="{createdAt}"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </f:content>
+            <f:footer>
+                <OverflowToolbar>
+                    <ToolbarSpacer/>
+                    <Text text="DecisionCore AI - Created by Taha Khattari"/>
+                    <ToolbarSpacer/>
+                </OverflowToolbar>
+            </f:footer>
+        </f:DynamicPage>
     </App>
 </mvc:View>

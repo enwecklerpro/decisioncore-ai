@@ -1,68 +1,70 @@
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" 
-    xmlns:core="sap.ui.core" xmlns:cards="sap.f.cards"
+    xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout"
     controllerName="decisioncore.admin.controller.Main" displayBlock="true">
-    
     <App id="app">
-        <pages>
-            <Page title="AI Provider Administration" showNavButton="false" class="sapUiContentPadding">
-                <customHeader>
-                    <Bar>
-                        <contentLeft>
-                            <Title text="AI Provider Admin" level="H3"/>
-                        </contentLeft>
-                        <contentRight>
-                            <Button icon="sap-icon://refresh" press=".onRefresh" tooltip="Refresh"/>
-                        </contentRight>
-                    </Bar>
-                </customHeader>
-                
-                <content>
-                    <f:Card class="sapUiSmallMargin">
-                        <f:header>
-                            <cards:Header title="Configured AI Providers" subtitle="Manage your AI scoring providers"/>
-                        </f:header>
-                        <f:content>
-                            <Table items="{/AIProviders}" growing="true" growingThreshold="10">
-                                <headerToolbar>
-                                    <OverflowToolbar>
-                                        <Title text="Providers"/>
-                                        <ToolbarSpacer/>
-                                        <Button icon="sap-icon://add" text="Add" type="Emphasized"/>
-                                    </OverflowToolbar>
-                                </headerToolbar>
-                                <columns>
-                                    <Column><Text text="Code"/></Column>
-                                    <Column><Text text="Name"/></Column>
-                                    <Column><Text text="Type"/></Column>
-                                    <Column><Text text="Status"/></Column>
-                                    <Column><Text text="Default"/></Column>
-                                    <Column hAlign="End"><Text text="Actions"/></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem>
-                                        <cells>
-                                            <ObjectIdentifier title="{code}"/>
-                                            <Text text="{name}"/>
-                                            <Text text="{providerType}"/>
-                                            <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}"/>
-                                            <core:Icon src="{= ${isDefault} ? 'sap-icon://accept' : ''}"/>
-                                            <Button icon="sap-icon://edit" type="Transparent"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                        </f:content>
-                    </f:Card>
-                </content>
-                
-                <footer>
-                    <Bar>
-                        <contentMiddle>
-                            <Text text="DecisionCore AI - Created by Taha Khattari"/>
-                        </contentMiddle>
-                    </Bar>
-                </footer>
-            </Page>
-        </pages>
+        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="true">
+            <f:title>
+                <f:DynamicPageTitle>
+                    <f:heading><Title text="AI Provider Administration"/></f:heading>
+                    <f:expandedContent><Label text="Configure generative AI model connections"/></f:expandedContent>
+                    <f:actions>
+                        <Button text="Add Provider" type="Emphasized" icon="sap-icon://add"/>
+                    </f:actions>
+                </f:DynamicPageTitle>
+            </f:title>
+            <f:header>
+                <f:DynamicPageHeader pinnable="true">
+                    <layout:HorizontalLayout allowWrapping="true">
+                         <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Active Providers" text="4"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Default Model" text="GPT-4"/>
+                        </layout:VerticalLayout>
+                    </layout:HorizontalLayout>
+                </f:DynamicPageHeader>
+            </f:header>
+            <f:content>
+                <Table items="{/AIProviders}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="Configured Models"/>
+                            <ToolbarSpacer/>
+                            <SearchField width="200px"/>
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column><Text text="Provider Code"/></Column>
+                        <Column><Text text="Name"/></Column>
+                        <Column><Text text="Type"/></Column>
+                        <Column><Text text="Status"/></Column>
+                        <Column hAlign="Center"><Text text="Default"/></Column>
+                        <Column hAlign="End"><Text text="Actions"/></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier title="{code}"/>
+                                <Text text="{name}"/>
+                                <ObjectStatus text="{providerType}" state="Information" inverted="true"/>
+                                <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}" icon="{= ${status} === 'ACTIVE' ? 'sap-icon://connected' : 'sap-icon://disconnected'}"/>
+                                <core:Icon src="{= ${isDefault} ? 'sap-icon://accept' : ''}" color="Positive"/>
+                                <HBox justifyContent="End">
+                                    <Button icon="sap-icon://edit" type="Transparent"/>
+                                    <Button icon="sap-icon://delete" type="Transparent"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </f:content>
+            <f:footer>
+                <OverflowToolbar>
+                    <ToolbarSpacer/>
+                    <Text text="DecisionCore AI - Created by Taha Khattari"/>
+                    <ToolbarSpacer/>
+                </OverflowToolbar>
+            </f:footer>
+        </f:DynamicPage>
     </App>
 </mvc:View>

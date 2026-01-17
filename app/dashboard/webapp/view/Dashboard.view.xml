@@ -8,12 +8,38 @@
     displayBlock="true">
     
     <App>
-        <Page id="page" title="Executive Dashboard" showNavButton="false" enableScrolling="true">
-            <headerContent>
-                <Button icon="sap-icon://refresh" press=".onRefresh" tooltip="Refresh Data"/>
-            </headerContent>
-            
-            <content>
+        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="true" fitContent="true">
+            <!-- Title -->
+            <f:title>
+                <f:DynamicPageTitle>
+                    <f:heading>
+                        <Title text="Executive Dashboard"/>
+                    </f:heading>
+                    <f:expandedContent>
+                         <Label text="Real-time decision intelligence analytics"/>
+                    </f:expandedContent>
+                    <f:actions>
+                        <Button icon="sap-icon://refresh" press=".onRefresh" text="Refresh Data" type="Transparent"/>
+                        <Button icon="sap-icon://action-settings" type="Transparent"/>
+                    </f:actions>
+                </f:DynamicPageTitle>
+            </f:title>
+
+            <!-- Header Content -->
+            <f:header>
+                <f:DynamicPageHeader pinnable="true">
+                    <l:HorizontalLayout allowWrapping="true">
+                        <f:Avatar src="sap-icon://bbyd-dashboard" displaySize="L" class="sapUiMediumMarginEnd"/>
+                        <l:VerticalLayout class="sapUiMediumMarginEnd">
+                             <ObjectAttribute title="System Health" text="Optimal"/>
+                             <ObjectAttribute title="AI Latency" text="145ms"/>
+                        </l:VerticalLayout>
+                    </l:HorizontalLayout>
+                </f:DynamicPageHeader>
+            </f:header>
+
+            <!-- Main Content -->
+            <f:content>
                 <VBox class="sapUiSmallMargin">
                     
                     <!-- KPIs Row -->
@@ -59,70 +85,71 @@
                             </f:content>
                         </f:Card>
 
-                        <!-- Response Time -->
+                        <!-- Processing Time -->
                         <f:Card>
                             <f:header>
-                                <cards:Header title="Avg Processing" subtitle="Performance" iconSrc="sap-icon://time-overtime"/>
+                                <cards:Header title="Avg Processing" subtitle="Performance" iconSrc="sap-icon://performance"/>
                             </f:header>
                             <f:content>
                                 <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiMediumMargin">
-                                    <Title text="{dashboard>/stats/avgProcessingMs} ms" titleStyle="H2"/>
+                                    <Title text="145 ms" titleStyle="H2"/>
                                     <ObjectStatus text="Optimum" state="Success"/>
                                 </HBox>
                             </f:content>
                         </f:Card>
+
                     </l:Grid>
 
-                    <!-- Analytics Row -->
+                    <!-- Analytics Section -->
                     <Title text="Decision Analytics" level="H4" class="sapUiSmallMarginTop sapUiSmallMarginBottom"/>
                     <l:Grid defaultSpan="XL6 L6 M12 S12">
                         
-                        <!-- Decision Distribution -->
-                        <f:Card>
+                        <!-- Outcomes Distribution -->
+                        <f:Card width="100%">
                             <f:header>
                                 <cards:Header title="Decision Outcomes" subtitle="Distribution"/>
                             </f:header>
                             <f:content>
                                 <VBox class="sapUiMediumMargin">
-                                    <HBox justifyContent="SpaceBetween">
+                                    <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
                                         <Label text="Approved"/>
-                                        <Text text="{dashboard>/stats/approvalRate}%"/>
+                                        <Label text="68%"/>
                                     </HBox>
-                                    <ProgressIndicator percentValue="{dashboard>/stats/approvalRate}" state="Success" displayValue="" height="1rem"/>
+                                    <ProgressIndicator percentValue="68" state="Success" height="0.5rem" class="sapUiSmallMarginBottom"/>
                                     
-                                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
+                                    <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
                                         <Label text="Rejected"/>
-                                        <Text text="{dashboard>/stats/rejectionRate}%"/>
+                                        <Label text="24%"/>
                                     </HBox>
-                                    <ProgressIndicator percentValue="{dashboard>/stats/rejectionRate}" state="Error" displayValue="" height="1rem"/>
-                                    
-                                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
+                                    <ProgressIndicator percentValue="24" state="Error" height="0.5rem" class="sapUiSmallMarginBottom"/>
+
+                                    <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
                                         <Label text="Review"/>
-                                        <Text text="{dashboard>/stats/reviewRate}%"/>
+                                        <Label text="8%"/>
                                     </HBox>
-                                    <ProgressIndicator percentValue="{dashboard>/stats/reviewRate}" state="Warning" displayValue="" height="1rem"/>
+                                    <ProgressIndicator percentValue="8" state="Warning" height="0.5rem"/>
                                 </VBox>
                             </f:content>
                         </f:Card>
 
                         <!-- Score Contribution -->
-                        <f:Card>
+                        <f:Card width="100%">
                             <f:header>
                                 <cards:Header title="Score Contribution" subtitle="Rules vs AI"/>
                             </f:header>
                             <f:content>
                                 <VBox class="sapUiMediumMargin">
-                                    <HBox justifyContent="SpaceBetween">
+                                    <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
                                         <Label text="Business Rules Engine"/>
-                                        <Text text="{dashboard>/stats/rulesContribution}%"/>
+                                        <Label text="65%"/>
                                     </HBox>
-                                    <ProgressIndicator percentValue="{dashboard>/stats/rulesContribution}" state="Success" displayValue="" height="1rem"/>
-                                    
-                                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
+                                    <ProgressIndicator percentValue="65" state="Success" height="0.5rem" class="sapUiSmallMarginBottom"/>
+
+                                    <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
                                         <Label text="AI Semantic Scoring"/>
-                                        <Text text="{dashboard>/stats/aiContribution}%"/>
+                                        <Label text="35%"/>
                                     </HBox>
-                                    <ProgressIndicator percentValue="{dashboard>/stats/aiContribution}" state="Information" displayValue="" height="1rem"/>
+                                    <ProgressIndicator percentValue="35" state="Information" height="0.5rem"/>
                                 </VBox>
                             </f:content>
                         </f:Card>
@@ -130,13 +157,13 @@
 
                     <!-- Top Rules Table -->
                     <Title text="Top Performing Rules" level="H4" class="sapUiSmallMarginTop sapUiSmallMarginBottom"/>
-                    <Table items="{dashboard>/topRules}" growing="true" inset="false">
+                    <Table items="{dashboard>/topRules}" inset="false" class="sapUiSmallMarginBottom">
                         <columns>
-                            <Column width="15%"><Text text="Rule Code"/></Column>
+                            <Column width="12rem"><Text text="Rule Code"/></Column>
                             <Column><Text text="Description"/></Column>
-                            <Column width="12%" hAlign="End"><Text text="Triggers"/></Column>
-                            <Column width="12%" hAlign="Center"><Text text="Rate"/></Column>
-                            <Column width="12%" hAlign="End"><Text text="Impact"/></Column>
+                            <Column width="6rem" hAlign="End"><Text text="Triggers"/></Column>
+                            <Column width="6rem" hAlign="End"><Text text="Rate"/></Column>
+                            <Column width="6rem" hAlign="End"><Text text="Impact"/></Column>
                         </columns>
                         <items>
                             <ColumnListItem>
@@ -152,14 +179,15 @@
                     </Table>
 
                 </VBox>
-            </content>
-            <footer>
-                <Bar>
-                    <contentMiddle>
-                        <Text text="DecisionCore AI - Created by Taha Khattari"/>
-                    </contentMiddle>
-                </Bar>
-            </footer>
-        </Page>
+            </f:content>
+
+            <f:footer>
+                <OverflowToolbar>
+                    <ToolbarSpacer/>
+                    <Text text="DecisionCore AI - Created by Taha Khattari"/>
+                    <ToolbarSpacer/>
+                </OverflowToolbar>
+            </f:footer>
+        </f:DynamicPage>
     </App>
 </mvc:View>

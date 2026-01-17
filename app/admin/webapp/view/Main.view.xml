@@ -6,9 +6,9 @@
             <f:title>
                 <f:DynamicPageTitle>
                     <f:heading><Title text="AI Provider Administration"/></f:heading>
-                    <f:expandedContent><Label text="Configure generative AI model connections"/></f:expandedContent>
+                    <f:expandedContent><Label text="Configure LLM connections"/></f:expandedContent>
                     <f:actions>
-                        <Button text="Add Provider" type="Emphasized" icon="sap-icon://add"/>
+                        <Button text="Add Provider" type="Emphasized" icon="sap-icon://add" press=".onAddProvider"/>
                     </f:actions>
                 </f:DynamicPageTitle>
             </f:title>
@@ -48,11 +48,12 @@
                                 <Text text="{name}"/>
                                 <ObjectStatus text="{providerType}" state="Information" inverted="true"/>
                                 <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}" icon="{= ${status} === 'ACTIVE' ? 'sap-icon://connected' : 'sap-icon://disconnected'}"/>
-                                <core:Icon src="{= ${isDefault} ? 'sap-icon://accept' : ''}" color="Positive"/>
-                                <HBox justifyContent="End">
-                                    <Button icon="sap-icon://edit" type="Transparent"/>
-                                    <Button icon="sap-icon://delete" type="Transparent"/>
-                                </HBox>
+                                <VBox>
+                                    <core:Icon src="{= ${isDefault} ? 'sap-icon://accept' : ''}" color="Positive"/>
+                                    <Button text="Test" icon="sap-icon://connected" press=".onTestConnection"/>
+                                </VBox>
+                                <Button icon="sap-icon://edit" type="Transparent" press=".onEditProvider"/>
+                                <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteProvider"/>
                             </cells>
                         </ColumnListItem>
                     </items>

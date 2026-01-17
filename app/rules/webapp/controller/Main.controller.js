@@ -82,6 +82,14 @@ sap.ui.define([
         onRefresh: function () {
             this.getView().getModel().refresh();
             MessageToast.show("Refreshed");
+        },
+
+        onSearch: function (oEvent) {
+            MessageToast.show("Search: " + oEvent.getParameter("query"));
+        },
+
+        onFilter: function () {
+            MessageToast.show("Filter Dialog not implemented yet");
         }
     });
 });

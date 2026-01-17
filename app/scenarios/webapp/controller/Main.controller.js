@@ -68,6 +68,34 @@ sap.ui.define([
 
         onPressOpenPopover: function (oEvent) {
             MessageToast.show("System Status is online");
+        },
+
+        onGenericAction: function () {
+            MessageToast.show("Share / Action triggered");
+        },
+
+        onSort: function () {
+            MessageToast.show("Sort Dialog would open here");
+        },
+
+        onFilter: function () {
+            MessageToast.show("Filter Dialog would open here");
+        },
+
+        onGroup: function () {
+            MessageToast.show("Group Dialog would open here");
+        },
+
+        onEditScenario: function (oEvent) {
+            var oCtx = oEvent.getSource().getBindingContext();
+            var sName = oCtx.getProperty("name");
+            MessageToast.show("Edit Scenario: " + sName);
+        },
+
+        onSearch: function (oEvent) {
+            var sQuery = oEvent.getParameter("query");
+            MessageToast.show("Search query: " + sQuery);
+            // Note: Proper filtering requires Table ID or relative lookup
         }
     });
 });

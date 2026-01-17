@@ -112,6 +112,10 @@ sap.ui.define([
         onRefresh: function () {
             this._loadDashboardData();
             MessageToast.show("Data refreshed");
+        },
+
+        onSettings: function () {
+            MessageToast.show("Dashboard Settings configuration coming soon.");
         }
     });
 });

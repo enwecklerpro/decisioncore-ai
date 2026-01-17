@@ -8,7 +8,7 @@
                     <f:heading><Title text="Decision Audit Trail"/></f:heading>
                     <f:expandedContent><Label text="Monitor and audit AI decision execution"/></f:expandedContent>
                     <f:actions>
-                        <Button text="Export Logs" icon="sap-icon://excel-attachment"/>
+                        <Button text="Export Logs" icon="sap-icon://excel-attachment" press=".onExport"/>
                     </f:actions>
                 </f:DynamicPageTitle>
             </f:title>
@@ -30,7 +30,7 @@
                         <OverflowToolbar>
                             <Title text="Recent Executions"/>
                             <ToolbarSpacer/>
-                            <SearchField width="300px" placeholder="Search Trace ID..."/>
+                            <SearchField width="300px" placeholder="Search Trace ID..." search=".onSearch"/>
                         </OverflowToolbar>
                     </headerToolbar>
                     <columns>

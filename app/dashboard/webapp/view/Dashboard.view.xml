@@ -20,7 +20,7 @@
                     </f:expandedContent>
                     <f:actions>
                         <Button icon="sap-icon://refresh" press=".onRefresh" text="Refresh Data" type="Transparent"/>
-                        <Button icon="sap-icon://action-settings" type="Transparent"/>
+                        <Button icon="sap-icon://action-settings" type="Transparent" press=".onSettings"/>
                     </f:actions>
                 </f:DynamicPageTitle>
             </f:title>

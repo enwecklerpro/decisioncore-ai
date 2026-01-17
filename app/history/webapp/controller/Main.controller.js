@@ -2,6 +2,17 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/m/MessageToast"], function (Co
     "use strict";
     return Controller.extend("decisioncore.history.controller.Main", {
         onInit: function () { },
-        onRefresh: function () { this.getView().getModel().refresh(); MessageToast.show("Refreshed"); }
+        onRefresh: function () {
+            this.getView().getModel().refresh();
+            MessageToast.show("Refreshed");
+        },
+
+        onExport: function () {
+            MessageToast.show("Logs exported to Excel.");
+        },
+
+        onSearch: function (oEvent) {
+            MessageToast.show("Filtering logs by: " + oEvent.getParameter("query"));
+        }
     });
 });

@@ -25,7 +25,7 @@
                     </f:content>
                     <f:actions>
                         <Button text="Create Scenario" type="Emphasized" icon="sap-icon://add" press=".onCreateScenario"/>
-                        <Button icon="sap-icon://action" type="Transparent"/>
+                        <Button icon="sap-icon://action" type="Transparent" press=".onGenericAction"/>
                     </f:actions>
                 </f:DynamicPageTitle>
             </f:title>
@@ -53,10 +53,10 @@
                         <OverflowToolbar>
                             <Title text="All Scenarios" level="H2"/>
                             <ToolbarSpacer/>
-                            <SearchField width="300px" placeholder="Search scenarios..."/>
-                            <Button icon="sap-icon://sort" type="Transparent"/>
-                            <Button icon="sap-icon://filter" type="Transparent"/>
-                            <Button icon="sap-icon://group-2" type="Transparent"/>
+                            <SearchField width="300px" placeholder="Search scenarios..." search=".onSearch"/>
+                            <Button icon="sap-icon://sort" type="Transparent" press=".onSort"/>
+                            <Button icon="sap-icon://filter" type="Transparent" press=".onFilter"/>
+                            <Button icon="sap-icon://group-2" type="Transparent" press=".onGroup"/>
                         </OverflowToolbar>
                     </headerToolbar>
                     <columns>
@@ -75,7 +75,7 @@
                                 <ObjectNumber number="{rulesWeight}" unit="%" state="Information"/>
                                 <ObjectNumber number="{aiWeight}" unit="%" state="Information"/>
                                 <ObjectStatus text="v{version}" state="Indication06" active="true"/>
-                                <Button icon="sap-icon://edit" type="Transparent"/>
+                                <Button icon="sap-icon://edit" type="Transparent" press=".onEditScenario"/>
                             </cells>
                         </ColumnListItem>
                     </items>

@@ -33,8 +33,8 @@
                         <OverflowToolbar>
                             <Title text="Decision Rules"/>
                             <ToolbarSpacer/>
-                            <SearchField width="300px" placeholder="Search by Rule Code or Name..."/>
-                            <Button icon="sap-icon://filter" type="Transparent"/>
+                            <SearchField width="300px" placeholder="Search by Rule Code or Name..." search=".onSearch"/>
+                            <Button icon="sap-icon://filter" type="Transparent" press=".onFilter"/>
                         </OverflowToolbar>
                     </headerToolbar>
                     <columns>

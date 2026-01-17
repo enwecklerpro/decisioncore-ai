@@ -44,6 +44,7 @@
                         <Column width="6rem" hAlign="End"><Text text="Priority"/></Column>
                         <Column width="8rem"><Text text="Action"/></Column>
                         <Column width="8rem" hAlign="End"><Text text="Score Impact"/></Column>
+                        <Column width="4rem" hAlign="End"><Text text=""/></Column>
                     </columns>
                     <items>
                         <ColumnListItem type="Navigation">
@@ -54,6 +55,7 @@
                                 <ObjectNumber number="{priority}"/>
                                 <ObjectStatus text="{action}" state="{= ${action} === 'REJECT' ? 'Error' : 'None'}" icon="{= ${action} === 'REJECT' ? 'sap-icon://decline' : 'sap-icon://accept'}"/>
                                 <ObjectNumber number="{scoreModifier}" state="{= ${scoreModifier} >= 0 ? 'Success' : 'Error'}" unit="pts"/>
+                                <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteRule" tooltip="Delete Rule"/>
                             </cells>
                         </ColumnListItem>
                     </items>

@@ -36,66 +36,62 @@ sap.ui.define([
 
         onEvaluate: function () {
             var oViewModel = this.getView().getModel("view");
-            var sScenario = oViewModel.getProperty("/scenario");
-            var sPayload = oViewModel.getProperty("/payload");
+            var oSelect = this.byId("scenarioSelect");
+            var oItem = oSelect.getSelectedItem();
 
-            if (!sScenario) {
+            if (!oItem) {
                 MessageToast.show("Please select a scenario.");
                 return;
             }
 
+            var sScenarioName = oItem.getText();
+            var sPayload = oViewModel.getProperty("/payload");
+            var sCorrelation = oViewModel.getProperty("/correlationId");
+
             oViewModel.setProperty("/busy", true);
 
-            // Call API
-            // For Demo: If local, we might mock this if backend is not responding perfectly,
-            // but let's try real fetch first.
-            fetch("/api/v1/evaluate", {
+            // Call CAP Action 'SimulateDecision'
+            fetch("/api/decision/SimulateDecision", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    // Auth is mocked/open in dev
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    scenario: sScenario,
-                    data: sPayload,
-                    correlation: oViewModel.getProperty("/correlationId"),
-                    simulate: true
+                    scenarioName: sScenarioName,
+                    payload: sPayload,
+                    correlationId: sCorrelation
                 })
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) return res.json().then(e => { throw new Error(e.error.message || "Server Error") });
+                    return res.json();
+                })
                 .then(data => {
-                    // Map API response to UI Model
+                    // Parse nested JSON strings from backend
+                    var aRules = [];
+                    try { if (data.rulesFired) aRules = JSON.parse(data.rulesFired); } catch (e) { }
+
                     var oResultUI = {
                         decision: data.decision || "UNKNOWN",
-                        confidence: data.confidence ? (data.confidence * 100).toFixed(1) : "0",
-                        processingTime: 142, // Mocked latency for smoother UX
-                        rulesScore: 65, // Mock breakdown if not in API yet
-                        aiScore: 35,
-                        explanation: data.explanation || "Detailed analysis of risk factors indicates auto-approval criteria met.",
+                        finalScore: data.finalScore || 0,
+                        confidence: data.confidence || 0,
+                        processingTimeMs: data.processingTimeMs || 0,
+                        explanation: data.explanation || "",
+                        rulesFired: aRules,
                         rawJson: JSON.stringify(data, null, 2)
                     };
 
                     oViewModel.setProperty("/result", oResultUI);
                     oViewModel.setProperty("/hasResult", true);
                     oViewModel.setProperty("/busy", false);
-                    MessageToast.show("Decision executed successfully");
+                    MessageToast.show("Simulation successful: " + oResultUI.decision);
                 })
                 .catch(err => {
                     oViewModel.setProperty("/busy", false);
-                    MessageToast.show("Execution failed: " + err.message);
-
-                    // FALLBACK FOR DEMO if API fails (so UI never breaks during presentation)
-                    var oMockResult = {
-                        decision: "APPROVED",
-                        confidence: "98.5",
-                        processingTime: 124,
-                        rulesScore: 80,
-                        aiScore: 18.5,
-                        explanation: "Fallback: AI Model approved based on historical patterns and low risk indicators.",
-                        rawJson: JSON.stringify({ error: "API unreachable, showing demo result" }, null, 2)
+                    // Fallback for demo continuity
+                    var oFallback = {
+                        rawJson: JSON.stringify({ error: err.message, note: "Check if server supports SimulateDecision action" }, null, 2)
                     };
-                    oViewModel.setProperty("/result", oMockResult);
-                    oViewModel.setProperty("/hasResult", true);
+                    oViewModel.setProperty("/result", oFallback);
+                    MessageToast.show("Exec Error: " + err.message);
                 });
         },
 

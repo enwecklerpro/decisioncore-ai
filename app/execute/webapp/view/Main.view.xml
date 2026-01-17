@@ -61,50 +61,54 @@
                     
                     <!-- RIGHT: RESULT -->
                     <VBox class="sapUiSmallMargin">
-                        <Panel headerText="Decision Result" expandable="false" width="auto" class="sapUiResponsiveMargin">
-                            
-                            <!-- Empty State -->
-                            <IllustratedMessage illustrationType="sapIllus-EmptyList" title="No Result" description="Run a simulation to see decision details"
-                                visible="{= !${view>/hasResult}}"/>
-                                
-                            <!-- Result State -->
-                            <VBox visible="{view>/hasResult}" class="sapUiSmallMargin">
-                                
-                                <!-- Main Outcome Banner -->
-                                <ObjectStatus 
-                                    text="Decision: {view>/result/decision}" 
-                                    state="{= ${view>/result/decision} === 'APPROVED' ? 'Success' : ${view>/result/decision} === 'REJECTED' ? 'Error' : 'Warning'}" 
-                                    icon="sap-icon://complete"
-                                    class="sapUiSmallMarginBottom sapMObjectStatusLarge"/>
-                                
-                                <!-- Key Metrics -->
-                                <l:Grid defaultSpan="XL6 L6 M6 S12" class="sapUiSmallMarginTop">
-                                    <VBox>
-                                        <Label text="Confidence Score"/>
-                                        <ObjectStatus text="{view>/result/confidence}%" state="Information" icon="sap-icon://lab"/>
-                                    </VBox>
-                                    <VBox>
-                                        <Label text="Processing Time"/>
-                                        <Text text="{view>/result/processingTime} ms"/>
-                                    </VBox>
-                                </l:Grid>
-                                
-                                <List headerText="Logic Trace" class="sapUiSmallMarginTop" inset="false">
-                                    <StandardListItem title="Business Score" description="Calculated from Rules" info="{view>/result/rulesScore}" infoState="Success" icon="sap-icon://business-objects-experience"/>
-                                    <StandardListItem title="AI Score" description="Semantic Analysis" info="{view>/result/aiScore}" infoState="Information" icon="sap-icon://machine-learning"/>
-                                </List>
-                                
-                                <!-- Explainability -->
-                                <Panel headerText="Explanation" expandable="true" expanded="true" class="sapUiSmallMarginTop">
-                                    <Text text="{view>/result/explanation}" wrapping="true"/>
-                                </Panel>
+                        <Panel headerText="Simulation Result" height="auto" width="auto" class="sapUiResponsiveMargin">
+                             <content>
+                                <IconTabBar id="resultTabs" expanded="true" class="sapUiResponsiveContentPadding">
+                                    <items>
+                                        <IconTabFilter text="Visual Summary" icon="sap-icon://it-host">
+                                            <VBox visible="{= !!${view>/result/decision} }">
+                                                <ObjectHeader
+                                                    title="{view>/result/decision}"
+                                                    number="{view>/result/finalScore}"
+                                                    numberUnit="Score"
+                                                    intro="Decision Result"
+                                                    icon="{= ${view>/result/decision} === 'APPROVED' ? 'sap-icon://accept' : ${view>/result/decision} === 'REJECTED' ? 'sap-icon://decline' : 'sap-icon://alert' }"
+                                                    iconActive="false"
+                                                    backgroundDesign="Translucent">
+                                                    <statuses>
+                                                        <ObjectStatus text="{view>/result/confidence}% Confidence" state="Information" icon="sap-icon://machine-learning"/>
+                                                        <ObjectStatus text="{view>/result/processingTimeMs} ms" state="None" icon="sap-icon://performance"/>
+                                                    </statuses>
+                                                </ObjectHeader>
+                                                
+                                                <Title text="Score Impact" class="sapUiSmallMarginTop"/>
+                                                <ProgressIndicator 
+                                                    percentValue="{view>/result/finalScore}" 
+                                                    displayValue="{view>/result/finalScore}/100" 
+                                                    showValue="true" 
+                                                    state="{= ${view>/result/finalScore} >= 60 ? 'Success' : ${view>/result/finalScore} < 40 ? 'Error' : 'Warning' }"
+                                                    height="1.5rem"
+                                                    class="sapUiSmallMarginBottom"/>
 
-                                <!-- Raw JSON Output -->
-                                <Panel headerText="Raw Response" expandable="true" expanded="false" class="sapUiSmallMarginTop">
-                                    <TextArea value="{view>/result/rawJson}" rows="8" width="100%" editable="false"/>
-                                </Panel>
-
-                            </VBox>
+                                                <Title text="Fired Rules" class="sapUiSmallMarginTop"/>
+                                                <List items="{view>/result/rulesFired}" noDataText="No rules triggered">
+                                                    <StandardListItem 
+                                                        title="{view>ruleName}" 
+                                                        description="{view>explanation}"
+                                                        info="{= ${view>scoreModifier} > 0 ? '+' + ${view>scoreModifier} : ${view>scoreModifier} }" 
+                                                        infoState="{= ${view>scoreModifier} > 0 ? 'Success' : 'Error' }"
+                                                        icon="sap-icon://process"/>
+                                                </List>
+                                            </VBox>
+                                            <IllustratedMessage illustrationType="sapIll-NoData" title="Ready to Simulate" description="Click Execute to see results" visible="{= !${view>/result/decision} }"/>
+                                        </IconTabFilter>
+                                        
+                                        <IconTabFilter text="Raw JSON" icon="sap-icon://code-placeholder">
+                                            <TextArea value="{view>/result/rawJson}" rows="20" width="100%" editable="false"/>
+                                        </IconTabFilter>
+                                    </items>
+                                </IconTabBar>
+                            </content>
                         </Panel>
                     </VBox>
 

@@ -1,8 +1,9 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
-    "sap/ui/model/json/JSONModel"
-], function (Controller, MessageToast, JSONModel) {
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageBox"
+], function (Controller, MessageToast, JSONModel, MessageBox) {
     "use strict";
 
     return Controller.extend("decisioncore.rules.controller.Main", {
@@ -90,6 +91,22 @@ sap.ui.define([
 
         onFilter: function () {
             MessageToast.show("Filter Dialog not implemented yet");
+        },
+
+        onDeleteRule: function (oEvent) {
+            var oCtx = oEvent.getSource().getBindingContext();
+            var sCode = oCtx.getProperty("ruleCode");
+            MessageBox.confirm("Permanently delete rule " + sCode + "?", {
+                onClose: function (sAction) {
+                    if (sAction === MessageBox.Action.OK) {
+                        oCtx.delete().then(function () {
+                            MessageToast.show("Rule deleted");
+                        }).catch(function (e) {
+                            MessageToast.show("Error: " + e.message);
+                        });
+                    }
+                }
+            });
         }
     });
 });

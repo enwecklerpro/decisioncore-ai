@@ -154,7 +154,7 @@ sap.ui.define([
         },
 
         onSearch: function (oEvent) {
-            var sQuery = oEvent.getParameter("query");
+            var sQuery = oEvent.getParameter("query") || oEvent.getParameter("newValue");
             var oTable = this.byId("providersTable");
             var oBinding = oTable.getBinding("items");
             if (sQuery) {

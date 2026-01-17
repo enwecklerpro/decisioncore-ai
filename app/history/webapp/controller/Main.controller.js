@@ -29,7 +29,7 @@ sap.ui.define([
             var sCSV = "ID;Decision;Score;Confidence;ProcessingMs;Timestamp\n";
             aContexts.forEach(function (oCtx) {
                 var oData = oCtx.getObject();
-                sCSV += (oData.id || "") + ";" +
+                sCSV += (oData.ID || "") + ";" +
                     (oData.decision || "") + ";" +
                     (oData.finalScore || 0) + ";" +
                     (oData.confidence || 0) + ";" +
@@ -50,14 +50,14 @@ sap.ui.define([
         },
 
         onSearch: function (oEvent) {
-            var sQuery = oEvent.getParameter("query");
+            var sQuery = oEvent.getParameter("query") || oEvent.getParameter("newValue");
             var oTable = this.byId("historyTable");
             var oBinding = oTable.getBinding("items");
             if (sQuery) {
-                // Search by Decision Outcome (decision)
-                // Note: ID is a UUID, users likely search for approved/rejected or specific IDs if copy-pasted
-                var oFilter = new Filter("decision", FilterOperator.Contains, sQuery);
-                oBinding.filter([oFilter]);
+                var oFilterDecision = new Filter("decision", FilterOperator.Contains, sQuery);
+                var oFilterID = new Filter("ID", FilterOperator.Contains, sQuery);
+                var oCombined = new Filter({ filters: [oFilterDecision, oFilterID], and: false });
+                oBinding.filter(oCombined);
             } else {
                 oBinding.filter([]);
             }

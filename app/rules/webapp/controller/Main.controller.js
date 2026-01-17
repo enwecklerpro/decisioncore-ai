@@ -89,7 +89,7 @@ sap.ui.define([
         },
 
         onSearch: function (oEvent) {
-            var sQuery = oEvent.getParameter("query");
+            var sQuery = oEvent.getParameter("query") || oEvent.getParameter("newValue");
             var oTable = this.byId("rulesTable");
             var oBinding = oTable.getBinding("items");
             if (sQuery) {
@@ -107,11 +107,11 @@ sap.ui.define([
             if (this._bFiltered) {
                 oBinding.filter([]);
                 this._bFiltered = false;
-                MessageToast.show("Filter cleared");
+                MessageToast.show("Filter off: Showing all Rules");
             } else {
                 oBinding.filter([new Filter("status", FilterOperator.EQ, "ACTIVE")]);
                 this._bFiltered = true;
-                MessageToast.show("Filtered: ACTIVE");
+                MessageToast.show("Filter active: Showing ACTIVE Rules only (Drafts hidden)");
             }
         },
 

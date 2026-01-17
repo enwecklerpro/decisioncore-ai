@@ -69,7 +69,7 @@ sap.ui.define([
         },
 
         onSearch: function (oEvent) {
-            var sQuery = oEvent.getParameter("query");
+            var sQuery = oEvent.getParameter("query") || oEvent.getParameter("newValue");
             var oTable = this.byId("scenariosTable");
             var oBinding = oTable.getBinding("items");
 
@@ -97,12 +97,12 @@ sap.ui.define([
             if (this._bFiltered) {
                 oBinding.filter([]);
                 this._bFiltered = false;
-                MessageToast.show("Filter cleared");
+                MessageToast.show("Filter off: Showing all Scenarios");
             } else {
                 var oFilter = new Filter("status", FilterOperator.EQ, "ACTIVE");
                 oBinding.filter([oFilter]);
                 this._bFiltered = true;
-                MessageToast.show("Filtered by Status: ACTIVE");
+                MessageToast.show("Filter active: Showing ACTIVE Scenarios only");
             }
         },
 

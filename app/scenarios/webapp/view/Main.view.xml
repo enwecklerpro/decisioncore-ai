@@ -24,7 +24,7 @@
                         </OverflowToolbar>
                     </f:content>
                     <f:actions>
-                        <Button text="Create Scenario" type="Emphasized" icon="sap-icon://add"/>
+                        <Button text="Create Scenario" type="Emphasized" icon="sap-icon://add" press=".onCreateScenario"/>
                         <Button icon="sap-icon://action" type="Transparent"/>
                     </f:actions>
                 </f:DynamicPageTitle>

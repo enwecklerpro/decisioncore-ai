@@ -217,6 +217,10 @@ service DecisionAdminService {
     entity RuleVersions as projection on db.RuleVersions;
     
     @odata.draft.enabled
+    @readonly
+    entity Templates as projection on db.DecisionTemplates;
+
+    @odata.draft.enabled
     entity AIProviders as projection on db.AIProviders actions {
         action testConnection() returns {
             success: Boolean;

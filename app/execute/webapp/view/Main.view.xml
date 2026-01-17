@@ -41,10 +41,13 @@
                             <VBox class="sapUiSmallMargin">
                                 
                                 <Label text="Scenario" required="true"/>
-                                <Select id="scenarioSelect" selectedKey="{view>/scenario}" forceSelection="false" width="100%">
-                                    <core:Item key="credit-risk" text="Credit Risk Assessment"/>
-                                    <core:Item key="fraud-detection" text="Fraud Detection"/>
-                                    <core:Item key="vendor-risk" text="Vendor Risk Rating"/>
+                                <Select id="scenarioSelect" 
+                                    selectedKey="{view>/scenario}" 
+                                    forceSelection="false" 
+                                    width="100%"
+                                    items="{path: '/DecisionScenarios', sorter: { path: 'name' }}"
+                                    change=".onScenarioChange">
+                                    <core:Item key="{ID}" text="{name}"/>
                                 </Select>
                                 
                                 <Label text="Correlation ID" class="sapUiSmallMarginTop"/>

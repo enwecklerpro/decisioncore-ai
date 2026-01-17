@@ -1,0 +1,18 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <SelectDialog
+        id="templateSelectDialog"
+        title="Select Decision Template"
+        class="sapUiPopupWithPadding"
+        items="{path: '/Templates', sorter: { path: 'category', group: true }}"
+        search=".onTemplateSearch"
+        confirm=".onTemplateConfirm"
+        cancel=".onTemplateCancel"
+        contentWidth="600px">
+        <StandardListItem
+            title="{name}"
+            description="{description}"
+            icon="{icon}"
+            info="{category}"
+            type="Active" />
+    </SelectDialog>
+</core:FragmentDefinition>

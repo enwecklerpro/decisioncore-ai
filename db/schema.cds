@@ -42,6 +42,20 @@ entity SourceSystems : CodeList {
 }
 
 // ============================================================
+// TEMPLATES
+// ============================================================
+
+entity DecisionTemplates : managed {
+    key code        : String(50);
+    name            : localized String(100);
+    description     : localized String(500);
+    category        : String(50);
+    inputSchema     : LargeString; // JSON schema for UI generation
+    defaultRules    : LargeString; // Preset rules
+    icon            : String(50);
+}
+
+// ============================================================
 // DECISION SCENARIOS
 // ============================================================
 
@@ -69,6 +83,10 @@ entity DecisionScenarios : cuid, managed {
     // Source System Context
     sourceSystem      : String(30);
     sapObjectType     : String(50);
+    
+    // Template Link & Dynamic Schema
+    template          : Association to DecisionTemplates;
+    inputSchema       : LargeString; // Defines the input fields for the simulation UI
     
     // Behavior
     allowSimulation   : Boolean default true;

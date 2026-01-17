@@ -20,6 +20,20 @@ sap.ui.define([
             this.getView().setModel(oViewModel, "view");
         },
 
+        onScenarioChange: function (oEvent) {
+            var oItem = oEvent.getParameter("selectedItem");
+            if (oItem) {
+                var oCtx = oItem.getBindingContext();
+                // Request the inputSchema property explicitly if it's not automatically loaded
+                oCtx.requestProperty("inputSchema").then(function (sSchema) {
+                    if (sSchema) {
+                        this.getView().getModel("view").setProperty("/payload", sSchema);
+                        sap.m.MessageToast.show("Template loaded from Scenario");
+                    }
+                }.bind(this));
+            }
+        },
+
         onEvaluate: function () {
             var oViewModel = this.getView().getModel("view");
             var sScenario = oViewModel.getProperty("/scenario");

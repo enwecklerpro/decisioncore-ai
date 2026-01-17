@@ -1,0 +1,82 @@
+[
+    {
+        "ID": "tmpl-credit-001",
+        "code": "CREDIT_APPROVAL",
+        "name": "Credit Approval",
+        "description": "Evaluate credit applications for banking and financial services. Assesses customer creditworthiness based on amount, income, risk profile, and payment history.",
+        "category": "FINANCE",
+        "icon": "sap-icon://credit-card",
+        "inputSchema": "{\n  \"amount\": \"number (required) - Requested credit amount\",\n  \"income\": \"number - Annual income\",\n  \"riskLevel\": \"number 1-10 - Credit risk score\",\n  \"historyScore\": \"number 0-100 - Payment history score\",\n  \"customerType\": \"VIP|PREMIUM|STANDARD|NEW\",\n  \"country\": \"ISO country code\"\n}",
+        "defaultRules": "[]"
+    },
+    {
+        "ID": "tmpl-fraud-001",
+        "code": "FRAUD_DETECTION",
+        "name": "Transaction Fraud Detection",
+        "description": "Real-time fraud detection for financial transactions. Uses velocity checks, device fingerprinting, geolocation, and behavioral patterns.",
+        "category": "COMPLIANCE",
+        "icon": "sap-icon://shield",
+        "inputSchema": "{\n  \"transactionAmount\": \"number (required)\",\n  \"country\": \"ISO country code\",\n  \"deviceRisk\": \"number 0-100\",\n  \"velocity\": \"number - transactions in 24h\",\n  \"blacklistHit\": \"boolean\",\n  \"ipRisk\": \"number 0-100\"\n}",
+        "defaultRules": "[]"
+    },
+    {
+        "ID": "tmpl-vendor-001",
+        "code": "PROCUREMENT_RISK",
+        "name": "Procurement Risk Assessment",
+        "description": "Supplier and vendor risk evaluation for SAP S/4HANA MM integration. Assesses financial stability, delivery performance, and compliance.",
+        "category": "PROCUREMENT",
+        "icon": "sap-icon://supplier",
+        "inputSchema": "{\n  \"vendorId\": \"string\",\n  \"contractValue\": \"number (required)\",\n  \"vendorScore\": \"number 0-100\",\n  \"deliveryDelay\": \"number - avg days delayed\",\n  \"countryRisk\": \"number 1-10\"\n}",
+        "defaultRules": "[]"
+    },
+    {
+        "ID": "tmpl-pricing-001",
+        "code": "PRICING_DISCOUNT",
+        "name": "Pricing & Discount Approval",
+        "description": "Automated pricing and discount eligibility for sales teams. Determines optimal pricing and discount approval based on deal size and customer tier.",
+        "category": "SALES",
+        "icon": "sap-icon://money-bills",
+        "inputSchema": "{\n  \"dealSize\": \"number (required) - Total deal value\",\n  \"discountPercent\": \"number - Requested discount %\",\n  \"customerTier\": \"PLATINUM|GOLD|SILVER|BRONZE\",\n  \"productCategory\": \"string\"\n}",
+        "defaultRules": "[]"
+    },
+    {
+        "ID": "tmpl-hr-001",
+        "code": "HR_DECISION",
+        "name": "HR Decision",
+        "description": "Employee performance and HR decisions. Validates role-based metrics, absence rates, and criticality.",
+        "category": "HR",
+        "icon": "sap-icon://employee-approvals",
+        "inputSchema": "{\n  \"performanceScore\": \"number 0-100\",\n  \"absenceRate\": \"number 0-100 - % days absent\",\n  \"roleCriticality\": \"LOW|MEDIUM|HIGH|CRITICAL\"\n}",
+        "defaultRules": "[]"
+    },
+    {
+        "ID": "tmpl-kyc-001",
+        "code": "COMPLIANCE_KYC",
+        "name": "Compliance / KYC",
+        "description": "Know Your Customer screening for regulated industries. Checks customer identity, sanctions, and risk country.",
+        "category": "COMPLIANCE",
+        "icon": "sap-icon://locked",
+        "inputSchema": "{\n  \"customerType\": \"INDIVIDUAL|CORPORATE\",\n  \"riskCountry\": \"ISO country code\",\n  \"sanctionMatch\": \"boolean\"\n}",
+        "defaultRules": "[]"
+    },
+    {
+        "ID": "tmpl-security-001",
+        "code": "SECURITY_DECISION",
+        "name": "IT / Security Decision",
+        "description": "Security and anomaly detection. Evaluates device trust, anomaly scores, and access levels.",
+        "category": "SECURITY",
+        "icon": "sap-icon://key-user-settings",
+        "inputSchema": "{\n  \"anomalyScore\": \"number 0-100\",\n  \"accessLevel\": \"READ|WRITE|ADMIN|SUPER_ADMIN\",\n  \"deviceTrust\": \"number 0-100\"\n}",
+        "defaultRules": "[]"
+    },
+    {
+        "ID": "tmpl-generic-001",
+        "code": "GENERIC_JSON",
+        "name": "Generic JSON Decision",
+        "description": "Flexible template for any business decision via JSON payload.",
+        "category": "GENERIC",
+        "icon": "sap-icon://syntax",
+        "inputSchema": "{\n  \"payload\": \"JSON Object\"\n}",
+        "defaultRules": "[]"
+    }
+]

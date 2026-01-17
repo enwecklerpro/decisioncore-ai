@@ -84,6 +84,13 @@
 
                 </l:Grid>
             </content>
+            <footer>
+                <Bar>
+                    <contentMiddle>
+                        <Text text="DecisionCore AI - Created by Taha Khattari"/>
+                    </contentMiddle>
+                </Bar>
+            </footer>
         </Page>
     </App>
 </mvc:View>

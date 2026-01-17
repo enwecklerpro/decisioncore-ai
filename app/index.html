@@ -65,7 +65,12 @@
                     oShellBar,
                     new sap.m.Title({ text: "Key Performance Indicators", titleStyle: "H4" }).addStyleClass("sapUiSmallMargin"),
                     oTileContainer
-                ]
+                ],
+                footer: new sap.m.Bar({
+                    contentMiddle: [
+                        new sap.m.Text({ text: "DecisionCore AI - Created by Taha Khattari" })
+                    ]
+                })
             });
 
             // Shell

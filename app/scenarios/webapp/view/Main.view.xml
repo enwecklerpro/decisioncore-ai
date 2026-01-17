@@ -48,7 +48,7 @@
 
             <!-- Content Area -->
             <f:content>
-                <Table items="{/Scenarios}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                <Table id="scenariosTable" items="{/Scenarios}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
                     <headerToolbar>
                         <OverflowToolbar>
                             <Title text="All Scenarios" level="H2"/>

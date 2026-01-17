@@ -1,13 +1,18 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
-    "sap/ui/model/json/JSONModel"
-], function (Controller, MessageToast, JSONModel) {
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
+    "sap/ui/model/Sorter",
+    "sap/m/MessageBox"
+], function (Controller, MessageToast, JSONModel, Filter, FilterOperator, Sorter, MessageBox) {
     "use strict";
 
     return Controller.extend("decisioncore.scenarios.controller.Main", {
 
         onInit: function () {
+            this._bDescendingSort = false;
         },
 
         onCreateScenario: function () {
@@ -24,7 +29,7 @@ sap.ui.define([
 
         onTemplateSearch: function (oEvent) {
             var sValue = oEvent.getParameter("value");
-            var oFilter = new sap.ui.model.Filter("name", sap.ui.model.FilterOperator.Contains, sValue);
+            var oFilter = new Filter("name", FilterOperator.Contains, sValue);
             var oBinding = oEvent.getSource().getBinding("items");
             oBinding.filter([oFilter]);
         },
@@ -37,28 +42,27 @@ sap.ui.define([
 
             var oCtx = oSelectedItem.getBindingContext();
             var oTemplate = oCtx.getObject();
-            var that = this;
 
-            // 1. We create the scenario entry in the OData model
-            var oModel = this.getView().getModel();
-            var oListBinding = oModel.bindList("/Scenarios");
+            // USE TABLE BINDING TO CREATE (Ensures UI update)
+            var oTable = this.byId("scenariosTable");
+            var oBinding = oTable.getBinding("items");
 
-            var oNewContext = oListBinding.create({
-                name: oTemplate.name + " (" + new Date().toLocaleTimeString() + ")", // Auto-name to avoid duplicates
+            var oNewContext = oBinding.create({
+                name: oTemplate.name + " " + new Date().getSeconds(), // Simple unique suffix
+                displayName: oTemplate.name,
                 description: oTemplate.description,
                 status: "DRAFT",
-                template_ID: oTemplate.ID,
+                template_ID: oTemplate.code, // Code is the key for template
                 inputSchema: oTemplate.inputSchema,
-                // Set default values based on template best practices (could also come from DB)
                 rulesWeight: 60,
                 aiWeight: 40
             });
 
             oNewContext.created().then(function () {
-                MessageToast.show("Scenario created successfully using template: " + oTemplate.name);
-                // Optionally navigate to details here
+                MessageToast.show("Scenario '" + oTemplate.name + "' created successfully.");
+                oTable.getBinding("items").refresh(); // Forced refresh just in case
             }).catch(function (oError) {
-                MessageToast.show("Error creating scenario: " + oError.message);
+                MessageBox.error("Error creating scenario: " + oError.message);
             });
         },
 
@@ -66,36 +70,65 @@ sap.ui.define([
             // User cancelled
         },
 
-        onPressOpenPopover: function (oEvent) {
-            MessageToast.show("System Status is online");
-        },
+        onSearch: function (oEvent) {
+            var sQuery = oEvent.getParameter("query");
+            var oTable = this.byId("scenariosTable");
+            var oBinding = oTable.getBinding("items");
 
-        onGenericAction: function () {
-            MessageToast.show("Share / Action triggered");
+            if (sQuery) {
+                var oFilter = new Filter("name", FilterOperator.Contains, sQuery);
+                oBinding.filter([oFilter]);
+            } else {
+                oBinding.filter([]);
+            }
         },
 
         onSort: function () {
-            MessageToast.show("Sort Dialog would open here");
+            var oTable = this.byId("scenariosTable");
+            var oBinding = oTable.getBinding("items");
+            this._bDescendingSort = !this._bDescendingSort;
+            var oSorter = new Sorter("name", this._bDescendingSort);
+            oBinding.sort(oSorter);
+            MessageToast.show("Sorted by Name " + (this._bDescendingSort ? "Descending" : "Ascending"));
         },
 
         onFilter: function () {
-            MessageToast.show("Filter Dialog would open here");
+            // Simple filter toggle for Active status
+            var oTable = this.byId("scenariosTable");
+            var oBinding = oTable.getBinding("items");
+
+            if (this._bFiltered) {
+                oBinding.filter([]);
+                this._bFiltered = false;
+                MessageToast.show("Filter cleared");
+            } else {
+                var oFilter = new Filter("status", FilterOperator.EQ, "ACTIVE");
+                oBinding.filter([oFilter]);
+                this._bFiltered = true;
+                MessageToast.show("Filtered by Status: ACTIVE");
+            }
         },
 
         onGroup: function () {
-            MessageToast.show("Group Dialog would open here");
+            var oTable = this.byId("scenariosTable");
+            var oBinding = oTable.getBinding("items");
+            var oSorter = new Sorter("status", false, true); // Group enabled
+            oBinding.sort(oSorter);
+            MessageToast.show("Grouped by Status");
         },
 
         onEditScenario: function (oEvent) {
             var oCtx = oEvent.getSource().getBindingContext();
             var sName = oCtx.getProperty("name");
-            MessageToast.show("Edit Scenario: " + sName);
+            MessageBox.information("Edit mode for '" + sName + "' opened. (Functionality coming in Detail Page update)");
         },
 
-        onSearch: function (oEvent) {
-            var sQuery = oEvent.getParameter("query");
-            MessageToast.show("Search query: " + sQuery);
-            // Note: Proper filtering requires Table ID or relative lookup
+        onGenericAction: function () {
+            MessageBox.information("This action is reserved for future workflow extensions.");
+        },
+
+        onPressOpenPopover: function (oEvent) {
+            MessageToast.show("System Status is online. Connected to SAP BTP.");
         }
     });
 });

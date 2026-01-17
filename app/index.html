@@ -192,9 +192,17 @@
                         new Image({ src: "https://unpkg.com/@sap/ux-icons-font@1.0.0/dist/SAP-icons/decision.svg", height: "24px" }),
                         new Title({ text: "DecisionCore AI", level: "H3" }).addStyleClass("sapUiSmallMarginBegin"),
                         new ToolbarSpacer(),
-                        new Button({ icon: "sap-icon://search", type: "Transparent" }),
-                        new Button({ icon: "sap-icon://bell", type: "Transparent" }),
-                        new Avatar({ initials: "TK", displaySize: "XS" }).addStyleClass("sapUiSmallMarginBegin")
+                        new Button({
+                            icon: "sap-icon://search",
+                            type: "Transparent",
+                            press: function () { sap.m.MessageToast.show("Global Search: Not implemented yet"); }
+                        }),
+                        new Button({
+                            icon: "sap-icon://bell",
+                            type: "Transparent",
+                            press: function () { sap.m.MessageToast.show("No new notifications"); }
+                        }),
+                        new Avatar({ initials: "TK", displaySize: "XS", press: function () { sap.m.MessageToast.show("Profile: Taha Khattari (Admin)"); } }).addStyleClass("sapUiSmallMarginBegin")
                     ]
                 });
 

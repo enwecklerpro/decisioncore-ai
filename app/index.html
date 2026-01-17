@@ -3,218 +3,166 @@
 
 <head>
     <meta charset="utf-8">
-    <title>DecisionCore AI - Enterprise Launchpad</title>
+    <title>DecisionCore AI - Enterprise Platform</title>
     <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
-        data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m,sap.f,sap.ui.layout,sap.tnt"
-        data-sap-ui-compatVersion="edge" data-sap-ui-async="true" data-sap-ui-preload="async">
+        data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m,sap.f,sap.ui.layout,sap.tnt,sap.ui.unified"
+        data-sap-ui-compatVersion="edge" data-sap-ui-async="true" data-sap-ui-preload="async"
+        data-sap-ui-resourceroots='{"decisioncore.launchpad": "./"}'>
         </script>
 
     <style>
-        /* Modern Enterprise Background */
-        body,
-        #content {
+        html,
+        body {
             height: 100%;
             margin: 0;
-            background-color: #f5f6f7;
-            background-image:
-                radial-gradient(at 0% 0%, hsla(210, 100%, 96%, 1) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(220, 100%, 96%, 1) 0, transparent 50%);
-            font-family: "72", "Ariel", sans-serif;
         }
 
-        /* Hero Section Styling */
+        .sapMPageEnableScrolling {
+            height: 100%;
+        }
+
+        /* App IFrame styling */
+        #appFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Hero styling reused */
         .hero-section {
             padding: 3rem 4rem 2rem 4rem;
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-            margin-bottom: 2rem;
         }
 
         .hero-title .sapMTitle {
             font-size: 2.5rem !important;
             font-weight: 700 !important;
             color: #1d2d3e;
-            letter-spacing: -0.5px;
-            margin-bottom: 0.5rem;
-        }
-
-        .hero-subtitle .sapMText {
-            font-size: 1.1rem !important;
-            font-weight: 300;
-            color: #555e68;
         }
 
         .content-padding {
-            padding: 0 4rem;
-        }
-
-        .sapMGT:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .sapMGT {
-            transition: all 0.3s ease;
-            border-radius: 12px !important;
-            overflow: hidden !important;
+            padding: 2rem 4rem;
         }
     </style>
 
     <script>
         sap.ui.getCore().attachInit(function () {
-            // Use sap.ui.require to ensure all modules are loaded to prevent "is not a constructor" errors
             sap.ui.require([
+                "sap/tnt/ToolPage",
+                "sap/tnt/ToolHeader",
+                "sap/tnt/SideNavigation",
+                "sap/tnt/NavigationList",
+                "sap/tnt/NavigationListItem",
+                "sap/m/Image",
+                "sap/m/Title",
+                "sap/m/Button",
+                "sap/m/Avatar",
+                "sap/m/ToolbarSpacer",
                 "sap/f/GridContainer",
                 "sap/f/GridContainerSettings",
                 "sap/f/GridContainerItemLayoutData",
                 "sap/m/GenericTile",
                 "sap/m/TileContent",
-                "sap/m/ImageContent",
                 "sap/m/NumericContent",
-                "sap/m/Title",
-                "sap/m/Text",
-                "sap/m/VBox",
-                "sap/m/HBox",
-                "sap/m/Button",
-                "sap/m/Image",
-                "sap/m/Avatar",
-                "sap/m/Page",
-                "sap/m/Bar",
-                "sap/m/ToolbarSpacer",
-                "sap/tnt/ToolHeader"
-            ], function (GridContainer, GridContainerSettings, GridContainerItemLayoutData, GenericTile, TileContent, ImageContent, NumericContent, Title, Text, VBox, HBox, Button, Image, Avatar, Page, Bar, ToolbarSpacer, ToolHeader) {
+                "sap/m/ImageContent",
+                "sap/m/VBox"
+            ], function (ToolPage, ToolHeader, SideNavigation, NavigationList, NavigationListItem, Image, Title, Button, Avatar, ToolbarSpacer, GridContainer, GridContainerSettings, GridContainerItemLayoutData, GenericTile, TileContent, NumericContent, ImageContent, VBox) {
 
-                // 1. HEADER: Hero Section
-                var oHeroLayout = new VBox({
+                // --- HOME DASHBOARD CONTENT (The Grid) ---
+                var oGridKPI = new GridContainer({
+                    layout: new GridContainerSettings({ rowSize: "84px", columnSize: "84px", gap: "16px" }),
+                    items: [
+                        new GenericTile({ header: "Decisions", subheader: "Today", tileContent: new TileContent({ content: new NumericContent({ value: "12.5k", icon: "sap-icon://line-chart", valueColor: "Good" }) }) }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+                        new GenericTile({ header: "Approval Rate", subheader: "Automated", tileContent: new TileContent({ content: new NumericContent({ value: "68", scale: "%", icon: "sap-icon://accept", valueColor: "Good" }) }) }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+                        new GenericTile({ header: "Latency", subheader: "Avg Response", tileContent: new TileContent({ content: new NumericContent({ value: "145", scale: "ms", icon: "sap-icon://speed-boat", valueColor: "Neutral" }) }) }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 }))
+                    ]
+                });
+
+                var oHero = new VBox({
                     items: [
                         new Title({ text: "Good Morning, Taha", level: "H1" }).addStyleClass("hero-title"),
-                        new Text({ text: "Here is your decision intelligence overview for today." }).addStyleClass("hero-subtitle")
+                        oGridKPI
                     ]
                 }).addStyleClass("hero-section");
 
-                // 2. KPIS: Grid Container
-                var oGridKPI = new GridContainer({
-                    layout: new GridContainerSettings({ rowSize: "84px", columnSize: "84px", gap: "16px" }),
-                    layoutXS: new GridContainerSettings({ columns: 2 }),
-                    items: [
-                        new GenericTile({
-                            header: "Decisions Today", subheader: "Live Volume", press: function () { window.location.href = "/dashboard/webapp/index.html"; },
-                            tileContent: new TileContent({ content: new NumericContent({ value: "12.5k", icon: "sap-icon://line-chart", valueColor: "Good", indicator: "Up" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
-
-                        new GenericTile({
-                            header: "Approval Rate", subheader: "Automation", press: function () { window.location.href = "/dashboard/webapp/index.html"; },
-                            tileContent: new TileContent({ content: new NumericContent({ value: "68", scale: "%", icon: "sap-icon://accept", valueColor: "Good" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
-
-                        new GenericTile({
-                            header: "Avg. Latency", subheader: "Performance", press: function () { window.location.href = "/dashboard/webapp/index.html"; },
-                            tileContent: new TileContent({ content: new NumericContent({ value: "145", scale: "ms", icon: "sap-icon://speed-boat", valueColor: "Neutral" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
-
-                        new GenericTile({
-                            header: "AI Models", subheader: "Active Providers", press: function () { window.location.href = "/admin/webapp/index.html"; },
-                            tileContent: new TileContent({ content: new NumericContent({ value: "4", icon: "sap-icon://machine-learning", valueColor: "Critical" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 }))
-                    ]
-                });
-
-                // 3. APPS: Grid Container
-                var oGridApps = new GridContainer({
-                    layout: new GridContainerSettings({ rowSize: "84px", columnSize: "84px", gap: "16px" }),
-                    items: [
-                        // Primary App: Dashboard
-                        new GenericTile({
-                            header: "Executive Dashboard", subheader: "Full Analytics & Reports", frameType: "TwoByOne",
-                            press: function () { window.location.href = "/dashboard/webapp/index.html"; },
-                            tileContent: new TileContent({ content: new ImageContent({ src: "sap-icon://bbyd-dashboard" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 4, rows: 2 })),
-
-                        // Core Apps
-                        new GenericTile({
-                            header: "Scenarios", subheader: "Manage Logic",
-                            press: function () { window.location.href = "/scenarios/webapp/index.html"; },
-                            tileContent: new TileContent({ content: new ImageContent({ src: "sap-icon://org-chart" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
-
-                        new GenericTile({
-                            header: "Rules", subheader: "Business Policies",
-                            press: function () { window.location.href = "/rules/webapp/index.html"; },
-                            tileContent: new TileContent({ content: new ImageContent({ src: "sap-icon://process" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
-
-                        new GenericTile({
-                            header: "Execute", subheader: "Simulation",
-                            press: function () { window.location.href = "/execute/webapp/index.html"; },
-                            tileContent: new TileContent({ content: new ImageContent({ src: "sap-icon://media-play" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
-
-                        new GenericTile({
-                            header: "History", subheader: "Audit Trail",
-                            press: function () { window.location.href = "/history/webapp/index.html"; },
-                            tileContent: new TileContent({ content: new ImageContent({ src: "sap-icon://history" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
-
-                        new GenericTile({
-                            header: "Admin", subheader: "Configuration",
-                            press: function () { window.location.href = "/admin/webapp/index.html"; },
-                            tileContent: new TileContent({ content: new ImageContent({ src: "sap-icon://action-settings" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 }))
-                    ]
-                });
-
-                // 4. QUICK ACTIONS
-                var oQuickActions = new HBox({
-                    wrap: "Wrap",
-                    items: [
-                        new Button({ text: "New Scenario", icon: "sap-icon://add", type: "Emphasized", press: function () { window.location.href = "/scenarios/webapp/index.html"; } }).addStyleClass("sapUiSmallMarginEnd"),
-                        new Button({ text: "Simulate Decision", icon: "sap-icon://simulate", press: function () { window.location.href = "/execute/webapp/index.html"; } }).addStyleClass("sapUiSmallMarginEnd"),
-                        new Button({ text: "View Logs", icon: "sap-icon://log", press: function () { window.location.href = "/history/webapp/index.html"; } })
-                    ]
-                }).addStyleClass("sapUiMediumMarginTop sapUiMediumMarginBottom");
-
-
-                // MAIN PAGE STRUCTURE
-                var oPage = new Page({
+                // Container that holds the changing content (Home vs App Frame)
+                var oMainContainer = new sap.m.Page({
                     showHeader: false,
-                    enableScrolling: true,
-                    content: [
-                        new ToolHeader({
-                            content: [
-                                new Button({ icon: "sap-icon://menu2", type: "Transparent" }),
-                                new Image({ src: "https://unpkg.com/@sap/ux-icons-font@1.0.0/dist/SAP-icons/decision.svg", height: "24px" }),
-                                new Title({ text: "DecisionCore AI", titleStyle: "H5" }).addStyleClass("sapUiTinyMarginBegin"),
-                                new ToolbarSpacer(),
-                                new Button({ icon: "sap-icon://search", type: "Transparent" }),
-                                new Button({ icon: "sap-icon://bell", type: "Transparent" }),
-                                new Avatar({ initials: "TK", displaySize: "XS", backgroundColor: "Accent6" }).addStyleClass("sapUiTinyMarginBegin")
-                            ]
-                        }),
-                        oHeroLayout,
-
-                        new VBox({
-                            items: [
-                                new Title({ text: "Key Metrics", titleStyle: "H3", showLayout: true }),
-                                oGridKPI,
-
-                                new Title({ text: "Applications", titleStyle: "H3", showLayout: true }).addStyleClass("sapUiLargeMarginTop"),
-                                oGridApps,
-
-                                new Title({ text: "Quick Actions", titleStyle: "H3", showLayout: true }).addStyleClass("sapUiLargeMarginTop"),
-                                oQuickActions
-                            ]
-                        }).addStyleClass("content-padding")
-                    ],
-                    footer: new Bar({
-                        contentMiddle: [
-                            new Text({ text: "© 2026 DecisionCore AI • Enterprise Logic Engine • Created by Taha Khattari" })
-                        ]
-                    })
+                    enableScrolling: true, // Only for home
+                    content: [oHero]
                 });
 
-                new sap.m.App({ pages: [oPage] }).placeAt("content");
+                // Function to switch view
+                function navigateTo(sKey, sUrl) {
+                    if (sKey === "home") {
+                        oMainContainer.removeAllContent();
+                        oMainContainer.addContent(oHero);
+                        oMainContainer.setEnableScrolling(true);
+                    } else {
+                        // Load App in IFrame
+                        var sFrameHtml = "<iframe id='appFrame' src='" + sUrl + "'></iframe>";
+                        var oHtmlControl = new sap.ui.core.HTML({ content: sFrameHtml });
+
+                        oMainContainer.removeAllContent();
+                        oMainContainer.addContent(oHtmlControl);
+                        oMainContainer.setEnableScrolling(false); // Let app handle scrolling
+                    }
+                }
+
+                // --- SIDE NAVIGATION ---
+                var oSideNav = new SideNavigation({
+                    item: new NavigationList({
+                        items: [
+                            new NavigationListItem({ text: "Home", icon: "sap-icon://home", key: "home" }),
+                            new NavigationListItem({ text: "Scenarios", icon: "sap-icon://org-chart", key: "scenarios" }),
+                            new NavigationListItem({ text: "Rules", icon: "sap-icon://process", key: "rules" }),
+                            new NavigationListItem({ text: "Simulate", icon: "sap-icon://media-play", key: "execute" }),
+                            new NavigationListItem({ text: "History", icon: "sap-icon://history", key: "history" }),
+                            new NavigationListItem({ text: "Admin", icon: "sap-icon://action-settings", key: "admin" })
+                        ]
+                    }),
+                    itemSelect: function (oEvent) {
+                        var sKey = oEvent.getParameter("item").getKey();
+                        var sUrl = "";
+                        switch (sKey) {
+                            case "home": sUrl = ""; break;
+                            case "scenarios": sUrl = "/scenarios/webapp/index.html"; break;
+                            case "rules": sUrl = "/rules/webapp/index.html"; break;
+                            case "execute": sUrl = "/execute/webapp/index.html"; break;
+                            case "history": sUrl = "/history/webapp/index.html"; break;
+                            case "admin": sUrl = "/admin/webapp/index.html"; break;
+                        }
+                        navigateTo(sKey, sUrl);
+                    }
+                });
+
+                // --- TOOL HEADER ---
+                var oToolHeader = new ToolHeader({
+                    content: [
+                        new Button({
+                            icon: "sap-icon://menu2",
+                            type: "Transparent",
+                            press: function () { oSideNav.setExpanded(!oSideNav.getExpanded()); }
+                        }),
+                        new Image({ src: "https://unpkg.com/@sap/ux-icons-font@1.0.0/dist/SAP-icons/decision.svg", height: "24px" }),
+                        new Title({ text: "DecisionCore AI", level: "H3" }).addStyleClass("sapUiSmallMarginBegin"),
+                        new ToolbarSpacer(),
+                        new Button({ icon: "sap-icon://search", type: "Transparent" }),
+                        new Button({ icon: "sap-icon://bell", type: "Transparent" }),
+                        new Avatar({ initials: "TK", displaySize: "XS" }).addStyleClass("sapUiSmallMarginBegin")
+                    ]
+                });
+
+                // --- ROOT LAYOUT (ToolPage) ---
+                var oToolPage = new ToolPage({
+                    header: oToolHeader,
+                    sideContent: oSideNav,
+                    mainContents: [oMainContainer]
+                });
+
+                oToolPage.placeAt("content");
             });
         });
     </script>

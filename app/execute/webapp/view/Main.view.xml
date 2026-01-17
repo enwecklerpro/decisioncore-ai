@@ -86,7 +86,7 @@
                                                     percentValue="{view>/result/finalScore}" 
                                                     displayValue="{view>/result/finalScore}/100" 
                                                     showValue="true" 
-                                                    state="{= ${view>/result/finalScore} >= 60 ? 'Success' : ${view>/result/finalScore} < 40 ? 'Error' : 'Warning' }"
+                                                    state="{= ${view>/result/finalScore} >= 60 ? 'Success' : ${view>/result/finalScore} &lt; 40 ? 'Error' : 'Warning' }"
                                                     height="1.5rem"
                                                     class="sapUiSmallMarginBottom"/>
 

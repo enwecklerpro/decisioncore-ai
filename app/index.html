@@ -67,16 +67,33 @@
                 "sap/m/TileContent",
                 "sap/m/NumericContent",
                 "sap/m/ImageContent",
-                "sap/m/VBox"
-            ], function (ToolPage, ToolHeader, SideNavigation, NavigationList, NavigationListItem, Image, Title, Button, Avatar, ToolbarSpacer, GridContainer, GridContainerSettings, GridContainerItemLayoutData, GenericTile, TileContent, NumericContent, ImageContent, VBox) {
+                "sap/m/VBox",
+                "sap/m/Bar",
+                "sap/m/Text",
+                "sap/ui/core/HTML"
+            ], function (ToolPage, ToolHeader, SideNavigation, NavigationList, NavigationListItem, Image, Title, Button, Avatar, ToolbarSpacer, GridContainer, GridContainerSettings, GridContainerItemLayoutData, GenericTile, TileContent, NumericContent, ImageContent, VBox, Bar, Text, HTML) {
 
                 // --- HOME DASHBOARD CONTENT (The Grid) ---
                 var oGridKPI = new GridContainer({
                     layout: new GridContainerSettings({ rowSize: "84px", columnSize: "84px", gap: "16px" }),
                     items: [
-                        new GenericTile({ header: "Decisions", subheader: "Today", tileContent: new TileContent({ content: new NumericContent({ value: "12.5k", icon: "sap-icon://line-chart", valueColor: "Good" }) }) }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
-                        new GenericTile({ header: "Approval Rate", subheader: "Automated", tileContent: new TileContent({ content: new NumericContent({ value: "68", scale: "%", icon: "sap-icon://accept", valueColor: "Good" }) }) }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
-                        new GenericTile({ header: "Latency", subheader: "Avg Response", tileContent: new TileContent({ content: new NumericContent({ value: "145", scale: "ms", icon: "sap-icon://speed-boat", valueColor: "Neutral" }) }) }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 }))
+                        new GenericTile({
+                            header: "Decisions", subheader: "Today",
+                            press: function () { navigateTo("dashboard", "/dashboard/webapp/index.html"); },
+                            tileContent: new TileContent({ content: new NumericContent({ value: "12.5k", icon: "sap-icon://line-chart", valueColor: "Good" }) })
+                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+
+                        new GenericTile({
+                            header: "Approval Rate", subheader: "Automated",
+                            press: function () { navigateTo("dashboard", "/dashboard/webapp/index.html"); },
+                            tileContent: new TileContent({ content: new NumericContent({ value: "68", scale: "%", icon: "sap-icon://accept", valueColor: "Good" }) })
+                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+
+                        new GenericTile({
+                            header: "Latency", subheader: "Avg Response",
+                            press: function () { navigateTo("dashboard", "/dashboard/webapp/index.html"); },
+                            tileContent: new TileContent({ content: new NumericContent({ value: "145", scale: "ms", icon: "sap-icon://speed-boat", valueColor: "Neutral" }) })
+                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 }))
                     ]
                 });
 
@@ -87,27 +104,51 @@
                     ]
                 }).addStyleClass("hero-section");
 
-                // Container that holds the changing content (Home vs App Frame)
+                // Footer Bar
+                var oFooter = new Bar({
+                    contentMiddle: [
+                        new Text({ text: "© 2026 DecisionCore AI • Enterprise Logic Engine • Created by Taha Khattari" })
+                    ]
+                });
+
+                // MAIN CONTAINER
                 var oMainContainer = new sap.m.Page({
                     showHeader: false,
-                    enableScrolling: true, // Only for home
-                    content: [oHero]
+                    content: [oHero],
+                    footer: oFooter,
+                    showFooter: true
                 });
+
+                // Helper to select item safely
+                function selectSideItem(sKey) {
+                    var oList = oSideNav.getItem();
+                    var aItems = oList.getItems();
+                    for (var i = 0; i < aItems.length; i++) {
+                        if (aItems[i].getKey() === sKey) {
+                            oList.setSelectedItem(aItems[i]);
+                            return;
+                        }
+                    }
+                }
 
                 // Function to switch view
                 function navigateTo(sKey, sUrl) {
+                    selectSideItem(sKey);
+
                     if (sKey === "home") {
                         oMainContainer.removeAllContent();
                         oMainContainer.addContent(oHero);
+                        oMainContainer.setShowFooter(true);
                         oMainContainer.setEnableScrolling(true);
                     } else {
                         // Load App in IFrame
                         var sFrameHtml = "<iframe id='appFrame' src='" + sUrl + "'></iframe>";
-                        var oHtmlControl = new sap.ui.core.HTML({ content: sFrameHtml });
+                        var oHtmlControl = new HTML({ content: sFrameHtml });
 
                         oMainContainer.removeAllContent();
                         oMainContainer.addContent(oHtmlControl);
-                        oMainContainer.setEnableScrolling(false); // Let app handle scrolling
+                        oMainContainer.setShowFooter(false);
+                        oMainContainer.setEnableScrolling(false);
                     }
                 }
 
@@ -116,6 +157,7 @@
                     item: new NavigationList({
                         items: [
                             new NavigationListItem({ text: "Home", icon: "sap-icon://home", key: "home" }),
+                            new NavigationListItem({ text: "Dashboard", icon: "sap-icon://bbyd-dashboard", key: "dashboard" }), // NEW
                             new NavigationListItem({ text: "Scenarios", icon: "sap-icon://org-chart", key: "scenarios" }),
                             new NavigationListItem({ text: "Rules", icon: "sap-icon://process", key: "rules" }),
                             new NavigationListItem({ text: "Simulate", icon: "sap-icon://media-play", key: "execute" }),
@@ -128,6 +170,7 @@
                         var sUrl = "";
                         switch (sKey) {
                             case "home": sUrl = ""; break;
+                            case "dashboard": sUrl = "/dashboard/webapp/index.html"; break;
                             case "scenarios": sUrl = "/scenarios/webapp/index.html"; break;
                             case "rules": sUrl = "/rules/webapp/index.html"; break;
                             case "execute": sUrl = "/execute/webapp/index.html"; break;

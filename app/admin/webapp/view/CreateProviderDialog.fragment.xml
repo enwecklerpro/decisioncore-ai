@@ -1,0 +1,33 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form">
+    <Dialog title="Add New AI Provider" id="createProviderDialog">
+        <content>
+            <f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12">
+                <Label text="Provider Code" required="true"/>
+                <Input value="{newProvider>/code}" placeholder="e.g. GPT4_EXTERNAL" liveChange=".onValidate"/>
+                
+                <Label text="Display Name" required="true"/>
+                <Input value="{newProvider>/name}" placeholder="e.g. External GPT-4 Provider"/>
+                
+                <Label text="Provider Type" required="true"/>
+                <Select selectedKey="{newProvider>/providerType}" width="100%">
+                    <core:Item key="OPENAI" text="OpenAI (Direct)"/>
+                    <core:Item key="AZURE_OPENAI" text="Azure OpenAI Service"/>
+                    <core:Item key="SAP_AI_CORE" text="SAP AI Core"/>
+                    <core:Item key="MOCK" text="Mock Provider"/>
+                </Select>
+                
+                <Label text="Is Default"/>
+                <Switch state="{newProvider>/isDefault}"/>
+                
+                <Label text="Description"/>
+                <TextArea value="{newProvider>/description}" rows="2"/>
+            </f:SimpleForm>
+        </content>
+        <beginButton>
+            <Button text="Create" type="Emphasized" press=".onCreateProviderConfirm"/>
+        </beginButton>
+        <endButton>
+            <Button text="Cancel" press=".onCreateProviderCancel"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

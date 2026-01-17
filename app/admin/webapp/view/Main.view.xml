@@ -25,7 +25,7 @@
                 </f:DynamicPageHeader>
             </f:header>
             <f:content>
-                <Table items="{/AIProviders}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                <Table id="providersTable" items="{/AIProviders}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
                     <headerToolbar>
                         <OverflowToolbar>
                             <Title text="Configured Models"/>

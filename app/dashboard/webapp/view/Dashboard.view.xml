@@ -5,32 +5,15 @@
     xmlns:core="sap.ui.core" 
     xmlns:cards="sap.f.cards"
     controllerName="decisioncore.dashboard.controller.Dashboard" 
-    displayBlock="true"
-    height="100%">
+    displayBlock="true">
     
-    <f:DynamicPage id="page" headerExpanded="true" toggleHeaderOnTitleClick="true">
-        
-        <!-- Header -->
-        <f:title>
-            <f:DynamicPageTitle>
-                <f:heading>
-                    <Title text="Executive Dashboard"/>
-                </f:heading>
-                <f:snappedContent>
-                    <Label text="Decision Intelligence Overview"/>
-                </f:snappedContent>
-                <f:expandedContent>
-                    <Label text="Decision Intelligence Overview"/>
-                </f:expandedContent>
-                <f:actions>
-                    <Button icon="sap-icon://refresh" type="Transparent" press=".onRefresh" tooltip="Refresh"/>
-                </f:actions>
-            </f:DynamicPageTitle>
-        </f:title>
-
-        <!-- Content -->
-        <f:content>
-            <ScrollContainer height="100%" vertical="true" horizontal="false">
+    <App>
+        <Page id="page" title="Executive Dashboard" showNavButton="false" enableScrolling="true">
+            <headerContent>
+                <Button icon="sap-icon://refresh" press=".onRefresh" tooltip="Refresh Data"/>
+            </headerContent>
+            
+            <content>
                 <VBox class="sapUiSmallMargin">
                     
                     <!-- KPIs Row -->
@@ -101,19 +84,19 @@
                             </f:header>
                             <f:content>
                                 <VBox class="sapUiMediumMargin">
-                                    <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                    <HBox justifyContent="SpaceBetween">
                                         <Label text="Approved"/>
                                         <Text text="{dashboard>/stats/approvalRate}%"/>
                                     </HBox>
-                                    <ProgressIndicator percentValue="{dashboard>/stats/approvalRate}" state="Success" displayValue="" height="1rem" class="sapUiTinyMarginBottom"/>
+                                    <ProgressIndicator percentValue="{dashboard>/stats/approvalRate}" state="Success" displayValue="" height="1rem"/>
                                     
-                                    <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
                                         <Label text="Rejected"/>
                                         <Text text="{dashboard>/stats/rejectionRate}%"/>
                                     </HBox>
-                                    <ProgressIndicator percentValue="{dashboard>/stats/rejectionRate}" state="Error" displayValue="" height="1rem" class="sapUiTinyMarginBottom"/>
+                                    <ProgressIndicator percentValue="{dashboard>/stats/rejectionRate}" state="Error" displayValue="" height="1rem"/>
                                     
-                                    <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
                                         <Label text="Review"/>
                                         <Text text="{dashboard>/stats/reviewRate}%"/>
                                     </HBox>
@@ -129,19 +112,19 @@
                             </f:header>
                             <f:content>
                                 <VBox class="sapUiMediumMargin">
-                                    <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
-                                        <Label text="Business Rules Engine" design="Bold"/>
+                                    <HBox justifyContent="SpaceBetween">
+                                        <Label text="Business Rules Engine"/>
                                         <Text text="{dashboard>/stats/rulesContribution}%"/>
                                     </HBox>
-                                    <ProgressIndicator percentValue="{dashboard>/stats/rulesContribution}" state="Success" displayValue="" height="1rem" class="sapUiSmallMarginBottom"/>
+                                    <ProgressIndicator percentValue="{dashboard>/stats/rulesContribution}" state="Success" displayValue="" height="1rem"/>
                                     
-                                    <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
-                                        <Label text="AI Semantic Scoring" design="Bold"/>
+                                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
+                                        <Label text="AI Semantic Scoring"/>
                                         <Text text="{dashboard>/stats/aiContribution}%"/>
                                     </HBox>
                                     <ProgressIndicator percentValue="{dashboard>/stats/aiContribution}" state="Information" displayValue="" height="1rem"/>
                                     
-                                    <MessageStrip text="AI contribution stable within tolerance limits." type="Information" showIcon="true" class="sapUiMediumMarginTop"/>
+                                    <MessageStrip text="AI contribution stable within tolerance limits." type="Information" showIcon="true"/>
                                 </VBox>
                             </f:content>
                         </f:Card>
@@ -171,7 +154,7 @@
                     </Table>
 
                 </VBox>
-            </ScrollContainer>
-        </f:content>
-    </f:DynamicPage>
+            </content>
+        </Page>
+    </App>
 </mvc:View>

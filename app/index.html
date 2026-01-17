@@ -3,96 +3,207 @@
 
 <head>
     <meta charset="utf-8">
-    <title>DecisionCore AI - Launchpad</title>
+    <title>DecisionCore AI - Enterprise Launchpad</title>
     <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
-        data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m,sap.f" data-sap-ui-compatVersion="edge"
-        data-sap-ui-async="true">
+        data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m,sap.f,sap.ui.layout,sap.tnt"
+        data-sap-ui-compatVersion="edge" data-sap-ui-async="true" data-sap-ui-preload="async">
         </script>
-    <script>
-        sap.ui.getCore().attachInit(function () {
-            // KPI Container
-            var oKPITileContainer = new sap.m.FlexBox({ wrap: "Wrap", justifyContent: "Start", alignItems: "Start" });
-            // App Container
-            var oAppTileContainer = new sap.m.FlexBox({ wrap: "Wrap", justifyContent: "Start", alignItems: "Start" });
 
-            // Helper function
-            function addTile(container, header, subheader, icon, url, value, scale, color) {
-                var content;
-                if (value) {
-                    content = new sap.m.NumericContent({ value: value, scale: scale || "", icon: icon, valueColor: color || "Neutral" });
-                } else {
-                    content = new sap.m.ImageContent({ src: icon });
-                }
-
-                container.addItem(new sap.m.GenericTile({
-                    header: header,
-                    subheader: subheader,
-                    tileContent: new sap.m.TileContent({ content: content }),
-                    press: function () { if (url) window.location.href = url; }
-                }).addStyleClass("sapUiTinyMargin"));
-            }
-
-            // KPI Tiles
-            addTile(oKPITileContainer, "Total Decisions", "All Time", "sap-icon://performance", "/dashboard/webapp/index.html", "12.5k", "", "Good");
-            addTile(oKPITileContainer, "Approval Rate", "Automation Level", "sap-icon://accept", "/dashboard/webapp/index.html", "68", "%", "Good");
-            addTile(oKPITileContainer, "AI Providers", "Active Models", "sap-icon://machine-learning", "/admin/webapp/index.html", "4", "", "Neutral");
-
-            // App Tiles
-            addTile(oAppTileContainer, "Executive Dashboard", "Analytics & KPIs", "sap-icon://bbyd-dashboard", "/dashboard/webapp/index.html");
-            addTile(oAppTileContainer, "Scenario Management", "Define Decision Logic", "sap-icon://org-chart", "/scenarios/webapp/index.html");
-            addTile(oAppTileContainer, "Rules Management", "Business Policies", "sap-icon://process", "/rules/webapp/index.html");
-            addTile(oAppTileContainer, "Decision Execution", "Test & Simulate", "sap-icon://media-play", "/execute/webapp/index.html");
-            addTile(oAppTileContainer, "Decision History", "Audit & Compliance", "sap-icon://history", "/history/webapp/index.html");
-            addTile(oAppTileContainer, "Administration", "AI Provider Config", "sap-icon://action-settings", "/admin/webapp/index.html");
-
-            // Shell Bar
-            var oShellBar = new sap.f.ShellBar({
-                title: "DecisionCore AI",
-                secondTitle: "Enterprise Decision Intelligence",
-                homeIcon: "sap-icon://decision",
-                showNotifications: true,
-                notificationsNumber: "2",
-                profile: new sap.m.Avatar({ initials: "EP", displaySize: "XS" })
-            });
-
-            // Page
-            var oPage = new sap.m.Page({
-                showHeader: false,
-                enableScrolling: true,
-                content: [
-                    oShellBar,
-                    new sap.m.Title({ text: "Key Performance Indicators", titleStyle: "H4" }).addStyleClass("sapUiSmallMargin"),
-                    oKPITileContainer,
-                    new sap.m.Title({ text: "Business Applications", titleStyle: "H4" }).addStyleClass("sapUiSmallMargin sapUiMediumMarginTop"),
-                    oAppTileContainer
-                ],
-                footer: new sap.m.Bar({
-                    contentMiddle: [
-                        new sap.m.Text({ text: "DecisionCore AI - Created by Taha Khattari" })
-                    ]
-                })
-            });
-
-            // Shell
-            var oShell = new sap.m.Shell({
-                app: new sap.m.App({ pages: [oPage] }),
-                appWidthLimited: false
-            });
-
-            oShell.placeAt("content");
-        });
-    </script>
     <style>
-        html,
+        /* Modern Enterprise Background */
         body,
         #content {
             height: 100%;
             margin: 0;
+            background-color: #f5f6f7;
+            /* Fallback */
+            background-image:
+                radial-gradient(at 0% 0%, hsla(210, 100%, 96%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(220, 100%, 96%, 1) 0, transparent 50%);
+            font-family: "72", "Ariel", sans-serif;
+        }
+
+        /* Hero Section Styling */
+        .hero-section {
+            padding: 3rem 4rem 2rem 4rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            margin-bottom: 2rem;
+        }
+
+        /* Typography overrides for impact */
+        .hero-title .sapMTitle {
+            font-size: 2.5rem !important;
+            font-weight: 700 !important;
+            color: #1d2d3e;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-subtitle .sapMText {
+            font-size: 1.1rem !important;
+            font-weight: 300;
+            /* Light */
+            color: #555e68;
+        }
+
+        /* Container padding */
+        .content-padding {
+            padding: 0 4rem;
+        }
+
+        /* Tile Hover effects */
+        .sapMGT:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .sapMGT {
+            transition: all 0.3s ease;
+            border-radius: 12px !important;
+            overflow: hidden !important;
         }
     </style>
+
+    <script>
+        sap.ui.getCore().attachInit(function () {
+
+            // 1. HEADER: Hero Section
+            var oHeroLayout = new sap.m.VBox({
+                items: [
+                    new sap.m.Title({ text: "Good Morning, Taha", level: "H1" }).addStyleClass("hero-title"),
+                    new sap.m.Text({ text: "Here is your decision intelligence overview for today." }).addStyleClass("hero-subtitle")
+                ]
+            }).addStyleClass("hero-section");
+
+            // 2. KPIS: Grid Container
+            var oGridKPI = new sap.f.GridContainer({
+                layout: new sap.f.GridContainerSettings({ rowSize: "84px", columnSize: "84px", gap: "16px" }),
+                layoutXS: new sap.f.GridContainerSettings({ columns: 2 }), // Mobile
+                items: [
+                    new sap.m.GenericTile({
+                        header: "Decisions Today", subheader: "Live Volume", press: function () { window.location.href = "/dashboard/webapp/index.html"; },
+                        tileContent: new sap.m.TileContent({ content: new sap.m.NumericContent({ value: "12.5k", icon: "sap-icon://line-chart", valueColor: "Good", indicator: "Up" }) })
+                    }).setLayoutData(new sap.f.GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+
+                    new sap.m.GenericTile({
+                        header: "Approval Rate", subheader: "Automation", press: function () { window.location.href = "/dashboard/webapp/index.html"; },
+                        tileContent: new sap.m.TileContent({ content: new sap.m.NumericContent({ value: "68", scale: "%", icon: "sap-icon://accept", valueColor: "Good" }) })
+                    }).setLayoutData(new sap.f.GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+
+                    new sap.m.GenericTile({
+                        header: "Avg. Latency", subheader: "Performance", press: function () { window.location.href = "/dashboard/webapp/index.html"; },
+                        tileContent: new sap.m.TileContent({ content: new sap.m.NumericContent({ value: "145", scale: "ms", icon: "sap-icon://speed-boat", valueColor: "Neutral" }) })
+                    }).setLayoutData(new sap.f.GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+
+                    new sap.m.GenericTile({
+                        header: "AI Models", subheader: "Active Providers", press: function () { window.location.href = "/admin/webapp/index.html"; },
+                        tileContent: new sap.m.TileContent({ content: new sap.m.NumericContent({ value: "4", icon: "sap-icon://machine-learning", valueColor: "Critical" }) })
+                    }).setLayoutData(new sap.f.GridContainerItemLayoutData({ columns: 2, rows: 2 }))
+                ]
+            });
+
+            // 3. APPS: Grid Container
+            var oGridApps = new sap.f.GridContainer({
+                layout: new sap.f.GridContainerSettings({ rowSize: "84px", columnSize: "84px", gap: "16px" }),
+                items: [
+                    // Primary App: Dashboard
+                    new sap.m.GenericTile({
+                        header: "Executive Dashboard", subheader: "Full Analytics & Reports", frameType: "TwoByOne",
+                        press: function () { window.location.href = "/dashboard/webapp/index.html"; },
+                        tileContent: new sap.m.TileContent({ content: new sap.m.ImageContent({ src: "sap-icon://bbyd-dashboard" }) })
+                    }).setLayoutData(new sap.f.GridContainerItemLayoutData({ columns: 4, rows: 2 })),
+
+                    // Core Apps
+                    new sap.m.GenericTile({
+                        header: "Scenarios", subheader: "Manage Logic",
+                        press: function () { window.location.href = "/scenarios/webapp/index.html"; },
+                        tileContent: new sap.m.TileContent({ content: new sap.m.ImageContent({ src: "sap-icon://org-chart" }) })
+                    }).setLayoutData(new sap.f.GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+
+                    new sap.m.GenericTile({
+                        header: "Rules", subheader: "Business Policies",
+                        press: function () { window.location.href = "/rules/webapp/index.html"; },
+                        tileContent: new sap.m.TileContent({ content: new sap.m.ImageContent({ src: "sap-icon://process" }) })
+                    }).setLayoutData(new sap.f.GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+
+                    new sap.m.GenericTile({
+                        header: "Execute", subheader: "Simulation",
+                        press: function () { window.location.href = "/execute/webapp/index.html"; },
+                        tileContent: new sap.m.TileContent({ content: new sap.m.ImageContent({ src: "sap-icon://media-play" }) })
+                    }).setLayoutData(new sap.f.GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+
+                    new sap.m.GenericTile({
+                        header: "History", subheader: "Audit Trail",
+                        press: function () { window.location.href = "/history/webapp/index.html"; },
+                        tileContent: new sap.m.TileContent({ content: new sap.m.ImageContent({ src: "sap-icon://history" }) })
+                    }).setLayoutData(new sap.f.GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+
+                    new sap.m.GenericTile({
+                        header: "Admin", subheader: "Configuration",
+                        press: function () { window.location.href = "/admin/webapp/index.html"; },
+                        tileContent: new sap.m.TileContent({ content: new sap.m.ImageContent({ src: "sap-icon://action-settings" }) })
+                    }).setLayoutData(new sap.f.GridContainerItemLayoutData({ columns: 2, rows: 2 }))
+                ]
+            });
+
+            // 4. QUICK ACTIONS (New!)
+            // Using a simple HBox with Buttons for direct access
+            var oQuickActions = new sap.m.HBox({
+                wrap: "Wrap",
+                items: [
+                    new sap.m.Button({ text: "New Scenario", icon: "sap-icon://add", type: "Emphasized", press: function () { window.location.href = "/scenarios/webapp/index.html"; } }).addStyleClass("sapUiSmallMarginEnd"),
+                    new sap.m.Button({ text: "Simulate Decision", icon: "sap-icon://simulate", press: function () { window.location.href = "/execute/webapp/index.html"; } }).addStyleClass("sapUiSmallMarginEnd"),
+                    new sap.m.Button({ text: "View Logs", icon: "sap-icon://log", press: function () { window.location.href = "/history/webapp/index.html"; } })
+                ]
+            }).addStyleClass("sapUiMediumMarginTop sapUiMediumMarginBottom");
+
+
+            // MAIN PAGE STRUCTURE
+            var oPage = new sap.m.Page({
+                showHeader: false, // We use our Hero Header
+                enableScrolling: true,
+                content: [
+                    new sap.tnt.ToolHeader({
+                        content: [
+                            new sap.m.Button({ icon: "sap-icon://menu2", type: "Transparent" }),
+                            new sap.m.Image({ src: "https://unpkg.com/@sap/ux-icons-font@1.0.0/dist/SAP-icons/decision.svg", height: "24px" }), // Placeholder or Icon
+                            new sap.m.Title({ text: "DecisionCore AI", titleStyle: "H5" }).addStyleClass("sapUiTinyMarginBegin"),
+                            new sap.m.ToolbarSpacer(),
+                            new sap.m.Button({ icon: "sap-icon://search", type: "Transparent" }),
+                            new sap.m.Button({ icon: "sap-icon://bell", type: "Transparent" }),
+                            new sap.m.Avatar({ initials: "TK", displaySize: "XS", backgroundColor: "Accent6" }).addStyleClass("sapUiTinyMarginBegin")
+                        ]
+                    }),
+                    oHeroLayout,
+
+                    new sap.m.VBox({
+                        items: [
+                            new sap.m.Title({ text: "Key Metrics", titleStyle: "H3", showLayout: true }),
+                            oGridKPI,
+
+                            new sap.m.Title({ text: "Applications", titleStyle: "H3", showLayout: true }).addStyleClass("sapUiLargeMarginTop"),
+                            oGridApps,
+
+                            new sap.m.Title({ text: "Quick Actions", titleStyle: "H3", showLayout: true }).addStyleClass("sapUiLargeMarginTop"),
+                            oQuickActions
+                        ]
+                    }).addStyleClass("content-padding")
+                ],
+                footer: new sap.m.Bar({
+                    contentMiddle: [
+                        new sap.m.Text({ text: "© 2026 DecisionCore AI • Enterprise Logic Engine • Created by Taha Khattari" })
+                    ]
+                })
+            });
+
+            new sap.m.App({ pages: [oPage] }).placeAt("content");
+        });
+    </script>
 </head>
 
-<body class="sapUiBody" id="content">
-</body>
+<body class="sapUiBody" id="content"></body>
 
 </html>

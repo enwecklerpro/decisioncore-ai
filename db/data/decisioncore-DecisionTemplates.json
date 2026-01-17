@@ -1,82 +1,164 @@
 [
     {
-        "ID": "tmpl-credit-001",
         "code": "CREDIT_APPROVAL",
-        "name": "Credit Approval",
-        "description": "Evaluate credit applications for banking and financial services. Assesses customer creditworthiness based on amount, income, risk profile, and payment history.",
-        "category": "FINANCE",
-        "icon": "sap-icon://credit-card",
-        "inputSchema": "{\n  \"amount\": \"number (required) - Requested credit amount\",\n  \"income\": \"number - Annual income\",\n  \"riskLevel\": \"number 1-10 - Credit risk score\",\n  \"historyScore\": \"number 0-100 - Payment history score\",\n  \"customerType\": \"VIP|PREMIUM|STANDARD|NEW\",\n  \"country\": \"ISO country code\"\n}",
-        "defaultRules": "[]"
+        "name": "Credit Application Approval",
+        "description": "Evaluates customer credit requests based on risk score, history, and amount.",
+        "category": "Finance",
+        "inputSchema": "{\n  \"amount\": {\n    \"type\": \"number\",\n    \"label\": \"Loan Amount\"\n  },\n  \"creditScore\": {\n    \"type\": \"integer\",\n    \"label\": \"Credit Score (0-850)\"\n  },\n  \"customerSegment\": {\n    \"type\": \"string\",\n    \"enum\": [\"RETAIL\", \"CORPORATE\", \"VIP\"]\n  }\n}",
+        "defaultRules": "[{\"code\":\"R001\",\"condition\":\"creditScore < 600\",\"action\":\"REJECT\"}]",
+        "icon": "sap-icon://loan"
     },
     {
-        "ID": "tmpl-fraud-001",
         "code": "FRAUD_DETECTION",
         "name": "Transaction Fraud Detection",
-        "description": "Real-time fraud detection for financial transactions. Uses velocity checks, device fingerprinting, geolocation, and behavioral patterns.",
-        "category": "COMPLIANCE",
-        "icon": "sap-icon://shield",
-        "inputSchema": "{\n  \"transactionAmount\": \"number (required)\",\n  \"country\": \"ISO country code\",\n  \"deviceRisk\": \"number 0-100\",\n  \"velocity\": \"number - transactions in 24h\",\n  \"blacklistHit\": \"boolean\",\n  \"ipRisk\": \"number 0-100\"\n}",
-        "defaultRules": "[]"
+        "description": "Real-time analysis of transaction patterns to identify potential fraud.",
+        "category": "Security",
+        "inputSchema": "{\n  \"transactionAmount\": {\n    \"type\": \"number\"\n  },\n  \"location\": {\n    \"type\": \"string\"\n  },\n  \"deviceRiskScore\": {\n    \"type\": \"integer\"\n  }\n}",
+        "defaultRules": "[{\"code\":\"F001\",\"condition\":\"deviceRiskScore > 90\",\"action\":\"BLOCK\"}]",
+        "icon": "sap-icon://fraud"
     },
     {
-        "ID": "tmpl-vendor-001",
         "code": "PROCUREMENT_RISK",
-        "name": "Procurement Risk Assessment",
-        "description": "Supplier and vendor risk evaluation for SAP S/4HANA MM integration. Assesses financial stability, delivery performance, and compliance.",
-        "category": "PROCUREMENT",
-        "icon": "sap-icon://supplier",
-        "inputSchema": "{\n  \"vendorId\": \"string\",\n  \"contractValue\": \"number (required)\",\n  \"vendorScore\": \"number 0-100\",\n  \"deliveryDelay\": \"number - avg days delayed\",\n  \"countryRisk\": \"number 1-10\"\n}",
-        "defaultRules": "[]"
+        "name": "Vendor Procurement Risk",
+        "description": "Assess supplier reliability and geopolitical risk before purchase order approval.",
+        "category": "Sourcing",
+        "inputSchema": "{\n  \"vendorId\": {\n    \"type\": \"string\"\n  },\n  \"country\": {\n    \"type\": \"string\"\n  },\n  \"contractValue\": {\n    \"type\": \"number\"\n  }\n}",
+        "defaultRules": "[{\"code\":\"P001\",\"condition\":\"country == 'Restricted'\",\"action\":\"FLAG\"}]",
+        "icon": "sap-icon://supplier"
     },
     {
-        "ID": "tmpl-pricing-001",
-        "code": "PRICING_DISCOUNT",
-        "name": "Pricing & Discount Approval",
-        "description": "Automated pricing and discount eligibility for sales teams. Determines optimal pricing and discount approval based on deal size and customer tier.",
-        "category": "SALES",
-        "icon": "sap-icon://money-bills",
-        "inputSchema": "{\n  \"dealSize\": \"number (required) - Total deal value\",\n  \"discountPercent\": \"number - Requested discount %\",\n  \"customerTier\": \"PLATINUM|GOLD|SILVER|BRONZE\",\n  \"productCategory\": \"string\"\n}",
-        "defaultRules": "[]"
+        "code": "DISCOUNT_APPROVAL",
+        "name": "Sales Discount Approval",
+        "description": "Automated approval logic for sales order discounts based on margin and volume.",
+        "category": "Sales",
+        "inputSchema": "{\n  \"discountPercent\": {\n    \"type\": \"number\"\n  },\n  \"margin\": {\n    \"type\": \"number\"\n  },\n  \"customerTier\": {\n    \"type\": \"string\"\n  }\n}",
+        "defaultRules": "[{\"code\":\"D001\",\"condition\":\"discountPercent > 20\",\"action\":\"REVIEW\"}]",
+        "icon": "sap-icon://sales-order"
     },
     {
-        "ID": "tmpl-hr-001",
-        "code": "HR_DECISION",
-        "name": "HR Decision",
-        "description": "Employee performance and HR decisions. Validates role-based metrics, absence rates, and criticality.",
+        "code": "HR_PROMOTION",
+        "name": "HR Promotion Eligibility",
+        "description": "Determine employee eligibility for promotion cycles based on performance and tenure.",
         "category": "HR",
-        "icon": "sap-icon://employee-approvals",
-        "inputSchema": "{\n  \"performanceScore\": \"number 0-100\",\n  \"absenceRate\": \"number 0-100 - % days absent\",\n  \"roleCriticality\": \"LOW|MEDIUM|HIGH|CRITICAL\"\n}",
-        "defaultRules": "[]"
+        "inputSchema": "{\n  \"tenureYears\": {\n    \"type\": \"number\"\n  },\n  \"performanceRating\": {\n    \"type\": \"integer\"\n  },\n  \"department\": {\n    \"type\": \"string\"\n  }\n}",
+        "defaultRules": "[]",
+        "icon": "sap-icon://employee"
     },
     {
-        "ID": "tmpl-kyc-001",
         "code": "COMPLIANCE_KYC",
-        "name": "Compliance / KYC",
-        "description": "Know Your Customer screening for regulated industries. Checks customer identity, sanctions, and risk country.",
-        "category": "COMPLIANCE",
-        "icon": "sap-icon://locked",
-        "inputSchema": "{\n  \"customerType\": \"INDIVIDUAL|CORPORATE\",\n  \"riskCountry\": \"ISO country code\",\n  \"sanctionMatch\": \"boolean\"\n}",
-        "defaultRules": "[]"
+        "name": "KYC Compliance Check",
+        "description": "Know Your Customer compliance logic for onboarding new accounts.",
+        "category": "Legal",
+        "inputSchema": "{\n  \"documentType\": {\n    \"type\": \"string\"\n  },\n  \"pepStatus\": {\n    \"type\": \"boolean\"\n  },\n  \"riskCountry\": {\n    \"type\": \"boolean\"\n  }\n}",
+        "defaultRules": "[]",
+        "icon": "sap-icon://official-service"
     },
     {
-        "ID": "tmpl-security-001",
-        "code": "SECURITY_DECISION",
-        "name": "IT / Security Decision",
-        "description": "Security and anomaly detection. Evaluates device trust, anomaly scores, and access levels.",
-        "category": "SECURITY",
-        "icon": "sap-icon://key-user-settings",
-        "inputSchema": "{\n  \"anomalyScore\": \"number 0-100\",\n  \"accessLevel\": \"READ|WRITE|ADMIN|SUPER_ADMIN\",\n  \"deviceTrust\": \"number 0-100\"\n}",
-        "defaultRules": "[]"
+        "code": "IT_ACCESS",
+        "name": "IT Access Request",
+        "description": "Logic to approve or reject system access requests based on role and clearance.",
+        "category": "IT",
+        "inputSchema": "{\n  \"systemId\": {\n    \"type\": \"string\"\n  },\n  \"userRole\": {\n    \"type\": \"string\"\n  },\n  \"clearanceLevel\": {\n    \"type\": \"integer\"\n  }\n}",
+        "defaultRules": "[]",
+        "icon": "sap-icon://it-system"
     },
     {
-        "ID": "tmpl-generic-001",
         "code": "GENERIC_JSON",
         "name": "Generic JSON Decision",
-        "description": "Flexible template for any business decision via JSON payload.",
-        "category": "GENERIC",
-        "icon": "sap-icon://syntax",
-        "inputSchema": "{\n  \"payload\": \"JSON Object\"\n}",
-        "defaultRules": "[]"
+        "description": "Flexible template for any JSON-based decision logic.",
+        "category": "General",
+        "inputSchema": "{}",
+        "defaultRules": "[]",
+        "icon": "sap-icon://syntax"
+    },
+    {
+        "code": "SCM_RISK",
+        "name": "Supply Chain Risk Assessment",
+        "description": "Evaluates logistical risks for shipments based on route, carrier, and weather data.",
+        "category": "Supply Chain",
+        "inputSchema": "{\n  \"routeId\": {\"type\": \"string\"},\n  \"carrierRating\": {\"type\": \"integer\"},\n  \"weatherAlert\": {\"type\": \"boolean\"},\n  \"cargoValue\": {\"type\": \"number\"}\n}",
+        "defaultRules": "[{\"code\":\"SCM01\",\"condition\":\"weatherAlert == true AND cargoValue > 100000\",\"action\":\"REROUTE\"}]",
+        "icon": "sap-icon://shipping-status"
+    },
+    {
+        "code": "QM_INSPECT",
+        "name": "Quality Inspection Decision",
+        "description": "Determines if a production lot requires full inspection or can be skipped.",
+        "category": "Quality (QM)",
+        "inputSchema": "{\n  \"materialGroup\": {\"type\": \"string\"},\n  \"vendorQualityScore\": {\"type\": \"number\"},\n  \"defectHistory\": {\"type\": \"integer\"}\n}",
+        "defaultRules": "[{\"code\":\"QM01\",\"condition\":\"vendorQualityScore < 80\",\"action\":\"FULL_INSPECT\"}]",
+        "icon": "sap-icon://quality-issue"
+    },
+    {
+        "code": "PM_ORDER",
+        "name": "Maintenance Order Priority",
+        "description": "Auto-assigns priority to Plant Maintenance orders based on asset criticality.",
+        "category": "Plant Maintenance (PM)",
+        "inputSchema": "{\n  \"assetCriticality\": {\"type\": \"string\", \"enum\": [\"A\", \"B\", \"C\"]},\n  \"breakdown\": {\"type\": \"boolean\"},\n  \"safetyImpact\": {\"type\": \"boolean\"}\n}",
+        "defaultRules": "[{\"code\":\"PM01\",\"condition\":\"breakdown == true AND assetCriticality == 'A'\",\"action\":\"EMERGENCY\"}]",
+        "icon": "sap-icon://lab"
+    },
+    {
+        "code": "ASSET_MGMT",
+        "name": "Asset Lifecycle Decision",
+        "description": "Recommend Repair vs. Replace for enterprise assets.",
+        "category": "Asset Mgmt",
+        "inputSchema": "{\n  \"ageYears\": {\"type\": \"number\"},\n  \"repairCost\": {\"type\": \"number\"},\n  \"replacementCost\": {\"type\": \"number\"}\n}",
+        "defaultRules": "[{\"code\":\"AM01\",\"condition\":\"repairCost > (0.6 * replacementCost)\",\"action\":\"REPLACE\"}]",
+        "icon": "sap-icon://machine"
+    },
+    {
+        "code": "EWM_STOCK",
+        "name": "Warehouse Stock Transfer",
+        "description": "Logic to optimize stock movement triggers in EWM.",
+        "category": "Warehouse (EWM)",
+        "inputSchema": "{\n  \"stockLevel\": {\"type\": \"number\"},\n  \"demandForecast\": {\"type\": \"number\"},\n  \"storageType\": {\"type\": \"string\"}\n}",
+        "defaultRules": "[]",
+        "icon": "sap-icon://warehouse"
+    },
+    {
+        "code": "TRAVEL_EXP",
+        "name": "Travel Expense Approval",
+        "description": "Audits travel expense reports against corporate policy limits.",
+        "category": "Travel",
+        "inputSchema": "{\n  \"expenseType\": {\"type\": \"string\"},\n  \"amount\": {\"type\": \"number\"},\n  \"receiptAttached\": {\"type\": \"boolean\"},\n  \"projectBillable\": {\"type\": \"boolean\"}\n}",
+        "defaultRules": "[{\"code\":\"TRV01\",\"condition\":\"amount > 50 AND receiptAttached == false\",\"action\":\"REJECT\"}]",
+        "icon": "sap-icon://travel-expense"
+    },
+    {
+        "code": "INVOICE_APPR",
+        "name": "Invoice Auto-Approval",
+        "description": "Three-way matching logic for automated vendor invoice payment.",
+        "category": "Finance (AP)",
+        "inputSchema": "{\n  \"poAmount\": {\"type\": \"number\"},\n  \"invoiceAmount\": {\"type\": \"number\"},\n  \"grDate\": {\"type\": \"string\"}\n}",
+        "defaultRules": "[{\"code\":\"INV01\",\"condition\":\"abs(invoiceAmount - poAmount) < 5.0\",\"action\":\"APPROVE\"}]",
+        "icon": "sap-icon://my-invoices"
+    },
+    {
+        "code": "RMA_REQ",
+        "name": "Return Request Action",
+        "description": "Decides handling of customer returns (Refurbish, Scrap, Restock).",
+        "category": "Sales (SD)",
+        "inputSchema": "{\n  \"reasonCode\": {\"type\": \"string\"},\n  \"itemCondition\": {\"type\": \"string\"},\n  \"warrantyActive\": {\"type\": \"boolean\"}\n}",
+        "defaultRules": "[]",
+        "icon": "sap-icon://customer-return"
+    },
+    {
+        "code": "CONTRACT_MGMT",
+        "name": "Contract Auto-Renewal",
+        "description": "Determines if a service contract should be auto-renewed.",
+        "category": "Legal",
+        "inputSchema": "{\n  \"contractValue\": {\"type\": \"number\"},\n  \"disputesCount\": {\"type\": \"integer\"},\n  \"usageRate\": {\"type\": \"number\"}\n}",
+        "defaultRules": "[]",
+        "icon": "sap-icon://contract"
+    },
+    {
+        "code": "BUDGET_REL",
+        "name": "Capex Budget Release",
+        "description": "Approves capital expenditure requests based on available budget.",
+        "category": "Finance",
+        "inputSchema": "{\n  \"department\": {\"type\": \"string\"},\n  \"reuqestedAmount\": {\"type\": \"number\"},\n  \"remainingBudget\": {\"type\": \"number\"}\n}",
+        "defaultRules": "[{\"code\":\"BUD01\",\"condition\":\"requestedAmount > remainingBudget\",\"action\":\"REJECT\"}]",
+        "icon": "sap-icon://money-bills"
     }
 ]

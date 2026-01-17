@@ -69,7 +69,7 @@ service DecisionService {
     entity DecisionHistory as projection on db.DecisionHistory;
     
     // Templates
-    @readonly entity Templates as projection on db.ScenarioTemplates;
+    @readonly entity Templates as projection on db.DecisionTemplates;
     
     // Reference Data
     @readonly entity RuleOperators as projection on db.RuleOperators;

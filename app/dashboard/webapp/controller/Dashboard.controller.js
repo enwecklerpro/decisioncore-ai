@@ -30,7 +30,9 @@ sap.ui.define([
             oView.setModel(oDashboardModel, "dashboard");
 
             // View Settings Model
-            oView.setModel(new JSONModel({ timeRange: "today", autoRefresh: true }), "view");
+            var sCurrentTheme = sap.ui.getCore().getConfiguration().getTheme();
+            var bIsDark = sCurrentTheme.includes("dark");
+            oView.setModel(new JSONModel({ timeRange: "today", autoRefresh: true, darkMode: bIsDark }), "view");
 
             // Format Chart when View is ready
             oView.attachAfterRendering(() => {
@@ -115,6 +117,13 @@ sap.ui.define([
         onRefresh: function () {
             this._loadDashboardData();
             MessageToast.show("Data refreshed");
+        },
+
+        onThemeChange: function (oEvent) {
+            var bDark = oEvent.getParameter("state");
+            var sTheme = bDark ? "sap_horizon_dark" : "sap_horizon";
+            sap.ui.getCore().applyTheme(sTheme);
+            MessageToast.show("Theme " + (bDark ? "Dark" : "Light") + " applied");
         },
 
         onSettings: function () {

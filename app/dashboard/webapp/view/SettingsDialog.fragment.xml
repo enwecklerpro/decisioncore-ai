@@ -15,8 +15,8 @@
                  <Switch state="{view>/autoRefresh}" customTextOn="On" customTextOff="Off"/>
                  
                  <Label text="Theme Mode" class="sapUiSmallMarginTop"/>
-                 <Switch state="true" customTextOn="Dark" customTextOff="Light" enabled="false"/>
-                 <Text text="(System Theme active)" class="sapUiTinyMarginTop"/>
+                 <Switch state="{view>/darkMode}" customTextOn="Dark" customTextOff="Light" change=".onThemeChange"/>
+                 <Text text="(Experimental)" class="sapUiTinyMarginTop"/>
             </VBox>
         </content>
         <endButton>

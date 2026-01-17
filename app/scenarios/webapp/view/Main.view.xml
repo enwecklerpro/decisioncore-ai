@@ -69,15 +69,17 @@
                         <Column hAlign="End"><Text text="Action"/></Column>
                     </columns>
                     <items>
-                        <ColumnListItem type="Navigation">
+                        <ColumnListItem type="Navigation" press=".onEditScenario">
                             <cells>
                                 <ObjectIdentifier title="{displayName}" text="{name}"/>
                                 <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}" icon="{= ${status} === 'ACTIVE' ? 'sap-icon://sys-enter-2' : 'sap-icon://alert'}"/>
                                 <ObjectNumber number="{rulesWeight}" unit="%" state="Information"/>
                                 <ObjectNumber number="{aiWeight}" unit="%" state="Information"/>
                                 <ObjectStatus text="v{version}" state="Indication06" active="true"/>
-                                <Button icon="sap-icon://edit" type="Transparent" press=".onEditScenario" tooltip="Edit Configuration"/>
-                                <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteScenario" tooltip="Delete Scenario"/>
+                                <HBox>
+                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditScenario" tooltip="Edit Configuration"/>
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteScenario" tooltip="Delete Scenario"/>
+                                </HBox>
                             </cells>
                         </ColumnListItem>
                     </items>

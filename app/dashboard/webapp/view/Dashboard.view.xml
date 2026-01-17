@@ -123,8 +123,6 @@
                                         <Text text="{dashboard>/stats/aiContribution}%"/>
                                     </HBox>
                                     <ProgressIndicator percentValue="{dashboard>/stats/aiContribution}" state="Information" displayValue="" height="1rem"/>
-                                    
-                                    <MessageStrip text="AI contribution stable within tolerance limits." type="Information" showIcon="true"/>
                                 </VBox>
                             </f:content>
                         </f:Card>

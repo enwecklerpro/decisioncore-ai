@@ -7,15 +7,6 @@
         "description": "Manage decision rules",
         "applicationVersion": {
             "version": "2.0.0"
-        },
-        "dataSources": {
-            "mainService": {
-                "uri": "/api/decision/",
-                "type": "OData",
-                "settings": {
-                    "odataVersion": "4.0"
-                }
-            }
         }
     },
     "sap.ui": {
@@ -28,6 +19,7 @@
     },
     "sap.ui5": {
         "flexEnabled": false,
+        "componentUsages": {},
         "rootView": {
             "viewName": "decisioncore.rules.view.Main",
             "type": "XML",
@@ -42,15 +34,6 @@
                 "sap.f": {}
             }
         },
-        "models": {
-            "": {
-                "dataSource": "mainService",
-                "preload": true,
-                "settings": {
-                    "synchronizationMode": "None",
-                    "operationMode": "Server"
-                }
-            }
-        }
+        "models": {}
     }
 }

@@ -9,7 +9,7 @@
                     <f:heading><Title text="Rules Management"/></f:heading>
                     <f:expandedContent><Label text="Configure business rules and policies"/></f:expandedContent>
                     <f:actions>
-                        <Button text="New Rule" type="Emphasized" icon="sap-icon://add"/>
+                        <Button text="New Rule" type="Emphasized" icon="sap-icon://add" press=".onOpenCreateRuleDialog"/>
                     </f:actions>
                 </f:DynamicPageTitle>
             </f:title>

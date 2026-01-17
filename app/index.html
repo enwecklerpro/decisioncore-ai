@@ -10,15 +10,13 @@
         </script>
     <script>
         sap.ui.getCore().attachInit(function () {
-            // Simple FlexBox layout - most robust
-            var oTileContainer = new sap.m.FlexBox({
-                wrap: "Wrap",
-                justifyContent: "Start",
-                alignItems: "Start"
-            });
+            // KPI Container
+            var oKPITileContainer = new sap.m.FlexBox({ wrap: "Wrap", justifyContent: "Start", alignItems: "Start" });
+            // App Container
+            var oAppTileContainer = new sap.m.FlexBox({ wrap: "Wrap", justifyContent: "Start", alignItems: "Start" });
 
             // Helper function
-            function addTile(header, subheader, icon, url, value, scale, color) {
+            function addTile(container, header, subheader, icon, url, value, scale, color) {
                 var content;
                 if (value) {
                     content = new sap.m.NumericContent({ value: value, scale: scale || "", icon: icon, valueColor: color || "Neutral" });
@@ -26,7 +24,7 @@
                     content = new sap.m.ImageContent({ src: icon });
                 }
 
-                oTileContainer.addItem(new sap.m.GenericTile({
+                container.addItem(new sap.m.GenericTile({
                     header: header,
                     subheader: subheader,
                     tileContent: new sap.m.TileContent({ content: content }),
@@ -35,17 +33,17 @@
             }
 
             // KPI Tiles
-            addTile("Total Decisions", "All Time", "sap-icon://performance", "/dashboard/webapp/index.html", "12.5k", "", "Good");
-            addTile("Approval Rate", "Automation Level", "sap-icon://accept", "/dashboard/webapp/index.html", "68", "%", "Good");
-            addTile("AI Providers", "Active Models", "sap-icon://machine-learning", "/admin/webapp/index.html", "4", "", "Neutral");
+            addTile(oKPITileContainer, "Total Decisions", "All Time", "sap-icon://performance", "/dashboard/webapp/index.html", "12.5k", "", "Good");
+            addTile(oKPITileContainer, "Approval Rate", "Automation Level", "sap-icon://accept", "/dashboard/webapp/index.html", "68", "%", "Good");
+            addTile(oKPITileContainer, "AI Providers", "Active Models", "sap-icon://machine-learning", "/admin/webapp/index.html", "4", "", "Neutral");
 
             // App Tiles
-            addTile("Executive Dashboard", "Analytics & KPIs", "sap-icon://bbyd-dashboard", "/dashboard/webapp/index.html");
-            addTile("Scenario Management", "Define Decision Logic", "sap-icon://org-chart", "/scenarios/webapp/index.html");
-            addTile("Rules Management", "Business Policies", "sap-icon://user-settings", "/rules/webapp/index.html");
-            addTile("Decision Execution", "Test & Simulate", "sap-icon://media-play", "/execute/webapp/index.html");
-            addTile("Decision History", "Audit & Compliance", "sap-icon://history", "/history/webapp/index.html");
-            addTile("Administration", "AI Provider Config", "sap-icon://action-settings", "/admin/webapp/index.html");
+            addTile(oAppTileContainer, "Executive Dashboard", "Analytics & KPIs", "sap-icon://bbyd-dashboard", "/dashboard/webapp/index.html");
+            addTile(oAppTileContainer, "Scenario Management", "Define Decision Logic", "sap-icon://org-chart", "/scenarios/webapp/index.html");
+            addTile(oAppTileContainer, "Rules Management", "Business Policies", "sap-icon://workflow-editor", "/rules/webapp/index.html");
+            addTile(oAppTileContainer, "Decision Execution", "Test & Simulate", "sap-icon://media-play", "/execute/webapp/index.html");
+            addTile(oAppTileContainer, "Decision History", "Audit & Compliance", "sap-icon://history", "/history/webapp/index.html");
+            addTile(oAppTileContainer, "Administration", "AI Provider Config", "sap-icon://action-settings", "/admin/webapp/index.html");
 
             // Shell Bar
             var oShellBar = new sap.f.ShellBar({
@@ -64,7 +62,9 @@
                 content: [
                     oShellBar,
                     new sap.m.Title({ text: "Key Performance Indicators", titleStyle: "H4" }).addStyleClass("sapUiSmallMargin"),
-                    oTileContainer
+                    oKPITileContainer,
+                    new sap.m.Title({ text: "Business Applications", titleStyle: "H4" }).addStyleClass("sapUiSmallMargin sapUiMediumMarginTop"),
+                    oAppTileContainer
                 ],
                 footer: new sap.m.Bar({
                     contentMiddle: [

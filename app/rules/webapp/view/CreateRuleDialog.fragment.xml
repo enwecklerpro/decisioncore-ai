@@ -1,0 +1,45 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form">
+    <Dialog id="createRuleDialog" title="Create Business Rule" contentWidth="600px">
+        <content>
+            <f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12">
+                
+                <Label text="Target Scenario" required="true"/>
+                <Select id="scenarioSelect" items="{path: '/DecisionScenarios', sorter: { path: 'name' }}" width="100%">
+                    <core:Item key="{ID}" text="{name}"/>
+                </Select>
+
+                <Label text="Rule Code" required="true"/>
+                <Input value="{newRule>/ruleCode}" placeholder="e.g. R-FIN-01" required="true"/>
+
+                <Label text="Rule Name"/>
+                <Input value="{newRule>/ruleName}" placeholder="Short descriptive name"/>
+
+                <Label text="Description"/>
+                <TextArea value="{newRule>/description}" rows="2"/>
+
+                <Label text="Condition Logic" required="true"/>
+                <TextArea value="{newRule>/condition}" rows="4" placeholder="e.g. input.amount > 50000 &amp;&amp; input.customerType === 'NEW'" valid="{= ${newRule>/condition}.length > 0}"/>
+                
+                <Label text="Action"/>
+                <Select selectedKey="{newRule>/action}">
+                     <core:Item key="APPROVE" text="Approve (+Score)"/>
+                     <core:Item key="REJECT" text="Reject (Block)"/>
+                     <core:Item key="REVIEW" text="Manual Review"/>
+                </Select>
+
+                <Label text="Score Impact"/>
+                <StepInput value="{newRule>/scoreModifier}" min="-100" max="100" step="5" description="pts"/>
+
+                <Label text="Priority"/>
+                <StepInput value="{newRule>/priority}" min="1" max="100"/>
+
+            </f:SimpleForm>
+        </content>
+        <beginButton>
+            <Button text="Create" type="Emphasized" press=".onCreateRuleConfirm"/>
+        </beginButton>
+        <endButton>
+            <Button text="Cancel" press=".onCreateRuleCancel"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

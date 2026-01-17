@@ -7,6 +7,15 @@
         "description": "Execute and simulate decisions",
         "applicationVersion": {
             "version": "2.0.0"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/api/decision/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "4.0"
+                }
+            }
         }
     },
     "sap.ui": {
@@ -38,6 +47,16 @@
             }
         },
         "models": {
+            "": {
+                "dataSource": "mainService",
+                "preload": false,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": false
+                }
+            },
             "view": {
                 "type": "sap.ui.model.json.JSONModel"
             }

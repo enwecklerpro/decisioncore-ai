@@ -7,6 +7,15 @@
         "description": "Configure AI providers",
         "applicationVersion": {
             "version": "2.0.0"
+        },
+        "dataSources": {
+            "adminService": {
+                "uri": "/api/admin/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "4.0"
+                }
+            }
         }
     },
     "sap.ui": {
@@ -37,6 +46,17 @@
                 "sap.f": {}
             }
         },
-        "models": {}
+        "models": {
+            "": {
+                "dataSource": "adminService",
+                "preload": false,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": false
+                }
+            }
+        }
     }
 }

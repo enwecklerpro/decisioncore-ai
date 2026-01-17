@@ -16,7 +16,6 @@ sap.ui.define([
         },
 
         onCreateScenario: function () {
-            // Open the Template Selection Dialog
             if (!this._pTemplateDialog) {
                 this._pTemplateDialog = this.loadFragment({
                     name: "decisioncore.scenarios.view.TemplateSelectDialog"
@@ -43,16 +42,15 @@ sap.ui.define([
             var oCtx = oSelectedItem.getBindingContext();
             var oTemplate = oCtx.getObject();
 
-            // USE TABLE BINDING TO CREATE (Ensures UI update)
             var oTable = this.byId("scenariosTable");
             var oBinding = oTable.getBinding("items");
 
             var oNewContext = oBinding.create({
-                name: oTemplate.name + " " + new Date().getSeconds(), // Simple unique suffix
+                name: oTemplate.name + " " + new Date().getSeconds(),
                 displayName: oTemplate.name,
                 description: oTemplate.description,
                 status: "DRAFT",
-                template_ID: oTemplate.code, // Code is the key for template
+                template_ID: oTemplate.code,
                 inputSchema: oTemplate.inputSchema,
                 rulesWeight: 60,
                 aiWeight: 40
@@ -60,7 +58,7 @@ sap.ui.define([
 
             oNewContext.created().then(function () {
                 MessageToast.show("Scenario '" + oTemplate.name + "' created successfully.");
-                oTable.getBinding("items").refresh(); // Forced refresh just in case
+                oTable.getBinding("items").refresh();
             }).catch(function (oError) {
                 MessageBox.error("Error creating scenario: " + oError.message);
             });
@@ -93,7 +91,6 @@ sap.ui.define([
         },
 
         onFilter: function () {
-            // Simple filter toggle for Active status
             var oTable = this.byId("scenariosTable");
             var oBinding = oTable.getBinding("items");
 
@@ -112,14 +109,14 @@ sap.ui.define([
         onGroup: function () {
             var oTable = this.byId("scenariosTable");
             var oBinding = oTable.getBinding("items");
-            var oSorter = new Sorter("status", false, true); // Group enabled
+            var oSorter = new Sorter("status", false, true);
             oBinding.sort(oSorter);
             MessageToast.show("Grouped by Status");
         },
 
         onEditScenario: function (oEvent) {
             var oCtx = oEvent.getSource().getBindingContext();
-            this._oConfigContext = oCtx; // Keep reference to OData Context
+            this._oConfigContext = oCtx;
 
             var oData = oCtx.getObject();
             var oEditModel = new JSONModel({
@@ -145,8 +142,6 @@ sap.ui.define([
 
         onEditScenarioSave: function () {
             var oData = this.getView().getModel("editScenario").getData();
-
-            // Update OData Context fields
             this._oConfigContext.setProperty("displayName", oData.displayName);
             this._oConfigContext.setProperty("description", oData.description);
             this._oConfigContext.setProperty("rulesWeight", oData.rulesWeight);
@@ -166,13 +161,40 @@ sap.ui.define([
             var oCtx = oEvent.getSource().getBindingContext();
             var sName = oCtx.getProperty("name");
 
-            MessageBox.confirm("Permanently delete scenario '" + sName + "'? This will remove all associated rules.", {
+            MessageBox.confirm("Permanently delete scenario '" + sName + "'?", {
                 onClose: function (sAction) {
                     if (sAction === MessageBox.Action.OK) {
                         oCtx.delete().then(function () {
                             MessageToast.show("Scenario deleted");
                         }).catch(function (e) {
                             MessageBox.error("Delete failed: " + e.message);
+                        });
+                    }
+                }
+            });
+        },
+
+        onDeleteSelectedScenarios: function () {
+            var oTable = this.byId("scenariosTable");
+            var aSelectedItems = oTable.getSelectedItems();
+
+            if (aSelectedItems.length === 0) {
+                MessageToast.show("No scenarios selected.");
+                return;
+            }
+
+            MessageBox.confirm("Delete " + aSelectedItems.length + " scenarios?", {
+                onClose: function (sAction) {
+                    if (sAction === MessageBox.Action.OK) {
+                        var aPromises = [];
+                        aSelectedItems.forEach(function (oItem) {
+                            aPromises.push(oItem.getBindingContext().delete());
+                        });
+                        Promise.all(aPromises).then(function () {
+                            MessageToast.show("Scenarios deleted");
+                            oTable.removeSelections();
+                        }).catch(function (e) {
+                            MessageBox.error("Error: " + e.message);
                         });
                     }
                 }

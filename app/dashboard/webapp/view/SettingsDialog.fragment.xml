@@ -1,0 +1,26 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <Dialog title="Dashboard Settings" id="settingsDialog">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                 <Label text="Time Range"/>
+                 <SegmentedButton selectedKey="{view>/timeRange}">
+                     <items>
+                         <SegmentedButtonItem key="today" text="Today"/>
+                         <SegmentedButtonItem key="week" text="This Week"/>
+                         <SegmentedButtonItem key="month" text="This Month"/>
+                     </items>
+                 </SegmentedButton>
+                 
+                 <Label text="Auto-Refresh" class="sapUiSmallMarginTop"/>
+                 <Switch state="{view>/autoRefresh}" customTextOn="On" customTextOff="Off"/>
+                 
+                 <Label text="Theme Mode" class="sapUiSmallMarginTop"/>
+                 <Switch state="true" customTextOn="Dark" customTextOff="Light" enabled="false"/>
+                 <Text text="(System Theme active)" class="sapUiTinyMarginTop"/>
+            </VBox>
+        </content>
+        <endButton>
+            <Button text="Close" press=".onCloseSettings"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

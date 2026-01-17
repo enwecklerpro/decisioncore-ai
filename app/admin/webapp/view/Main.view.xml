@@ -53,8 +53,10 @@
                                     <core:Icon src="{= ${isDefault} ? 'sap-icon://accept' : ''}" color="Positive"/>
                                     <Button text="Test" icon="sap-icon://connected" press=".onTestConnection"/>
                                 </VBox>
-                                <Button icon="sap-icon://edit" type="Transparent" press=".onEditProvider"/>
-                                <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteProvider"/>
+                                <HBox>
+                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditProvider" tooltip="Edit"/>
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteProvider" tooltip="Delete"/>
+                                </HBox>
                             </cells>
                         </ColumnListItem>
                     </items>

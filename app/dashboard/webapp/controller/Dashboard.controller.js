@@ -29,6 +29,9 @@ sap.ui.define([
             });
             oView.setModel(oDashboardModel, "dashboard");
 
+            // View Settings Model
+            oView.setModel(new JSONModel({ timeRange: "today", autoRefresh: true }), "view");
+
             // Format Chart when View is ready
             oView.attachAfterRendering(() => {
                 this._initVizFrame();
@@ -115,7 +118,19 @@ sap.ui.define([
         },
 
         onSettings: function () {
-            MessageToast.show("Dashboard Settings configuration coming soon.");
+            if (!this._pSettingsDialog) {
+                this._pSettingsDialog = this.loadFragment({
+                    name: "decisioncore.dashboard.view.SettingsDialog"
+                });
+            }
+            this._pSettingsDialog.then(function (oDialog) {
+                oDialog.open();
+            });
+        },
+
+        onCloseSettings: function () {
+            this.byId("settingsDialog").close();
+            MessageToast.show("Dashboard preferences updated.");
         }
     });
 });

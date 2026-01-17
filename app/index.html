@@ -195,7 +195,33 @@
                         new Button({
                             icon: "sap-icon://search",
                             type: "Transparent",
-                            press: function () { sap.m.MessageToast.show("Global Search: Not implemented yet"); }
+                            press: function () {
+                                sap.ui.require(["sap/m/SelectDialog", "sap/m/StandardListItem"], function (SelectDialog, StandardListItem) {
+                                    if (!window._oSearchDialog) {
+                                        window._oSearchDialog = new SelectDialog({
+                                            title: "Global Search",
+                                            placeholder: "Search Scenarios, Rules...",
+                                            search: function (oEvent) {
+                                                var sValue = oEvent.getParameter("value");
+                                                if (sValue) {
+                                                    oEvent.getSource().destroyItems();
+                                                    oEvent.getSource().addItem(new StandardListItem({ title: "Scenario: " + sValue, description: "Go to Scenarios", type: "Active", icon: "sap-icon://org-chart" }));
+                                                    oEvent.getSource().addItem(new StandardListItem({ title: "Rule: " + sValue, description: "Go to Rules", type: "Active", icon: "sap-icon://process" }));
+                                                }
+                                            },
+                                            confirm: function (oEvent) {
+                                                var oItem = oEvent.getParameter("selectedItem");
+                                                if (oItem) {
+                                                    var sTitle = oItem.getTitle();
+                                                    if (sTitle.startsWith("Scenario")) navigateTo("scenarios", "/scenarios/webapp/index.html");
+                                                    else if (sTitle.startsWith("Rule")) navigateTo("rules", "/rules/webapp/index.html");
+                                                }
+                                            }
+                                        });
+                                    }
+                                    window._oSearchDialog.open();
+                                });
+                            }
                         }),
                         new Button({
                             icon: "sap-icon://bell",

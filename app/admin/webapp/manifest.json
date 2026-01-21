@@ -65,13 +65,13 @@
                 }
             },
             "": {
-                "dataSource": "mainService",
+                "type": "sap.ui.model.odata.v4.ODataModel",
+                "dataSource": "adminService",
                 "preload": false,
                 "settings": {
                     "synchronizationMode": "None",
                     "operationMode": "Server",
-                    "autoExpandSelect": true,
-                    "earlyRequests": false
+                    "autoExpandSelect": true
                 }
             }
         }

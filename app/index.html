@@ -734,10 +734,8 @@
                                 var sCurrent = sap.ui.getCore().getConfiguration().getTheme();
                                 var sNew = sCurrent.includes("dark") ? "sap_horizon" : "sap_horizon_dark";
                                 var isDark = sNew.includes("dark");
-                                var bgColor = isDark ? "#12171c" : "#f8f9fa";
 
-                                // 1. Apply UI5 theme
-                                sap.ui.getCore().applyTheme(sNew);
+                                // Save theme to localStorage
                                 localStorage.setItem("ui5-theme", sNew);
 
                                 // Save per scenario if enabled
@@ -749,30 +747,13 @@
                                     localStorage.setItem("ui5-scenario-themes", JSON.stringify(scenarioThemes));
                                 }
 
-                                // 2. Update documentElement background immediately
-                                document.documentElement.style.backgroundColor = bgColor;
-                                document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+                                // Show message and reload page to apply theme completely
+                                MessageToast.show((isDark ? "Dark Mode" : "Light Mode") + " - Reloading...");
 
-                                // 3. Update the initial-theme-style for all UI5 containers
-                                var flashStyle = document.getElementById("initial-theme-style");
-                                if (flashStyle) {
-                                    flashStyle.innerHTML = 'html, body, #content, .sapUiBody, .sapMPage, .main-page-container, .sapTntToolPageMain { background-color: ' + bgColor + ' !important; transition: none !important; } .hero-section { background: ' + (isDark ? 'linear-gradient(135deg, #12171c 0%, #1a222a 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)') + ' !important; }';
-                                }
-
-                                // 4. Toggle body theme class
-                                document.body.classList.remove("sapUiTheme-sap_horizon_dark", "sapUiTheme-sap_horizon_light");
-                                document.body.classList.add(isDark ? "sapUiTheme-sap_horizon_dark" : "sapUiTheme-sap_horizon_light");
-
-                                // 5. Update iframe background and sync theme
-                                var iframe = document.getElementById("appFrame");
-                                if (iframe) {
-                                    iframe.style.backgroundColor = bgColor;
-                                    if (iframe.contentWindow) {
-                                        iframe.contentWindow.postMessage({ type: "setTheme", theme: sNew }, "*");
-                                    }
-                                }
-
-                                MessageToast.show(isDark ? "Dark Mode" : "Light Mode");
+                                // Reload page after short delay to show toast
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 500);
                             }
                         }),
                         // Language Selector

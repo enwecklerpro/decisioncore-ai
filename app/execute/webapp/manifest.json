@@ -41,12 +41,29 @@
             "minUI5Version": "1.120.0",
             "libs": {
                 "sap.m": {},
+                "sap.f": {},
                 "sap.ui.core": {},
-                "sap.ui.layout": {},
-                "sap.f": {}
+                "sap.ui.layout": {}
             }
         },
         "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "decisioncore.execute.i18n.i18n",
+                    "supportedLocales": [
+                        "en",
+                        "de",
+                        "es",
+                        "fr",
+                        "it",
+                        "ja",
+                        "nl",
+                        "zh"
+                    ],
+                    "fallbackLocale": "en"
+                }
+            },
             "": {
                 "dataSource": "mainService",
                 "preload": false,

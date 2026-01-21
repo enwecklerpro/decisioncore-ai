@@ -4,6 +4,55 @@
 <head>
     <meta charset="utf-8">
     <title>DecisionCore AI - Enterprise Platform</title>
+    <script>
+        // BLOCKING THEME AND LANGUAGE SET - Must be first script
+        (function () {
+            var sTheme = localStorage.getItem("ui5-theme") || "sap_horizon";
+            var sLanguage = localStorage.getItem("ui5-language") || navigator.language.substring(0, 2) || "en";
+
+            // Check URL for sap-language parameter
+            var urlParams = new URLSearchParams(window.location.search);
+            var urlLang = urlParams.get("sap-language");
+            if (urlLang) {
+                sLanguage = urlLang;
+                localStorage.setItem("ui5-language", urlLang);
+            }
+
+            window["sap-ui-config"] = {
+                theme: sTheme,
+                language: sLanguage,
+                xxIllustrations: "sapIll:fiori" // Register standard illustrations globally
+            };
+            var isDark = sTheme.indexOf("dark") !== -1;
+            var bgColor = isDark ? "#12171c" : "#f8f9fa";
+
+            // Apply background color to the absolute root immediately
+            document.documentElement.style.backgroundColor = bgColor;
+            document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+            document.documentElement.lang = sLanguage;
+
+            // Inject ultra-fast CSS for all possible layouts
+            var style = document.createElement('style');
+            style.id = "initial-theme-style";
+            style.innerHTML = `
+                html, body, #content, .sapUiBody, .sapMPage, .main-page-container, .sapTntToolPageMain { 
+                    background-color: ${bgColor} !important; 
+                    transition: none !important; 
+                }
+                .hero-section {
+                    background: ${isDark ? "linear-gradient(135deg, #12171c 0%, #1a222a 100%)" : "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)"} !important;
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Add theme class to body as soon as possible
+            document.addEventListener("DOMContentLoaded", function () {
+                document.body.classList.add(isDark ? "sapUiTheme-sap_horizon_dark" : "sapUiTheme-sap_horizon_light");
+                document.body.classList.add("sapUiSizeCompact");
+            });
+        })();
+    </script>
+
     <script id="sap-ui-bootstrap" src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
         data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m,sap.f,sap.ui.layout,sap.tnt,sap.ui.unified"
         data-sap-ui-compatVersion="edge" data-sap-ui-async="true" data-sap-ui-preload="async"
@@ -15,39 +64,224 @@
         body {
             height: 100%;
             margin: 0;
+            overflow: hidden;
         }
 
         .sapMPageEnableScrolling {
             height: 100%;
         }
 
-        /* App IFrame styling */
         #appFrame {
             width: 100%;
             height: 100%;
             border: none;
             display: block;
+            background: transparent;
         }
 
-        /* Hero styling reused */
+        /* ===== PREMIUM HOME PAGE STYLING ===== */
         .hero-section {
-            padding: 3rem 4rem 2rem 4rem;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 2.5rem 3rem;
+            min-height: calc(100vh - 180px);
+            display: flex;
+            flex-direction: column;
         }
 
-        .hero-title .sapMTitle {
+        /* Dark Mode Hero */
+        .sapUiTheme-sap_horizon_dark .hero-section {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a222a 100%);
+        }
+
+        /* Light Mode Hero */
+        .sapUiTheme-sap_horizon_light .hero-section,
+        .hero-section {
+            background: linear-gradient(135deg, #f0f4f8 0%, #ffffff 50%, #f8fafc 100%);
+        }
+
+        /* Welcome Title Styling */
+        .welcome-title .sapMTitle {
+            font-size: 2.2rem !important;
+            font-weight: 800 !important;
+            background: linear-gradient(135deg, #0066b3 0%, #00a1e4 50%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .sapUiTheme-sap_horizon_dark .welcome-title .sapMTitle {
+            background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle .sapMText {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        /* Quick Action Cards */
+        .quick-action-card {
+            border-radius: 16px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            cursor: pointer;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-4px) !important;
+            box-shadow: 0 20px 40px rgba(0, 102, 179, 0.15) !important;
+        }
+
+        .sapUiTheme-sap_horizon_dark .quick-action-card:hover {
+            box-shadow: 0 20px 40px rgba(96, 165, 250, 0.2) !important;
+        }
+
+        /* Stats Cards with Glassmorphism */
+        .stats-card {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px !important;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 1.5rem;
+        }
+
+        .sapUiTheme-sap_horizon_dark .stats-card {
+            background: rgba(30, 41, 59, 0.6) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sapUiTheme-sap_horizon_light .stats-card {
+            background: rgba(255, 255, 255, 0.7) !important;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-number {
             font-size: 2.5rem !important;
             font-weight: 700 !important;
-            color: #1d2d3e;
+            line-height: 1.2;
         }
 
-        .content-padding {
-            padding: 2rem 4rem;
+        .stat-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+        }
+
+        /* Navigation Tiles Grid */
+        .nav-tiles-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-tile {
+            flex: 1 1 200px;
+            max-width: 280px;
+        }
+
+        /* Feature Card Styling */
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .sapUiTheme-sap_horizon_dark .feature-icon {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+        }
+
+        .sapUiTheme-sap_horizon_light .feature-icon {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        }
+
+        /* Animated Gradient Border */
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .gradient-border {
+            position: relative;
+            border-radius: 20px;
+        }
+
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 22px;
+            background: linear-gradient(90deg, #0066b3, #00a1e4, #7c3aed, #0066b3);
+            background-size: 300% 100%;
+            animation: gradientShift 4s ease infinite;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gradient-border:hover::before {
+            opacity: 1;
+        }
+
+        /* Time-based greeting animation */
+        .greeting-wave {
+            display: inline-block;
+            animation: wave 2.5s ease-in-out infinite;
+            transform-origin: 70% 70%;
+        }
+
+        @keyframes wave {
+
+            0%,
+            60%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            10%,
+            30% {
+                transform: rotate(14deg);
+            }
+
+            20% {
+                transform: rotate(-8deg);
+            }
+
+            40% {
+                transform: rotate(-4deg);
+            }
+
+            50% {
+                transform: rotate(10deg);
+            }
         }
     </style>
 
     <script>
+        // Global Sync Helper
+        window._syncIframeTheme = function (iframe) {
+            if (!iframe) iframe = document.getElementById("appFrame");
+            if (iframe && iframe.contentWindow) {
+                var sTheme = sap.ui.getCore().getConfiguration().getTheme();
+                iframe.contentWindow.postMessage({ type: "setTheme", theme: sTheme }, "*");
+            }
+        };
+
         window.addEventListener("message", function (event) {
             if (event.data && event.data.type === "setTheme") {
                 sap.ui.getCore().applyTheme(event.data.theme);
@@ -55,7 +289,7 @@
         });
 
         sap.ui.getCore().attachInit(function () {
-            // Restore Theme
+            // Restore Theme immediately on Launchpad init
             var sStoredTheme = localStorage.getItem("ui5-theme");
             if (sStoredTheme) {
                 sap.ui.getCore().applyTheme(sStoredTheme);
@@ -72,66 +306,189 @@
                 "sap/m/Button",
                 "sap/m/Avatar",
                 "sap/m/ToolbarSpacer",
-                "sap/f/GridContainer",
-                "sap/f/GridContainerSettings",
-                "sap/f/GridContainerItemLayoutData",
                 "sap/m/GenericTile",
                 "sap/m/TileContent",
                 "sap/m/NumericContent",
-                "sap/m/ImageContent",
                 "sap/m/VBox",
                 "sap/m/Bar",
                 "sap/m/Text",
+                "sap/m/MessageToast",
                 "sap/ui/core/HTML"
-            ], function (ToolPage, ToolHeader, SideNavigation, NavigationList, NavigationListItem, Image, Title, Button, Avatar, ToolbarSpacer, GridContainer, GridContainerSettings, GridContainerItemLayoutData, GenericTile, TileContent, NumericContent, ImageContent, VBox, Bar, Text, HTML) {
+            ], function (ToolPage, ToolHeader, SideNavigation, NavigationList, NavigationListItem, Image, Title, Button, Avatar, ToolbarSpacer, GenericTile, TileContent, NumericContent, VBox, Bar, Text, MessageToast, HTML) {
 
-                // --- HOME DASHBOARD CONTENT (The Grid) ---
-                var oGridKPI = new GridContainer({
-                    layout: new GridContainerSettings({ rowSize: "84px", columnSize: "84px", gap: "16px" }),
-                    items: [
-                        new GenericTile({
-                            header: "Decisions", subheader: "Today",
-                            press: function () { navigateTo("dashboard", "/dashboard/webapp/index.html"); },
-                            tileContent: new TileContent({ content: new NumericContent({ value: "12.5k", icon: "sap-icon://line-chart", valueColor: "Good" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+                // ========================================
+                // TRANSLATIONS & i18n
+                // ========================================
+                var oTranslations = {
+                    en: {
+                        home: "Home", dashboard: "Dashboard", scenarios: "Scenarios", rules: "Rules", simulate: "Simulate", history: "History", admin: "Admin", notifications: "Notifications", profile: "Profile", settings: "Settings", logout: "Logout", noNotifications: "No new notifications", markAllRead: "Mark all as read", viewProfile: "View Profile", userSettings: "User Settings", keyboardShortcuts: "Keyboard Shortcuts", themeSettings: "Theme Settings", savePerScenario: "Save theme per scenario",
+                        welcome: "Welcome to DecisionCore AI Platform — Your Enterprise Intelligence Hub",
+                        decisionsToday: "Decisions Today", uptime: "System Uptime", avgResponse: "Avg Response", aiConfidence: "AI Confidence",
+                        quickActions: "Quick Actions",
+                        cardAnalytics: "Analytics Dashboard", cardAnalyticsSub: "Real-time insights & KPIs",
+                        cardScenarios: "Manage Scenarios", cardScenariosSub: "Create & edit decision logic",
+                        cardRules: "Rules Management", cardRulesSub: "Define business rules",
+                        cardHistory: "Decision History", cardHistorySub: "View audit logs",
+                        cardSimulate: "Execution Simulation", cardSimulateSub: "Test decisions safely",
+                        cardAdmin: "AI Administration", cardAdminSub: "Manage providers & models"
+                    },
+                    de: {
+                        home: "Startseite", dashboard: "Dashboard", scenarios: "Szenarien", rules: "Regeln", simulate: "Simulieren", history: "Verlauf", admin: "Verwaltung", notifications: "Benachrichtigungen", profile: "Profil", settings: "Einstellungen", logout: "Abmelden", noNotifications: "Keine neuen Benachrichtigungen", markAllRead: "Alle als gelesen markieren", viewProfile: "Profil anzeigen", userSettings: "Benutzereinstellungen", keyboardShortcuts: "Tastaturkürzel", themeSettings: "Design-Einstellungen", savePerScenario: "Design pro Szenario speichern",
+                        welcome: "Willkommen auf der DecisionCore AI Plattform",
+                        decisionsToday: "Heutige Entscheidungen", uptime: "Systemlaufzeit", avgResponse: "Ø Antwortzeit", aiConfidence: "KI Konfidenz",
+                        quickActions: "Schnellzugriff",
+                        cardAnalytics: "Analyse Dashboard", cardAnalyticsSub: "Echtzeit-KPIs",
+                        cardScenarios: "Szenarien verwalten", cardScenariosSub: "Logik bearbeiten",
+                        cardRules: "Regelverwaltung", cardRulesSub: "Geschäftsregeln definieren",
+                        cardHistory: "Entscheidungsverlauf", cardHistorySub: "Audit-Logs einsehen",
+                        cardSimulate: "Entscheidungssimulation", cardSimulateSub: "Sicher testen",
+                        cardAdmin: "KI-Administration", cardAdminSub: "Provider & Modelle verwalten"
+                    }
+                };
 
-                        new GenericTile({
-                            header: "Approval Rate", subheader: "Automated",
-                            press: function () { navigateTo("dashboard", "/dashboard/webapp/index.html"); },
-                            tileContent: new TileContent({ content: new NumericContent({ value: "68", scale: "%", icon: "sap-icon://accept", valueColor: "Good" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 })),
+                var sCurrentLang = localStorage.getItem("ui5-language") || "en";
+                var t = Object.assign({}, oTranslations.en, oTranslations[sCurrentLang]);
 
-                        new GenericTile({
-                            header: "Latency", subheader: "Avg Response",
-                            press: function () { navigateTo("dashboard", "/dashboard/webapp/index.html"); },
-                            tileContent: new TileContent({ content: new NumericContent({ value: "145", scale: "ms", icon: "sap-icon://speed-boat", valueColor: "Neutral" }) })
-                        }).setLayoutData(new GridContainerItemLayoutData({ columns: 2, rows: 2 }))
-                    ]
-                });
+                // Get time-based greeting
+                var hour = new Date().getHours();
+                var greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
 
+                // --- PREMIUM HOME DASHBOARD ---
                 var oHero = new VBox({
                     items: [
-                        new Title({ text: "Good Morning, Taha", level: "H1" }).addStyleClass("hero-title"),
-                        oGridKPI
+                        // Welcome Section
+                        new VBox({
+                            items: [
+                                new Title({ text: greeting + ", Taha 👋", level: "H1" }).addStyleClass("welcome-title"),
+                                new Text({ text: t.welcome }).addStyleClass("welcome-subtitle sapUiTinyMarginTop")
+                            ]
+                        }).addStyleClass("sapUiMediumMarginBottom"),
+
+                        // Stats Row with Glassmorphism
+                        new sap.m.HBox({
+                            items: [
+                                new VBox({
+                                    items: [
+                                        new Text({ text: "12,847" }).addStyleClass("stat-number"),
+                                        new Text({ text: t.decisionsToday }).addStyleClass("stat-label")
+                                    ]
+                                }).addStyleClass("stats-card sapUiSmallMarginEnd"),
+                                new VBox({
+                                    items: [
+                                        new Text({ text: "99.9%" }).addStyleClass("stat-number"),
+                                        new Text({ text: t.uptime }).addStyleClass("stat-label")
+                                    ]
+                                }).addStyleClass("stats-card sapUiSmallMarginEnd"),
+                                new VBox({
+                                    items: [
+                                        new Text({ text: "42ms" }).addStyleClass("stat-number"),
+                                        new Text({ text: t.avgResponse }).addStyleClass("stat-label")
+                                    ]
+                                }).addStyleClass("stats-card sapUiSmallMarginEnd"),
+                                new VBox({
+                                    items: [
+                                        new Text({ text: "94%" }).addStyleClass("stat-number"),
+                                        new Text({ text: t.aiConfidence }).addStyleClass("stat-label")
+                                    ]
+                                }).addStyleClass("stats-card")
+                            ],
+                            wrap: "Wrap"
+                        }).addStyleClass("sapUiMediumMarginBottom"),
+
+                        // Quick Actions Title
+                        new Title({ text: t.quickActions, level: "H2" }).addStyleClass("sapUiSmallMarginTop sapUiSmallMarginBottom"),
+
+                        // Navigation Tiles
+                        new sap.m.HBox({
+                            items: [
+                                new GenericTile({
+                                    header: t.cardAnalytics,
+                                    subheader: t.cardAnalyticsSub,
+                                    frameType: "TwoByOne",
+                                    press: function () { navigateTo("dashboard", "/dashboard/webapp/index.html"); },
+                                    tileContent: new TileContent({
+                                        content: new NumericContent({
+                                            value: "Live",
+                                            icon: "sap-icon://business-objects-experience",
+                                            valueColor: "Good",
+                                            withMargin: false
+                                        })
+                                    })
+                                }).addStyleClass("quick-action-card sapUiSmallMarginEnd sapUiSmallMarginBottom"),
+
+                                new GenericTile({
+                                    header: t.cardSimulate,
+                                    subheader: t.cardSimulateSub,
+                                    press: function () { navigateTo("execute", "/execute/webapp/index.html"); },
+                                    tileContent: new TileContent({
+                                        content: new NumericContent({
+                                            value: "Run",
+                                            icon: "sap-icon://media-play",
+                                            valueColor: "Critical"
+                                        })
+                                    })
+                                }).addStyleClass("quick-action-card sapUiSmallMarginEnd sapUiSmallMarginBottom"),
+
+                                new GenericTile({
+                                    header: t.cardRules,
+                                    subheader: t.cardRulesSub,
+                                    press: function () { navigateTo("rules", "/rules/webapp/index.html"); },
+                                    tileContent: new TileContent({
+                                        content: new NumericContent({
+                                            value: "24",
+                                            indicator: "Up",
+                                            icon: "sap-icon://decision",
+                                            valueColor: "Good"
+                                        })
+                                    })
+                                }).addStyleClass("quick-action-card sapUiSmallMarginEnd sapUiSmallMarginBottom"),
+
+                                new GenericTile({
+                                    header: t.cardScenarios,
+                                    subheader: t.cardScenariosSub,
+                                    press: function () { navigateTo("scenarios", "/scenarios/webapp/index.html"); },
+                                    tileContent: new TileContent({
+                                        content: new NumericContent({
+                                            value: "8",
+                                            icon: "sap-icon://org-chart",
+                                            valueColor: "Neutral"
+                                        })
+                                    })
+                                }).addStyleClass("quick-action-card sapUiSmallMarginEnd sapUiSmallMarginBottom"),
+
+                                new GenericTile({
+                                    header: t.cardHistory,
+                                    subheader: t.cardHistorySub,
+                                    press: function () { navigateTo("history", "/history/webapp/index.html"); },
+                                    tileContent: new TileContent({
+                                        content: new NumericContent({
+                                            value: "1.2M",
+                                            icon: "sap-icon://history",
+                                            valueColor: "Neutral"
+                                        })
+                                    })
+                                }).addStyleClass("quick-action-card sapUiSmallMarginBottom")
+                            ],
+                            wrap: "Wrap"
+                        })
                     ]
                 }).addStyleClass("hero-section");
 
-                // Footer Bar
                 var oFooter = new Bar({
                     contentMiddle: [
-                        new Text({ text: "© 2026 DecisionCore AI • Enterprise Logic Engine • Created by Taha Khattari" })
+                        new Text({ text: "© 2026 DecisionCore AI Platform • Enterprise Intelligence • Created by Taha Khattari" })
                     ]
                 });
 
-                // MAIN CONTAINER
                 var oMainContainer = new sap.m.Page({
                     showHeader: false,
                     content: [oHero],
                     footer: oFooter,
-                    showFooter: true
-                });
+                    showFooter: true,
+                    backgroundDesign: "Transparent",
+                    enableScrolling: false
+                }).addStyleClass("main-page-container");
 
-                // Helper to select item safely
                 function selectSideItem(sKey) {
                     var oList = oSideNav.getItem();
                     var aItems = oList.getItems();
@@ -143,90 +500,172 @@
                     }
                 }
 
-                // Function to switch view
                 function navigateTo(sKey, sUrl) {
                     selectSideItem(sKey);
+                    var sCurrentTheme = sap.ui.getCore().getConfiguration().getTheme();
+                    var isDark = sCurrentTheme.indexOf("dark") !== -1;
+                    var sBg = isDark ? "#12171c" : "#f8f9fa";
+
+                    // Update global CSS for flash prevention
+                    var flashStyle = document.getElementById("initial-theme-style");
+                    if (flashStyle) {
+                        flashStyle.innerHTML = 'html, body, .sapUiBody, .sapMPage, .main-page-container { background-color: ' + sBg + ' !important; transition: none !important; }';
+                    }
 
                     if (sKey === "home") {
                         oMainContainer.removeAllContent();
                         oMainContainer.addContent(oHero);
-                        oMainContainer.setShowFooter(true);
                         oMainContainer.setEnableScrolling(true);
                     } else {
-                        // Load App in IFrame
-                        var sFrameHtml = "<iframe id='appFrame' src='" + sUrl + "'></iframe>";
-                        var oHtmlControl = new HTML({ content: sFrameHtml });
+                        // Append language parameter to iframe URL for i18n sync
+                        var sLang = localStorage.getItem("ui5-language") || "en";
+                        var iframeSrc = sUrl + (sUrl.indexOf("?") > -1 ? "&" : "?") + "sap-language=" + sLang;
 
+                        // Create iframe with current background color and language
+                        var oHtml = new HTML({
+                            content: "<iframe id='appFrame' src='" + iframeSrc + "' style='border:none; width:100%; height:calc(100vh - 130px); background-color: " + sBg + ";' onload='window._syncIframeTheme(this)'></iframe>"
+                        });
+
+                        // Use a small timeout to ensure the new content is ready to be added 
+                        // before clearing to minimize the "empty" state
                         oMainContainer.removeAllContent();
-                        oMainContainer.addContent(oHtmlControl);
-                        oMainContainer.setShowFooter(false);
+                        oMainContainer.addContent(oHtml);
                         oMainContainer.setEnableScrolling(false);
                     }
+                    oMainContainer.setShowFooter(true);
                 }
 
-                // --- SIDE NAVIGATION ---
+
+
+                // ========================================
+                // NOTIFICATION SYSTEM
+                // ========================================
+                var aNotifications = [
+                    { id: 1, title: "Scenario Published", description: "CREDIT_APPLICATION was published successfully", time: "2 min ago", read: false, icon: "sap-icon://accept" },
+                    { id: 2, title: "Rule Updated", description: "R-FRD-01 updated by admin", time: "15 min ago", read: false, icon: "sap-icon://edit" },
+                    { id: 3, title: "AI Provider Health", description: "GPT-4 connection restored", time: "1 hour ago", read: true, icon: "sap-icon://connected" },
+                    { id: 4, title: "New Decision", description: "1,245 decisions processed today", time: "3 hours ago", read: true, icon: "sap-icon://bar-chart" }
+                ];
+
+                function getUnreadCount() {
+                    return aNotifications.filter(function (n) { return !n.read; }).length;
+                }
+
+                // ========================================
+                // KEYBOARD SHORTCUTS
+                // ========================================
+                document.addEventListener("keydown", function (e) {
+                    // Alt + number for quick navigation
+                    if (e.altKey && !e.ctrlKey && !e.shiftKey) {
+                        var aKeys = ["home", "dashboard", "scenarios", "rules", "execute", "history", "admin"];
+                        var aUrls = ["", "/dashboard/webapp/index.html", "/scenarios/webapp/index.html", "/rules/webapp/index.html", "/execute/webapp/index.html", "/history/webapp/index.html", "/admin/webapp/index.html"];
+
+                        if (e.key >= "1" && e.key <= "7") {
+                            e.preventDefault();
+                            var idx = parseInt(e.key) - 1;
+                            navigateTo(aKeys[idx], aUrls[idx]);
+                            MessageToast.show("Navigate: " + t[aKeys[idx] === "execute" ? "simulate" : aKeys[idx]]);
+                        }
+                        // Alt + T = Toggle Theme
+                        if (e.key === "t" || e.key === "T") {
+                            e.preventDefault();
+                            document.querySelector('[data-shortcut="theme"]').click();
+                        }
+                        // Alt + N = Notifications
+                        if (e.key === "n" || e.key === "N") {
+                            e.preventDefault();
+                            document.querySelector('[data-shortcut="notifications"]').click();
+                        }
+                        // Alt + S = Search
+                        if (e.key === "s" || e.key === "S") {
+                            e.preventDefault();
+                            document.querySelector('[data-shortcut="search"]').click();
+                        }
+                    }
+                    // Escape = Close dialogs
+                    if (e.key === "Escape") {
+                        if (window._oNotificationPopover && window._oNotificationPopover.isOpen()) {
+                            window._oNotificationPopover.close();
+                        }
+                        if (window._oProfileDialog && window._oProfileDialog.isOpen()) {
+                            window._oProfileDialog.close();
+                        }
+                    }
+                });
+
                 var oSideNav = new SideNavigation({
                     item: new NavigationList({
                         items: [
-                            new NavigationListItem({ text: "Home", icon: "sap-icon://home", key: "home" }),
-                            new NavigationListItem({ text: "Dashboard", icon: "sap-icon://bbyd-dashboard", key: "dashboard" }), // NEW
-                            new NavigationListItem({ text: "Scenarios", icon: "sap-icon://org-chart", key: "scenarios" }),
-                            new NavigationListItem({ text: "Rules", icon: "sap-icon://process", key: "rules" }),
-                            new NavigationListItem({ text: "Simulate", icon: "sap-icon://media-play", key: "execute" }),
-                            new NavigationListItem({ text: "History", icon: "sap-icon://history", key: "history" }),
-                            new NavigationListItem({ text: "Admin", icon: "sap-icon://action-settings", key: "admin" })
+                            new NavigationListItem({ text: t.home, icon: "sap-icon://home", key: "home" }),
+                            new NavigationListItem({ text: t.dashboard, icon: "sap-icon://bbyd-dashboard", key: "dashboard" }),
+                            new NavigationListItem({ text: t.scenarios, icon: "sap-icon://org-chart", key: "scenarios" }),
+                            new NavigationListItem({ text: t.rules, icon: "sap-icon://process", key: "rules" }),
+                            new NavigationListItem({ text: t.simulate, icon: "sap-icon://media-play", key: "execute" }),
+                            new NavigationListItem({ text: t.history, icon: "sap-icon://history", key: "history" }),
+                            new NavigationListItem({ text: t.admin, icon: "sap-icon://action-settings", key: "admin" })
                         ]
                     }),
                     itemSelect: function (oEvent) {
                         var sKey = oEvent.getParameter("item").getKey();
-                        var sUrl = "";
-                        switch (sKey) {
-                            case "home": sUrl = ""; break;
-                            case "dashboard": sUrl = "/dashboard/webapp/index.html"; break;
-                            case "scenarios": sUrl = "/scenarios/webapp/index.html"; break;
-                            case "rules": sUrl = "/rules/webapp/index.html"; break;
-                            case "execute": sUrl = "/execute/webapp/index.html"; break;
-                            case "history": sUrl = "/history/webapp/index.html"; break;
-                            case "admin": sUrl = "/admin/webapp/index.html"; break;
-                        }
-                        navigateTo(sKey, sUrl);
+                        var aMapping = {
+                            "home": "",
+                            "dashboard": "/dashboard/webapp/index.html",
+                            "scenarios": "/scenarios/webapp/index.html",
+                            "rules": "/rules/webapp/index.html",
+                            "execute": "/execute/webapp/index.html",
+                            "history": "/history/webapp/index.html",
+                            "admin": "/admin/webapp/index.html"
+                        };
+                        navigateTo(sKey, aMapping[sKey]);
                     }
                 });
 
-                // --- TOOL HEADER ---
                 var oToolHeader = new ToolHeader({
                     content: [
-                        new Button({
-                            icon: "sap-icon://menu2",
-                            type: "Transparent",
-                            press: function () { oSideNav.setExpanded(!oSideNav.getExpanded()); }
-                        }),
+                        new Button({ icon: "sap-icon://menu2", type: "Transparent", press: function () { oSideNav.setExpanded(!oSideNav.getExpanded()); } }),
                         new Image({ src: "https://unpkg.com/@sap/ux-icons-font@1.0.0/dist/SAP-icons/decision.svg", height: "24px" }),
                         new Title({ text: "DecisionCore AI", level: "H3" }).addStyleClass("sapUiSmallMarginBegin"),
                         new ToolbarSpacer(),
+                        // Search Button with shortcut
                         new Button({
                             icon: "sap-icon://search",
                             type: "Transparent",
+                            tooltip: "Global Search (Alt+S)",
+                            customData: [new sap.ui.core.CustomData({ key: "shortcut", value: "search", writeToDom: true })],
                             press: function () {
                                 sap.ui.require(["sap/m/SelectDialog", "sap/m/StandardListItem"], function (SelectDialog, StandardListItem) {
                                     if (!window._oSearchDialog) {
                                         window._oSearchDialog = new SelectDialog({
-                                            title: "Global Search",
-                                            placeholder: "Search Scenarios, Rules...",
+                                            title: "Global Platform Search",
+                                            placeholder: "Search components...",
                                             search: function (oEvent) {
-                                                var sValue = oEvent.getParameter("value");
-                                                if (sValue) {
-                                                    oEvent.getSource().destroyItems();
-                                                    oEvent.getSource().addItem(new StandardListItem({ title: "Scenario: " + sValue, description: "Go to Scenarios", type: "Active", icon: "sap-icon://org-chart" }));
-                                                    oEvent.getSource().addItem(new StandardListItem({ title: "Rule: " + sValue, description: "Go to Rules", type: "Active", icon: "sap-icon://process" }));
+                                                var sVal = oEvent.getParameter("value").toLowerCase();
+                                                oEvent.getSource().destroyItems();
+                                                if (sVal) {
+                                                    [
+                                                        { t: t.scenarios, k: "scenarios", u: "/scenarios/webapp/index.html" },
+                                                        { t: t.rules, k: "rules", u: "/rules/webapp/index.html" },
+                                                        { t: t.history, k: "history", u: "/history/webapp/index.html" },
+                                                        { t: t.admin, k: "admin", u: "/admin/webapp/index.html" },
+                                                        { t: t.dashboard, k: "dashboard", u: "/dashboard/webapp/index.html" },
+                                                        { t: t.simulate, k: "execute", u: "/execute/webapp/index.html" }
+                                                    ].forEach(function (item) {
+                                                        if (item.t.toLowerCase().includes(sVal)) {
+                                                            oEvent.getSource().addItem(new StandardListItem({ title: item.t, type: "Active", icon: "sap-icon://search" }));
+                                                        }
+                                                    });
                                                 }
                                             },
                                             confirm: function (oEvent) {
                                                 var oItem = oEvent.getParameter("selectedItem");
                                                 if (oItem) {
                                                     var sTitle = oItem.getTitle();
-                                                    if (sTitle.startsWith("Scenario")) navigateTo("scenarios", "/scenarios/webapp/index.html");
-                                                    else if (sTitle.startsWith("Rule")) navigateTo("rules", "/rules/webapp/index.html");
+                                                    if (sTitle === t.scenarios) navigateTo("scenarios", "/scenarios/webapp/index.html");
+                                                    else if (sTitle === t.rules) navigateTo("rules", "/rules/webapp/index.html");
+                                                    else if (sTitle === t.history) navigateTo("history", "/history/webapp/index.html");
+                                                    else if (sTitle === t.admin) navigateTo("admin", "/admin/webapp/index.html");
+                                                    else if (sTitle === t.dashboard) navigateTo("dashboard", "/dashboard/webapp/index.html");
+                                                    else if (sTitle === t.simulate) navigateTo("execute", "/execute/webapp/index.html");
                                                 }
                                             }
                                         });
@@ -235,43 +674,253 @@
                                 });
                             }
                         }),
-                        new Button({
-                            icon: "sap-icon://palette",
-                            type: "Transparent",
-                            tooltip: "Toggle Theme",
-                            press: function () {
-                                var sCurrent = sap.ui.getCore().getConfiguration().getTheme();
-                                var bIsDark = sCurrent.includes("dark");
-                                var sNew = bIsDark ? "sap_horizon" : "sap_horizon_dark";
-
-                                // Apply and Persist
-                                sap.ui.getCore().applyTheme(sNew);
-                                localStorage.setItem("ui5-theme", sNew); // Persist
-
-                                // Broadcast to frames
-                                var fs = document.getElementsByTagName("iframe");
-                                for (var i = 0; i < fs.length; i++) {
-                                    fs[i].contentWindow.postMessage({ type: "setTheme", theme: sNew }, "*");
-                                }
-                            }
-                        }),
+                        // ========================================
+                        // NOTIFICATION BUTTON
+                        // ========================================
                         new Button({
                             icon: "sap-icon://bell",
                             type: "Transparent",
-                            press: function () { sap.m.MessageToast.show("No new notifications"); }
+                            tooltip: t.notifications + " (Alt+N)",
+                            customData: [new sap.ui.core.CustomData({ key: "shortcut", value: "notifications", writeToDom: true })],
+                            press: function (oEvent) {
+                                var oButton = oEvent.getSource();
+                                sap.ui.require(["sap/m/ResponsivePopover", "sap/m/List", "sap/m/StandardListItem", "sap/m/Bar", "sap/m/Button", "sap/m/Text"],
+                                    function (ResponsivePopover, List, StandardListItem, Bar, Button, Text) {
+                                        if (!window._oNotificationPopover) {
+                                            var oNotifList = new List({
+                                                items: aNotifications.map(function (n) {
+                                                    return new StandardListItem({
+                                                        title: n.title,
+                                                        description: n.description,
+                                                        info: n.time,
+                                                        infoState: n.read ? "None" : "Warning",
+                                                        icon: n.icon,
+                                                        type: "Active",
+                                                        highlight: n.read ? "None" : "Information"
+                                                    });
+                                                }),
+                                                noDataText: t.noNotifications
+                                            });
+
+                                            window._oNotificationPopover = new ResponsivePopover({
+                                                title: t.notifications,
+                                                placement: "Bottom",
+                                                contentWidth: "350px",
+                                                content: [oNotifList],
+                                                endButton: new Button({
+                                                    text: t.markAllRead,
+                                                    press: function () {
+                                                        aNotifications.forEach(function (n) { n.read = true; });
+                                                        oNotifList.getItems().forEach(function (item) {
+                                                            item.setInfoState("None");
+                                                            item.setHighlight("None");
+                                                        });
+                                                        MessageToast.show(t.markAllRead);
+                                                    }
+                                                })
+                                            });
+                                        }
+                                        window._oNotificationPopover.openBy(oButton);
+                                    });
+                            }
                         }),
-                        new Avatar({ initials: "TK", displaySize: "XS", press: function () { sap.m.MessageToast.show("Profile: Taha Khattari (Admin)"); } }).addStyleClass("sapUiSmallMarginBegin")
+                        // Theme Toggle with shortcut and per-scenario save
+                        new Button({
+                            icon: "sap-icon://palette",
+                            type: "Transparent",
+                            tooltip: "Toggle Theme (Alt+T)",
+                            customData: [new sap.ui.core.CustomData({ key: "shortcut", value: "theme", writeToDom: true })],
+                            press: function () {
+                                var sCurrent = sap.ui.getCore().getConfiguration().getTheme();
+                                var sNew = sCurrent.includes("dark") ? "sap_horizon" : "sap_horizon_dark";
+                                var isDark = sNew.includes("dark");
+                                var bgColor = isDark ? "#12171c" : "#f8f9fa";
+
+                                // 1. Apply UI5 theme
+                                sap.ui.getCore().applyTheme(sNew);
+                                localStorage.setItem("ui5-theme", sNew);
+
+                                // Save per scenario if enabled
+                                var bSavePerScenario = localStorage.getItem("ui5-theme-per-scenario") === "true";
+                                if (bSavePerScenario) {
+                                    var scenarioThemes = JSON.parse(localStorage.getItem("ui5-scenario-themes") || "{}");
+                                    var currentPage = window.location.pathname.split("/")[1] || "home";
+                                    scenarioThemes[currentPage] = sNew;
+                                    localStorage.setItem("ui5-scenario-themes", JSON.stringify(scenarioThemes));
+                                }
+
+                                // 2. Update documentElement background immediately
+                                document.documentElement.style.backgroundColor = bgColor;
+                                document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+
+                                // 3. Update the initial-theme-style for all UI5 containers
+                                var flashStyle = document.getElementById("initial-theme-style");
+                                if (flashStyle) {
+                                    flashStyle.innerHTML = 'html, body, #content, .sapUiBody, .sapMPage, .main-page-container, .sapTntToolPageMain { background-color: ' + bgColor + ' !important; transition: none !important; } .hero-section { background: ' + (isDark ? 'linear-gradient(135deg, #12171c 0%, #1a222a 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)') + ' !important; }';
+                                }
+
+                                // 4. Toggle body theme class
+                                document.body.classList.remove("sapUiTheme-sap_horizon_dark", "sapUiTheme-sap_horizon_light");
+                                document.body.classList.add(isDark ? "sapUiTheme-sap_horizon_dark" : "sapUiTheme-sap_horizon_light");
+
+                                // 5. Update iframe background and sync theme
+                                var iframe = document.getElementById("appFrame");
+                                if (iframe) {
+                                    iframe.style.backgroundColor = bgColor;
+                                    if (iframe.contentWindow) {
+                                        iframe.contentWindow.postMessage({ type: "setTheme", theme: sNew }, "*");
+                                    }
+                                }
+
+                                MessageToast.show(isDark ? "Dark Mode" : "Light Mode");
+                            }
+                        }),
+                        // Language Selector
+                        new Button({
+                            icon: "sap-icon://world",
+                            type: "Transparent",
+                            tooltip: "Language",
+                            press: function (oEvent) {
+                                var oButton = oEvent.getSource();
+                                if (!window._oLanguageMenu) {
+                                    sap.ui.require(["sap/m/Menu", "sap/m/MenuItem"], function (Menu, MenuItem) {
+                                        var aLanguages = [
+                                            { code: "en", name: "🇬🇧 English" },
+                                            { code: "de", name: "🇩🇪 Deutsch" },
+                                            { code: "fr", name: "🇫🇷 Français" },
+                                            { code: "es", name: "🇪🇸 Español" },
+                                            { code: "it", name: "🇮🇹 Italiano" },
+                                            { code: "nl", name: "🇳🇱 Nederlands" },
+                                            { code: "zh", name: "🇨🇳 中文" },
+                                            { code: "ja", name: "🇯🇵 日本語" }
+                                        ];
+
+                                        var aMenuItems = aLanguages.map(function (lang) {
+                                            return new MenuItem({
+                                                text: lang.name,
+                                                icon: sCurrentLang === lang.code ? "sap-icon://accept" : "",
+                                                press: function () {
+                                                    localStorage.setItem("ui5-language", lang.code);
+                                                    MessageToast.show(lang.name.split(" ")[1] + "...");
+                                                    setTimeout(function () {
+                                                        var url = new URL(window.location.href);
+                                                        url.searchParams.set("sap-language", lang.code);
+                                                        window.location.href = url.toString();
+                                                    }, 300);
+                                                }
+                                            });
+                                        });
+
+                                        window._oLanguageMenu = new Menu({ items: aMenuItems });
+                                        window._oLanguageMenu.openBy(oButton);
+                                    });
+                                } else {
+                                    window._oLanguageMenu.openBy(oButton);
+                                }
+                            }
+                        }),
+                        // ========================================
+                        // USER PROFILE AVATAR
+                        // ========================================
+                        new Avatar({
+                            initials: "TK",
+                            displaySize: "XS",
+                            press: function (oEvent) {
+                                var oAvatar = oEvent.getSource();
+                                sap.ui.require([
+                                    "sap/m/ResponsivePopover", "sap/m/VBox", "sap/m/HBox", "sap/m/Text", "sap/m/Title",
+                                    "sap/m/Button", "sap/m/List", "sap/m/StandardListItem", "sap/m/Switch", "sap/m/Label", "sap/m/MessageBox"
+                                ], function (ResponsivePopover, VBox, HBox, Text, Title, Button, List, StandardListItem, Switch, Label, MessageBox) {
+                                    if (!window._oProfilePopover) {
+                                        // Theme per scenario switch
+                                        var bSavePerScenario = localStorage.getItem("ui5-theme-per-scenario") === "true";
+                                        var oThemeSwitch = new Switch({
+                                            state: bSavePerScenario,
+                                            change: function (oEvent) {
+                                                localStorage.setItem("ui5-theme-per-scenario", oEvent.getParameter("state") ? "true" : "false");
+                                                MessageToast.show(t.savePerScenario + ": " + (oEvent.getParameter("state") ? "ON" : "OFF"));
+                                            }
+                                        });
+
+                                        window._oProfilePopover = new ResponsivePopover({
+                                            title: t.profile,
+                                            placement: "Bottom",
+                                            contentWidth: "320px",
+                                            content: [
+                                                new VBox({
+                                                    items: [
+                                                        // User Info
+                                                        new HBox({
+                                                            alignItems: "Center",
+                                                            items: [
+                                                                new Avatar({ initials: "TK", displaySize: "L" }).addStyleClass("sapUiSmallMarginEnd"),
+                                                                new VBox({
+                                                                    items: [
+                                                                        new Title({ text: "Taha Khattari", level: "H4" }),
+                                                                        new Text({ text: "Administrator" }),
+                                                                        new Text({ text: "taha.khattari@decisioncore.ai" }).addStyleClass("sapUiTinyMarginTop")
+                                                                    ]
+                                                                })
+                                                            ]
+                                                        }).addStyleClass("sapUiMediumMargin"),
+
+                                                        // Settings List
+                                                        new List({
+                                                            items: [
+                                                                new StandardListItem({ title: t.userSettings, icon: "sap-icon://settings", type: "Active" }),
+                                                                new StandardListItem({
+                                                                    title: t.keyboardShortcuts, icon: "sap-icon://keyboard-and-mouse", type: "Active", press: function () {
+                                                                        MessageBox.information(
+                                                                            "Alt + 1-7: " + t.home + "/" + t.dashboard + "/...\n" +
+                                                                            "Alt + S: Search\n" +
+                                                                            "Alt + T: Theme Toggle\n" +
+                                                                            "Alt + N: " + t.notifications + "\n" +
+                                                                            "Esc: Close Dialogs",
+                                                                            { title: t.keyboardShortcuts }
+                                                                        );
+                                                                    }
+                                                                }),
+                                                                new StandardListItem({ title: t.themeSettings, icon: "sap-icon://palette", type: "Active" })
+                                                            ]
+                                                        }),
+
+                                                        // Theme per Scenario Toggle
+                                                        new HBox({
+                                                            alignItems: "Center",
+                                                            justifyContent: "SpaceBetween",
+                                                            items: [
+                                                                new Label({ text: t.savePerScenario }),
+                                                                oThemeSwitch
+                                                            ]
+                                                        }).addStyleClass("sapUiSmallMargin"),
+
+                                                        // Logout Button
+                                                        new Button({
+                                                            text: t.logout,
+                                                            icon: "sap-icon://log",
+                                                            type: "Reject",
+                                                            width: "100%",
+                                                            press: function () {
+                                                                MessageToast.show(t.logout + "...");
+                                                            }
+                                                        }).addStyleClass("sapUiSmallMargin")
+                                                    ]
+                                                })
+                                            ]
+                                        });
+                                    }
+                                    window._oProfilePopover.openBy(oAvatar);
+                                });
+                            }
+                        }).addStyleClass("sapUiSmallMarginBegin")
                     ]
                 });
 
-                // --- ROOT LAYOUT (ToolPage) ---
-                var oToolPage = new ToolPage({
+                new ToolPage({
                     header: oToolHeader,
                     sideContent: oSideNav,
                     mainContents: [oMainContainer]
-                });
-
-                oToolPage.placeAt("content");
+                }).placeAt("content");
             });
         });
     </script>

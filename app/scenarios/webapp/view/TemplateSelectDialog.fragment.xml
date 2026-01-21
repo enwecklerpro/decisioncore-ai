@@ -3,16 +3,19 @@
         id="templateSelectDialog"
         title="Select Decision Template"
         class="sapUiPopupWithPadding"
-        items="{path: '/Templates', sorter: { path: 'category', group: true }}"
+        items="{scenarioTemplates>/templates}"
         search=".onTemplateSearch"
         confirm=".onTemplateConfirm"
         cancel=".onTemplateCancel"
-        contentWidth="600px">
+        contentWidth="700px"
+        growing="true"
+        growingThreshold="20">
         <StandardListItem
-            title="{name}"
-            description="{description}"
-            icon="{icon}"
-            info="{category}"
+            title="{scenarioTemplates>name}"
+            description="{scenarioTemplates>description}"
+            icon="{scenarioTemplates>icon}"
+            info="{scenarioTemplates>category}"
+            infoState="Information"
             type="Active" />
     </SelectDialog>
 </core:FragmentDefinition>

@@ -3,9 +3,56 @@
         <content>
             <f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12">
                 
+                <!-- Decision Template Selection -->
+                <Label text="Decision Template"/>
+                <Select id="ruleTemplateSelect" selectedKey="{newRule>/selectedTemplate}" change=".onRuleTemplateChange" width="100%">
+                    <core:Item key="" text="-- Select a Template (Optional) --"/>
+                    <!-- Asset Management -->
+                    <core:Item key="asset_lifecycle" text="🏭 Asset Lifecycle Decision"/>
+                    <!-- Finance -->
+                    <core:Item key="capex_budget" text="💼 Capex Budget Release"/>
+                    <core:Item key="credit_application" text="🏦 Credit Application Approval"/>
+                    <!-- Finance AP -->
+                    <core:Item key="invoice_approval" text="📄 Invoice Auto-Approval"/>
+                    <!-- General -->
+                    <core:Item key="generic_json" text="📋 Generic JSON Decision"/>
+                    <!-- HR -->
+                    <core:Item key="hr_promotion" text="👔 HR Promotion Eligibility"/>
+                    <!-- IT -->
+                    <core:Item key="it_access" text="🔐 IT Access Request"/>
+                    <!-- Legal -->
+                    <core:Item key="kyc_compliance" text="🪪 KYC Compliance Check"/>
+                    <core:Item key="contract_renewal" text="📝 Contract Auto-Renewal"/>
+                    <!-- Plant Maintenance -->
+                    <core:Item key="maintenance_priority" text="🔧 Maintenance Order Priority"/>
+                    <!-- Quality -->
+                    <core:Item key="quality_inspection" text="🔬 Quality Inspection Decision"/>
+                    <!-- Sales -->
+                    <core:Item key="sales_discount" text="💰 Sales Discount Approval"/>
+                    <core:Item key="return_request" text="📦 Return Request Action"/>
+                    <!-- Security -->
+                    <core:Item key="fraud_detection" text="🔍 Transaction Fraud Detection"/>
+                    <!-- Sourcing -->
+                    <core:Item key="vendor_risk" text="🤝 Vendor Procurement Risk"/>
+                    <!-- Supply Chain -->
+                    <core:Item key="supply_chain_risk" text="🚚 Supply Chain Risk Assessment"/>
+                    <!-- Travel -->
+                    <core:Item key="travel_expense" text="✈️ Travel Expense Approval"/>
+                    <!-- Warehouse -->
+                    <core:Item key="warehouse_transfer" text="📦 Warehouse Stock Transfer"/>
+                </Select>
+                
+                
                 <Label text="Target Scenario" required="true"/>
-                <Select id="scenarioSelect" items="{path: '/Scenarios', sorter: { path: 'name' }}" width="100%">
-                    <core:Item key="{ID}" text="{name}"/>
+                <Select id="scenarioSelect" width="100%"
+                    items="{
+                        path: '/Scenarios',
+                        sorter: [
+                            { path: 'sourceSystem', group: true },
+                            { path: 'displayName' }
+                        ]
+                    }">
+                    <core:ListItem key="{ID}" text="{displayName}" additionalText="{sourceSystem}"/>
                 </Select>
 
                 <Label text="Rule Code" required="true"/>
@@ -18,7 +65,7 @@
                 <TextArea value="{newRule>/description}" rows="2"/>
 
                 <Label text="Condition Logic" required="true"/>
-                <TextArea value="{newRule>/condition}" rows="4" placeholder="e.g. input.amount > 50000 &amp;&amp; input.customerType === 'NEW'" valid="{= ${newRule>/condition}.length > 0}"/>
+                <TextArea value="{newRule>/conditionExpression}" rows="4" placeholder="e.g. input.amount > 50000 &amp;&amp; input.customerType === 'NEW'"/>
                 
                 <Label text="Action"/>
                 <Select selectedKey="{newRule>/action}">

@@ -2,66 +2,91 @@
     xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout"
     controllerName="decisioncore.history.controller.Main" displayBlock="true">
     <App id="app">
-        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="true">
+        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="false">
             <f:title>
                 <f:DynamicPageTitle>
                     <f:heading><Title text="Decision Audit Trail"/></f:heading>
-                    <f:expandedContent><Label text="Monitor and audit AI decision execution"/></f:expandedContent>
+                    <f:expandedContent><Label text="Complete audit history of all AI-powered decisions"/></f:expandedContent>
                     <f:actions>
-                        <Button text="Export Logs" icon="sap-icon://excel-attachment" press=".onExport"/>
+                        <Button text="Export CSV" icon="sap-icon://excel-attachment" press=".onExport" type="Transparent"/>
+                        <Button text="Export PDF" icon="sap-icon://pdf-attachment" press=".onExportPDF" type="Transparent"/>
+                        <Button icon="sap-icon://refresh" press=".onRefresh" type="Transparent" tooltip="Refresh"/>
                     </f:actions>
                 </f:DynamicPageTitle>
             </f:title>
             <f:header>
                 <f:DynamicPageHeader pinnable="true">
                     <layout:HorizontalLayout allowWrapping="true">
-                         <layout:VerticalLayout class="sapUiMediumMarginEnd">
-                            <ObjectAttribute title="Decisions Today" text="1,245"/>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Total Decisions" text="{stats>/totalDecisions}"/>
                         </layout:VerticalLayout>
                         <layout:VerticalLayout class="sapUiMediumMarginEnd">
-                            <ObjectAttribute title="Avg. Confidence" text="98%"/>
+                            <ObjectAttribute title="Approved" text="{stats>/approvedCount}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Rejected" text="{stats>/rejectedCount}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Review" text="{stats>/reviewCount}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Avg. Confidence" text="{stats>/avgConfidence}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Avg. Processing" text="{stats>/avgProcessing}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="Approval Rate" text="{stats>/approvalRate}"/>
                         </layout:VerticalLayout>
                     </layout:HorizontalLayout>
                 </f:DynamicPageHeader>
             </f:header>
             <f:content>
-                <Table id="historyTable" items="{/Outputs}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                <Table id="historyTable" items="{path: '/Outputs', parameters: {$expand: 'input($expand=scenario)'}}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto" growing="true" growingThreshold="50">
                     <headerToolbar>
                         <OverflowToolbar>
-                            <Title text="Recent Executions"/>
+                            <Title text="Recent Executions" level="H2"/>
                             <ToolbarSpacer/>
-                            <SearchField width="300px" placeholder="Search Trace ID..." search=".onSearch" liveChange=".onSearch"/>
+                            <Select id="outcomeFilter" width="150px" forceSelection="false" change=".onOutcomeFilter">
+                                <core:Item key="" text="All Outcomes"/>
+                                <core:Item key="APPROVED" text="✓ Approved"/>
+                                <core:Item key="REJECTED" text="✗ Rejected"/>
+                                <core:Item key="REVIEW" text="⚠ Review"/>
+                            </Select>
+                            <SearchField width="250px" placeholder="Search by ID..." search=".onSearch" liveChange=".onSearch"/>
+                            <Button icon="sap-icon://refresh" type="Transparent" press=".onRefresh" tooltip="Refresh"/>
                         </OverflowToolbar>
                     </headerToolbar>
                     <columns>
-                        <Column width="15rem"><Text text="Decision ID"/></Column>
-                        <Column><Text text="Outcome"/></Column>
-                        <Column hAlign="End"><Text text="Confidence"/></Column>
-                        <Column hAlign="End"><Text text="Score"/></Column>
-                        <Column hAlign="End"><Text text="Processing"/></Column>
-                        <Column hAlign="End"><Text text="Timestamp"/></Column>
+                        <Column width="10rem"><Text text="Decision ID"/></Column>
+                        <Column width="12rem"><Text text="Scenario"/></Column>
+                        <Column width="8rem" hAlign="Center"><Text text="Outcome"/></Column>
+                        <Column hAlign="End" width="6rem"><Text text="Score"/></Column>
+                        <Column hAlign="Center" width="7rem"><Text text="Confidence"/></Column>
+                        <Column hAlign="End" width="6rem"><Text text="Time"/></Column>
+                        <Column hAlign="End" width="10rem"><Text text="Timestamp"/></Column>
+                        <Column width="5rem" hAlign="Center"><Text text="Details"/></Column>
                     </columns>
                     <items>
-                        <ColumnListItem type="Navigation">
+                        <ColumnListItem type="Navigation" press=".onShowDetails">
                             <cells>
-                                <ObjectIdentifier title="{ID}"/>
-                                <ObjectStatus text="{decision}" state="{= ${decision} === 'APPROVED' ? 'Success' : ${decision} === 'REJECTED' ? 'Error' : 'Warning'}" inverted="true"/>
-                                <ObjectNumber number="{confidence}" unit="%"/>
-                                <ObjectNumber number="{finalScore}" emphasized="true"/>
+                                <ObjectIdentifier title="{= ${ID}.substring(0,8) + '...'}" text="{input/correlationId}"/>
+                                <Text text="{input/scenario/displayName}"/>
+                                <ObjectStatus 
+                                    text="{decision}" 
+                                    state="{= ${decision} === 'APPROVED' ? 'Success' : ${decision} === 'REJECTED' ? 'Error' : 'Warning'}" 
+                                    icon="{= ${decision} === 'APPROVED' ? 'sap-icon://accept' : ${decision} === 'REJECTED' ? 'sap-icon://decline' : 'sap-icon://alert'}"
+                                    inverted="true"/>
+                                <ObjectNumber number="{finalScore}" unit="/100" state="{= ${finalScore} >= 60 ? 'Success' : ${finalScore} >= 40 ? 'Warning' : 'Error'}"/>
+                                <ProgressIndicator percentValue="{confidence}" displayValue="{confidence}%" state="Information" height="0.75rem"/>
                                 <Text text="{processingTimeMs} ms"/>
-                                <Text text="{createdAt}"/>
+                                <Text text="{path: 'createdAt', type: 'sap.ui.model.type.DateTime', formatOptions: { style: 'short' }}"/>
+                                <Button icon="sap-icon://detail-view" type="Transparent" press=".onShowDetails" tooltip="View Details"/>
                             </cells>
                         </ColumnListItem>
                     </items>
                 </Table>
             </f:content>
-            <f:footer>
-                <OverflowToolbar>
-                    <ToolbarSpacer/>
-                    <Text text="DecisionCore AI - Created by Taha Khattari"/>
-                    <ToolbarSpacer/>
-                </OverflowToolbar>
-            </f:footer>
         </f:DynamicPage>
     </App>
 </mvc:View>

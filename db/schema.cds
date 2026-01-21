@@ -99,7 +99,7 @@ entity DecisionScenarios : cuid, managed {
     publishedBy       : String(100);
     
     // Associations
-    rules             : Composition of many DecisionRules on rules.scenario = $self;
+    rules             : Association to many DecisionRules on rules.scenario = $self;
     versions          : Association to many ScenarioVersions on versions.scenario = $self;
 }
 
@@ -178,6 +178,7 @@ entity AIProviders : cuid, managed {
     // Status
     status            : String(20) default 'DRAFT';
     isDefault         : Boolean default false;
+    role              : String(20);  // DEFAULT, FALLBACK, or empty
     
     // Connection
     endpoint          : String(500);

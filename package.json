@@ -1,6 +1,6 @@
 {
   "name": "decisioncore-ai",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "DecisionCore AI – Explainable Decision Intelligence for SAP",
   "repository": "https://github.com/enwecklerpro/decisioncore-ai",
   "author": "Taha Khattari",
@@ -71,7 +71,8 @@
       }
     },
     "fiori": {
-      "lean_draft": true
+      "lean_draft": true,
+      "bypass_draft": true
     },
     "features": {
       "serve_on_root": true

@@ -4,9 +4,9 @@
         "id": "decisioncore.history",
         "type": "application",
         "title": "Decision History",
-        "description": "View decision audit trail",
+        "description": "Audit Log and Execution Trace",
         "applicationVersion": {
-            "version": "2.0.0"
+            "version": "1.0.0"
         },
         "dataSources": {
             "mainService": {
@@ -27,12 +27,10 @@
         }
     },
     "sap.ui5": {
-        "flexEnabled": false,
-        "componentUsages": {},
         "rootView": {
-            "viewName": "decisioncore.history.view.Main",
+            "viewName": "decisioncore.history.view.List",
             "type": "XML",
-            "id": "mainView"
+            "id": "app"
         },
         "dependencies": {
             "minUI5Version": "1.120.0",
@@ -40,7 +38,9 @@
                 "sap.m": {},
                 "sap.ui.core": {},
                 "sap.ui.layout": {},
-                "sap.f": {}
+                "sap.f": {},
+                "sap.ui.export": {},
+                "sap.ui.comp": {}
             }
         },
         "models": {
@@ -52,6 +52,23 @@
                     "operationMode": "Server",
                     "autoExpandSelect": true,
                     "earlyRequests": false
+                }
+            },
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "decisioncore.history.i18n.i18n",
+                    "supportedLocales": [
+                        "en",
+                        "de",
+                        "es",
+                        "fr",
+                        "it",
+                        "ja",
+                        "nl",
+                        "zh"
+                    ],
+                    "fallbackLocale": "en"
                 }
             }
         }

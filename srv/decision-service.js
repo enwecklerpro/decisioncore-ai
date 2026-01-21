@@ -98,6 +98,19 @@ module.exports = class DecisionServiceHandler extends cds.ApplicationService {
             });
         });
 
+        // --------------------------------------------------------
+        // VALIDATIONS
+        // --------------------------------------------------------
+
+        this.before('SAVE', 'Scenarios', async (req) => {
+            const { rulesWeight, aiWeight } = req.data;
+            if (rulesWeight !== undefined && aiWeight !== undefined) {
+                if ((rulesWeight + aiWeight) !== 100) {
+                    req.error(400, `Rules Weight (${rulesWeight}%) + AI Weight (${aiWeight}%) must equal 100%.`);
+                }
+            }
+        });
+
         this.after('READ', 'Outputs', (data) => {
             const items = Array.isArray(data) ? data : [data];
             items.forEach(item => {
@@ -128,9 +141,17 @@ module.exports = class DecisionServiceHandler extends cds.ApplicationService {
                 return req.error(400, 'Invalid JSON payload');
             }
 
-            // Load scenario (allow DRAFT for simulation)
-            const scenario = await SELECT.one.from(DecisionScenarios)
+            // Load scenario (robust lookup: name -> displayName -> ID)
+            let scenario = await SELECT.one.from(DecisionScenarios)
                 .where({ name: scenarioName });
+
+            if (!scenario) {
+                scenario = await SELECT.one.from(DecisionScenarios).where({ displayName: scenarioName });
+            }
+            // Check if scenarioName looks like a UUID
+            if (!scenario && scenarioName.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+                scenario = await SELECT.one.from(DecisionScenarios).where({ ID: scenarioName });
+            }
 
             if (!scenario || scenario.status === 'ARCHIVED') {
                 return req.error(404, `Scenario "${scenarioName}" not found or archived`);
@@ -318,10 +339,14 @@ module.exports = class DecisionServiceHandler extends cds.ApplicationService {
 
         this.on('duplicate', 'Scenarios', async (req) => {
             const { newName } = req.data;
-            const id = req.params[0];
+            let id = req.params[0];
+            // Extract ID if it is an object (common in some adapters)
+            if (id && typeof id === 'object') id = id.ID;
+
+            console.log('>> DUPLICATE SCENARIO:', id, typeof id);
 
             const source = await SELECT.one.from(DecisionScenarios).where({ ID: id });
-            if (!source) return req.error(404, 'Scenario not found');
+            if (!source) return req.error(404, `Scenario with ID ${id} not found`);
 
             const newId = cds.utils.uuid();
             const copy = {

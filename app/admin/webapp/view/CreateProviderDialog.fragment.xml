@@ -12,12 +12,21 @@
                 <Select selectedKey="{newProvider>/providerType}" width="100%">
                     <core:Item key="OPENAI" text="OpenAI (Direct)"/>
                     <core:Item key="AZURE_OPENAI" text="Azure OpenAI Service"/>
+                    <core:Item key="CLAUDE" text="Anthropic Claude"/>
+                    <core:Item key="GOOGLE" text="Google Gemini"/>
                     <core:Item key="SAP_AI_CORE" text="SAP AI Core"/>
                     <core:Item key="MOCK" text="Mock Provider"/>
                 </Select>
                 
-                <Label text="Is Default"/>
-                <Switch state="{newProvider>/isDefault}"/>
+                <Label text="Model"/>
+                <Input value="{newProvider>/model}" placeholder="e.g. gpt-4o-mini"/>
+                
+                <Label text="Role"/>
+                <Select selectedKey="{newProvider>/role}" width="100%">
+                    <core:Item key="" text="- None -"/>
+                    <core:Item key="DEFAULT" text="★ Default Provider"/>
+                    <core:Item key="FALLBACK" text="↺ Fallback Provider"/>
+                </Select>
                 
                 <Label text="Description"/>
                 <TextArea value="{newProvider>/description}" rows="2"/>

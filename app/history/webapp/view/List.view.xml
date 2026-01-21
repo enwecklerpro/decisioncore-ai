@@ -1,0 +1,110 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.f" 
+    xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout"
+    controllerName="decisioncore.history.controller.List" displayBlock="true">
+    
+    <App id="app">
+        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="false">
+            <!-- Dynamic Title -->
+            <f:title>
+                <f:DynamicPageTitle>
+                    <f:heading>
+                        <Title text="{i18n>pageTitle}"/>
+                    </f:heading>
+                    <f:expandedContent>
+                        <Label text="{i18n>appDescription}"/>
+                    </f:expandedContent>
+                    <f:snappedContent>
+                        <Label text="{i18n>appDescription}"/>
+                    </f:snappedContent>
+                    <f:content>
+                        <OverflowToolbar>
+                            <GenericTag text="{i18n>totalRecords}" status="Success">
+                                <ObjectNumber number="{stats>/totalRecords}" state="Success"/>
+                            </GenericTag>
+                        </OverflowToolbar>
+                    </f:content>
+                    <f:actions>
+                        <Button icon="sap-icon://refresh" type="Transparent" press=".onRefresh" tooltip="{i18n>refreshButton}"/>
+                        <MenuButton icon="sap-icon://action" type="Transparent" tooltip="{i18n>export}">
+                            <menu>
+                                <Menu>
+                                    <MenuItem text="{i18n>exportExcel}" icon="sap-icon://excel-attachment" press=".onExportExcel"/>
+                                    <MenuItem text="{i18n>exportCSV}" icon="sap-icon://document-text" press=".onExportCSV"/>
+                                </Menu>
+                            </menu>
+                        </MenuButton>
+                    </f:actions>
+                </f:DynamicPageTitle>
+            </f:title>
+
+            <!-- Dynamic Header -->
+            <f:header>
+                <f:DynamicPageHeader pinnable="true">
+                    <layout:HorizontalLayout allowWrapping="true">
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>statApproved}" text="{stats>/approved}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>statRejected}" text="{stats>/rejected}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>statReview}" text="{stats>/review}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>statAvgTime}" text="{stats>/avgTime} ms"/>
+                        </layout:VerticalLayout>
+                    </layout:HorizontalLayout>
+                </f:DynamicPageHeader>
+            </f:header>
+
+            <!-- Content Area -->
+            <f:content>
+                <Table id="historyTable" mode="SingleSelectMaster" items="{
+                    path: '/DecisionHistory',
+                    parameters: {
+                        $count: true,
+                        $orderby: 'decidedAt desc'
+                    }
+                }" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto" growing="true" growingThreshold="50" noDataText="{i18n>noData}">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="{i18n>listHeader}" level="H2"/>
+                            <ToolbarSpacer/>
+                            <SearchField width="300px" placeholder="{i18n>searchPlaceholder}" search=".onSearch" liveChange=".onSearch"/>
+                            <Button icon="sap-icon://sort" type="Transparent" press=".onSort" tooltip="Sort"/>
+                            <Button icon="sap-icon://filter" type="Transparent" press=".onFilter" tooltip="Filter"/>
+                            <ToolbarSeparator/>
+                            <Button icon="sap-icon://refresh" type="Transparent" press=".onRefresh" tooltip="{i18n>refreshButton}"/>
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column width="11rem"><Text text="{i18n>colTimestamp}"/></Column>
+                        <Column><Text text="{i18n>colScenario}"/></Column>
+                        <Column width="6rem" hAlign="Center"><Text text="{i18n>colMode}"/></Column>
+                        <Column width="8rem" hAlign="Center"><Text text="{i18n>colDecision}"/></Column>
+                        <Column width="5rem" hAlign="End"><Text text="{i18n>colScore}"/></Column>
+                        <Column width="6rem" hAlign="End"><Text text="{i18n>colDuration}"/></Column>
+                        <Column width="6rem" hAlign="Center"><Text text="{i18n>colStatus}"/></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem type="Navigation" press=".onPressItem">
+                            <cells>
+                                <Text text="{decidedAt}"/>
+                                <ObjectIdentifier title="{scenarioName}" text="{correlationId}"/>
+                                <ObjectStatus text="{executionMode}" 
+                                    state="{= ${isSimulation} ? 'Warning' : 'Success' }"
+                                    icon="{= ${isSimulation} ? 'sap-icon://simulate' : 'sap-icon://accept' }"/>
+                                <ObjectStatus text="{finalDecision}" 
+                                    state="{= ${finalDecision} === 'APPROVED' ? 'Success' : ${finalDecision} === 'REJECTED' ? 'Error' : 'Warning' }" 
+                                    icon="{= ${finalDecision} === 'APPROVED' ? 'sap-icon://accept' : ${finalDecision} === 'REJECTED' ? 'sap-icon://decline' : 'sap-icon://alert' }"/>
+                                <ObjectNumber number="{finalScore}" state="{= ${finalScore} >= 60 ? 'Success' : ${finalScore} >= 40 ? 'Warning' : 'Error' }"/>
+                                <ObjectNumber number="{processingTimeMs}" unit="ms"/>
+                                <ObjectStatus text="{status}" state="{= ${status} === 'COMPLETED' ? 'Success' : 'Error'}"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </f:content>
+        </f:DynamicPage>
+    </App>
+</mvc:View>

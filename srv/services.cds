@@ -20,6 +20,7 @@ service DecisionService {
 
     // Core Entities with Draft Support
     @odata.draft.enabled
+    @cds.search : {name, displayName, description}
     entity Scenarios as projection on db.DecisionScenarios {
         *,
         rules : redirected to Rules
@@ -37,6 +38,7 @@ service DecisionService {
         action createNewVersion() returns Scenarios;
     };
     
+    @cds.search : {ruleCode, ruleName, description, condition}
     entity Rules as projection on db.DecisionRules {
         *,
         scenario : redirected to Scenarios
@@ -65,8 +67,7 @@ service DecisionService {
         input : redirected to Inputs
     };
     
-    @readonly
-    entity DecisionHistory as projection on db.DecisionHistory;
+
     
     // Templates
     @readonly entity Templates as projection on db.DecisionTemplates;
@@ -200,6 +201,26 @@ service DecisionService {
         aiProviderStatus: String;
         activeScenarios : Integer;
     };
+
+    // Read-only Entities for Dashboard & Execution
+    @readonly entity AIProviders as projection on db.AIProviders;
+    @readonly
+    @cds.search : { correlationId, scenarioName, finalDecision }
+    entity DecisionHistory as select from db.DecisionOutputs {
+        key ID,
+        decidedAt,
+        input.scenario.name as scenarioName,
+        input.correlationId as correlationId,
+        input.isSimulation as isSimulation,
+        case input.isSimulation when true then 'Simulation' else 'Live' end as executionMode : String(20),
+        decision as finalDecision,
+        finalScore,
+        processingTimeMs,
+        status,
+        rulesFired,
+        explanation,
+        input.payload as inputPayload
+    };
 }
 
 // ============================================================
@@ -216,11 +237,10 @@ service DecisionAdminService {
     entity ScenarioVersions as projection on db.ScenarioVersions;
     entity RuleVersions as projection on db.RuleVersions;
     
-    @odata.draft.enabled
     @readonly
     entity Templates as projection on db.DecisionTemplates;
 
-    @odata.draft.enabled
+    @cds.search : {code, name, description}
     entity AIProviders as projection on db.AIProviders actions {
         action testConnection() returns {
             success: Boolean;
@@ -233,7 +253,7 @@ service DecisionAdminService {
     
     @readonly
     entity AuditLogs as projection on db.AuditLogs;
-    
+
     @readonly
     entity Statistics as projection on db.ScenarioStatistics;
 

@@ -2,19 +2,19 @@
     controllerName="decisioncore.execute.controller.Main" displayBlock="true">
     
     <App>
-        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="true" fitContent="true">
+        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="false" fitContent="true">
              <f:title>
                 <f:DynamicPageTitle>
                     <f:heading>
-                        <Title text="Decision Execution"/>
+                        <Title text="{i18n>pageTitle}"/>
                     </f:heading>
                     <f:expandedContent>
-                         <Label text="Simulate and test decision logic with real-time feedback"/>
+                         <Label text="{i18n>pageSubtitle}"/>
                     </f:expandedContent>
                     <f:actions>
-                        <Button text="Load Sample" icon="sap-icon://sys-help-2" press=".onLoadSample"/>
-                        <Button text="Clear" icon="sap-icon://reset" press=".onClear"/>
-                        <Button text="Execute" type="Emphasized" icon="sap-icon://media-play" press=".onEvaluate"/>
+                        <Button text="{i18n>loadSample}" icon="sap-icon://sys-help-2" press=".onLoadSample"/>
+                        <Button text="{i18n>clear}" icon="sap-icon://reset" press=".onClear"/>
+                        <Button text="{i18n>execute}" type="Emphasized" icon="sap-icon://media-play" press=".onEvaluate"/>
                     </f:actions>
                 </f:DynamicPageTitle>
             </f:title>
@@ -23,10 +23,10 @@
                 <f:DynamicPageHeader pinnable="true">
                      <l:HorizontalLayout allowWrapping="true">
                         <l:VerticalLayout class="sapUiMediumMarginEnd">
-                             <ObjectAttribute title="Selected Scenario" text="{view>/scenario}"/>
+                             <ObjectAttribute title="{i18n>selectedScenario}" text="{view>/scenario}"/>
                         </l:VerticalLayout>
                         <l:VerticalLayout class="sapUiMediumMarginEnd">
-                             <ObjectAttribute title="Trace Status" text="Active"/>
+                             <ObjectAttribute title="{i18n>traceStatus}" text="{i18n>active}"/>
                         </l:VerticalLayout>
                     </l:HorizontalLayout>
                 </f:DynamicPageHeader>
@@ -37,51 +37,108 @@
                     
                     <!-- LEFT: INPUT -->
                     <VBox class="sapUiSmallMargin">
-                        <Panel headerText="Input Parameters" expandable="false" width="auto" class="sapUiResponsiveMargin">
+                        <Panel headerText="{i18n>inputParameters}" expandable="false" width="auto" class="sapUiResponsiveMargin">
                             <VBox class="sapUiSmallMargin">
                                 
-                                <Label text="Scenario" required="true"/>
+                                <!-- Decision Template Selection -->
+                                <Label text="{i18n>decisionTemplate}" class="sapUiTinyMarginBottom"/>
+                                <Select id="templateSelect" 
+                                    selectedKey="{view>/selectedTemplate}"
+                                    forceSelection="false" 
+                                    width="100%"
+                                    change=".onTemplateChange">
+                                    <core:Item key="" text="{i18n>selectTemplate}"/>
+                                    <core:Item key="asset_lifecycle" text="📦 Asset Lifecycle Decision"/>
+                                    <core:Item key="capex_budget" text="💼 Capex Budget Release"/>
+                                    <core:Item key="credit_application" text="🏦 Credit Application Approval"/>
+                                    <core:Item key="invoice_approval" text="📄 Invoice Auto-Approval"/>
+                                    <core:Item key="generic_json" text="📋 Generic JSON Decision"/>
+                                    <core:Item key="hr_promotion" text="👤 HR Promotion Eligibility"/>
+                                    <core:Item key="it_access" text="🔐 IT Access Request"/>
+                                    <core:Item key="kyc_compliance" text="🪪 KYC Compliance Check"/>
+                                    <core:Item key="contract_renewal" text="📝 Contract Auto-Renewal"/>
+                                    <core:Item key="maintenance_priority" text="🔧 Maintenance Order Priority"/>
+                                    <core:Item key="quality_inspection" text="🔬 Quality Inspection Decision"/>
+                                    <core:Item key="sales_discount" text="💰 Sales Discount Approval"/>
+                                    <core:Item key="return_request" text="📦 Return Request Action"/>
+                                    <core:Item key="fraud_detection" text="🔍 Transaction Fraud Detection"/>
+                                    <core:Item key="vendor_risk" text="🤝 Vendor Procurement Risk"/>
+                                    <core:Item key="supply_chain_risk" text="🚚 Supply Chain Risk Assessment"/>
+                                    <core:Item key="travel_expense" text="✈️ Travel Expense Approval"/>
+                                    <core:Item key="warehouse_transfer" text="📦 Warehouse Stock Transfer"/>
+                                    <core:Item key="custom" text="✏️ Custom Payload"/>
+                                </Select>
+                                
+                                <!-- Target Scenario Selection -->
+                                <Label text="{i18n>targetScenario}" required="true" class="sapUiSmallMarginTop"/>
                                 <Select id="scenarioSelect" 
                                     selectedKey="{view>/scenario}" 
                                     forceSelection="false" 
                                     width="100%"
-                                    items="{path: '/Scenarios', sorter: { path: 'name' }}"
+                                    items="{
+                                        path: '/Scenarios',
+                                        sorter: [
+                                            { path: 'sourceSystem', group: true },
+                                            { path: 'displayName' }
+                                        ]
+                                    }"
                                     change=".onScenarioChange">
-                                    <core:Item key="{ID}" text="{name}"/>
+                                    <core:ListItem key="{ID}" text="{displayName}" additionalText="{sourceSystem}"/>
                                 </Select>
+                                <HBox class="sapUiTinyMarginTop" alignItems="Center">
+                                    <core:Icon src="sap-icon://hint" size="0.875rem" color="#0854a0" class="sapUiTinyMarginEnd"/>
+                                    <Text text="{i18n>scenariosAvailable}" wrapping="true"/>
+                                </HBox>
                                 
-                                <Label text="Correlation ID" class="sapUiSmallMarginTop"/>
-                                <Input value="{view>/correlationId}" placeholder="Trace ID (optional)"/>
+                                <!-- Execution Mode -->
+                                <Label text="{i18n>executionMode}" class="sapUiSmallMarginTop"/>
+                                <SegmentedButton selectedKey="{view>/executionMode}" width="100%">
+                                    <items>
+                                        <SegmentedButtonItem key="simulate" text="{i18n>simulate}" icon="sap-icon://simulate"/>
+                                        <SegmentedButtonItem key="execute" text="{i18n>executeLive}" icon="sap-icon://media-play"/>
+                                        <SegmentedButtonItem key="debug" text="{i18n>debugMode}" icon="sap-icon://developer-settings"/>
+                                    </items>
+                                </SegmentedButton>
                                 
-                                <Label text="Payload (JSON)" class="sapUiSmallMarginTop" required="true"/>
-                                <TextArea value="{view>/payload}" rows="15" width="100%" placeholder="Enter JSON payload..." growing="true"/>
+                                <Label text="{i18n>correlationId}" class="sapUiSmallMarginTop"/>
+                                <Input value="{view>/correlationId}" placeholder="{i18n>correlationIdPlaceholder}"/>
+                                
+                                <Label text="{i18n>payloadJson}" class="sapUiSmallMarginTop" required="true"/>
+                                <TextArea value="{view>/payload}" rows="12" width="100%" placeholder="{i18n>enterJsonPayload}" growing="true"/>
+                                
+                                <!-- Quick Actions -->
+                                <HBox class="sapUiSmallMarginTop" justifyContent="SpaceBetween">
+                                    <Button text="{i18n>validateJson}" icon="sap-icon://validate" press=".onValidateJson" type="Transparent"/>
+                                    <Button text="{i18n>format}" icon="sap-icon://syntax" press=".onFormatJson" type="Transparent"/>
+                                    <Button text="{i18n>copy}" icon="sap-icon://copy" press=".onCopyPayload" type="Transparent"/>
+                                </HBox>
                             </VBox>
                         </Panel>
                     </VBox>
                     
                     <!-- RIGHT: RESULT -->
                     <VBox class="sapUiSmallMargin">
-                        <Panel headerText="Simulation Result" height="auto" width="auto" class="sapUiResponsiveMargin">
+                        <Panel headerText="{i18n>simulationResult}" height="auto" width="auto" class="sapUiResponsiveMargin">
                              <content>
                                 <IconTabBar id="resultTabs" expanded="true" class="sapUiResponsiveContentPadding">
                                     <items>
-                                        <IconTabFilter text="Visual Summary" icon="sap-icon://it-host">
+                                        <IconTabFilter text="{i18n>visualSummary}" icon="sap-icon://it-host">
                                             <VBox visible="{= !!${view>/result/decision} }">
                                                 <ObjectHeader
                                                     title="{view>/result/decision}"
                                                     number="{view>/result/finalScore}"
-                                                    numberUnit="Score"
-                                                    intro="Decision Result"
+                                                    numberUnit="{i18n>score}"
+                                                    intro="{i18n>decisionResult}"
                                                     icon="{= ${view>/result/decision} === 'APPROVED' ? 'sap-icon://accept' : ${view>/result/decision} === 'REJECTED' ? 'sap-icon://decline' : 'sap-icon://alert' }"
                                                     iconActive="false"
                                                     backgroundDesign="Translucent">
                                                     <statuses>
-                                                        <ObjectStatus text="{view>/result/confidence}% Confidence" state="Information" icon="sap-icon://machine-learning"/>
+                                                        <ObjectStatus text="{view>/result/confidence}% {i18n>confidence}" state="Information" icon="sap-icon://machine-learning"/>
                                                         <ObjectStatus text="{view>/result/processingTimeMs} ms" state="None" icon="sap-icon://performance"/>
                                                     </statuses>
                                                 </ObjectHeader>
                                                 
-                                                <Title text="Score Impact" class="sapUiSmallMarginTop"/>
+                                                <Title text="{i18n>scoreImpact}" class="sapUiSmallMarginTop"/>
                                                 <ProgressIndicator 
                                                     percentValue="{view>/result/finalScore}" 
                                                     displayValue="{view>/result/finalScore}/100" 
@@ -90,8 +147,8 @@
                                                     height="1.5rem"
                                                     class="sapUiSmallMarginBottom"/>
 
-                                                <Title text="Fired Rules" class="sapUiSmallMarginTop"/>
-                                                <List items="{view>/result/rulesFired}" noDataText="No rules triggered">
+                                                <Title text="{i18n>firedRules}" class="sapUiSmallMarginTop"/>
+                                                <List items="{view>/result/rulesFired}" noDataText="{i18n>noRulesTriggered}">
                                                     <StandardListItem 
                                                         title="{view>ruleName}" 
                                                         description="{view>explanation}"
@@ -100,10 +157,14 @@
                                                         icon="sap-icon://process"/>
                                                 </List>
                                             </VBox>
-                                            <IllustratedMessage illustrationType="sapIll-NoData" title="Ready to Simulate" description="Click Execute to see results" visible="{= !${view>/result/decision} }"/>
+                                            <VBox alignItems="Center" justifyContent="Center" visible="{= !${view>/result/decision} }" class="sapUiMediumMargin">
+                                                <core:Icon src="sap-icon://simulate" size="4rem" color="#0854a0" class="sapUiSmallMarginBottom"/>
+                                                <Title text="{i18n>readyToSimulate}" level="H3"/>
+                                                <Text text="{i18n>clickExecute}" class="sapUiTinyMarginTop"/>
+                                            </VBox>
                                         </IconTabFilter>
                                         
-                                        <IconTabFilter text="Raw JSON" icon="sap-icon://code-placeholder">
+                                        <IconTabFilter text="{i18n>rawJson}" icon="sap-icon://code-placeholder">
                                             <TextArea value="{view>/result/rawJson}" rows="20" width="100%" editable="false"/>
                                         </IconTabFilter>
                                     </items>
@@ -114,14 +175,6 @@
 
                 </l:Grid>
             </f:content>
-
-            <f:footer>
-                <OverflowToolbar>
-                    <ToolbarSpacer/>
-                    <Text text="DecisionCore AI - Created by Taha Khattari"/>
-                    <ToolbarSpacer/>
-                </OverflowToolbar>
-            </f:footer>
         </f:DynamicPage>
     </App>
 </mvc:View>

@@ -2,73 +2,105 @@
     xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout"
     controllerName="decisioncore.admin.controller.Main" displayBlock="true">
     <App id="app">
-        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="true">
+        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="false">
             <f:title>
                 <f:DynamicPageTitle>
-                    <f:heading><Title text="AI Provider Administration"/></f:heading>
-                    <f:expandedContent><Label text="Configure LLM connections"/></f:expandedContent>
+                    <f:heading><Title text="{i18n>pageTitle}"/></f:heading>
+                    <f:expandedContent><Label text="{i18n>pageSubtitle}"/></f:expandedContent>
                     <f:actions>
-                        <Button text="Add Provider" type="Emphasized" icon="sap-icon://add" press=".onAddProvider"/>
+                        <Button text="{i18n>healthCheck}" icon="sap-icon://doctor" press=".onHealthCheck" type="Transparent"/>
+                        <Button text="{i18n>addProvider}" type="Emphasized" icon="sap-icon://add" press=".onAddProvider"/>
                     </f:actions>
                 </f:DynamicPageTitle>
             </f:title>
             <f:header>
                 <f:DynamicPageHeader pinnable="true">
                     <layout:HorizontalLayout allowWrapping="true">
-                         <layout:VerticalLayout class="sapUiMediumMarginEnd">
-                            <ObjectAttribute title="Active Providers" text="4"/>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>totalProviders}" text="{stats>/totalProviders}"/>
                         </layout:VerticalLayout>
                         <layout:VerticalLayout class="sapUiMediumMarginEnd">
-                            <ObjectAttribute title="Default Model" text="GPT-4"/>
+                            <ObjectAttribute title="{i18n>statusActive}" text="{stats>/activeProviders}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>statusInactive}" text="{stats>/inactiveProviders}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>defaultModel}" text="{stats>/defaultModel}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>fallbackModel}" text="{stats>/fallbackModel}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>successRate}" text="{stats>/successRate}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout>
+                            <ObjectStatus text="{stats>/systemStatus}" state="{stats>/systemStatusState}" icon="sap-icon://sys-enter-2"/>
                         </layout:VerticalLayout>
                     </layout:HorizontalLayout>
                 </f:DynamicPageHeader>
             </f:header>
             <f:content>
-                <Table id="providersTable" mode="MultiSelect" items="{/AIProviders}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                <Table id="providersTable" mode="MultiSelect" items="{/AIProviders}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto" growing="true" growingThreshold="50">
                     <headerToolbar>
                         <OverflowToolbar>
-                            <Title text="Configured Models"/>
+                            <Title text="{i18n>configuredModels}" level="H2"/>
                             <ToolbarSpacer/>
-                            <SearchField width="200px" search=".onSearch" liveChange=".onSearch"/>
-                            <Button icon="sap-icon://delete" type="Transparent" text="Delete Selected" press=".onDeleteSelectedProviders"/>
+                            <Select id="statusFilter" width="150px" change=".onStatusFilter">
+                                <core:Item key="" text="{i18n>allStatus}"/>
+                                <core:Item key="ACTIVE" text="✓ {i18n>statusActive}"/>
+                                <core:Item key="INACTIVE" text="○ {i18n>statusInactive}"/>
+                                <core:Item key="ERROR" text="✗ {i18n>statusError}"/>
+                            </Select>
+                            <SearchField width="200px" placeholder="{i18n>searchPlaceholder}" search=".onSearch" liveChange=".onSearch"/>
+                            <ToolbarSeparator/>
+                            <Button icon="sap-icon://duplicate" type="Transparent" text="{i18n>duplicate}" press=".onDuplicateSelectedProviders" tooltip="{i18n>duplicateSelected}"/>
+                            <Button icon="sap-icon://delete" type="Transparent" text="{i18n>delete}" press=".onDeleteSelectedProviders"/>
+                            <Button icon="sap-icon://refresh" type="Transparent" press=".onRefresh" tooltip="{i18n>refresh}"/>
                         </OverflowToolbar>
                     </headerToolbar>
                     <columns>
-                        <Column><Text text="Provider Code"/></Column>
-                        <Column><Text text="Name"/></Column>
-                        <Column><Text text="Type"/></Column>
-                        <Column><Text text="Status"/></Column>
-                        <Column hAlign="Center"><Text text="Default"/></Column>
-                        <Column hAlign="End"><Text text="Actions"/></Column>
+                        <Column width="9rem"><Text text="{i18n>colProviderCode}"/></Column>
+                        <Column><Text text="{i18n>colName}"/></Column>
+                        <Column width="8rem"><Text text="{i18n>colType}"/></Column>
+                        <Column width="10rem"><Text text="{i18n>colModel}"/></Column>
+                        <Column width="9rem" hAlign="Center"><Text text="{i18n>colStatus}"/></Column>
+                        <Column width="8rem" hAlign="Center"><Text text="{i18n>colHealth}"/></Column>
+                        <Column width="8rem" hAlign="Center"><Text text="{i18n>colRole}"/></Column>
+                        <Column width="10rem" hAlign="End"><Text text="{i18n>colActions}"/></Column>
                     </columns>
                     <items>
-                        <ColumnListItem>
+                        <ColumnListItem type="Navigation" press=".onProviderPress">
                             <cells>
                                 <ObjectIdentifier title="{code}"/>
-                                <Text text="{name}"/>
+                                <Text text="{name}" wrapping="false"/>
                                 <ObjectStatus text="{providerType}" state="Information" inverted="true"/>
-                                <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}" icon="{= ${status} === 'ACTIVE' ? 'sap-icon://connected' : 'sap-icon://disconnected'}"/>
-                                <VBox>
-                                    <core:Icon src="{= ${isDefault} ? 'sap-icon://accept' : ''}" color="Positive"/>
-                                    <Button text="Test" icon="sap-icon://connected" press=".onTestConnection"/>
-                                </VBox>
-                                <HBox>
-                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditProvider" tooltip="Edit"/>
-                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteProvider" tooltip="Delete"/>
+                                <Text text="{model}"/>
+                                <Select selectedKey="{status}" change=".onStatusChange" forceSelection="true">
+                                    <core:Item key="ACTIVE" text="{i18n>statusActive}"/>
+                                    <core:Item key="INACTIVE" text="{i18n>statusInactive}"/>
+                                    <core:Item key="ERROR" text="{i18n>statusError}"/>
+                                </Select>
+                                <ObjectStatus 
+                                    text="{healthStatus}" 
+                                    state="{= ${healthStatus} === 'HEALTHY' ? 'Success' : ${healthStatus} === 'UNCONFIGURED' ? 'Warning' : ${healthStatus} === 'DEGRADED' ? 'Warning' : 'Error'}"
+                                    icon="{= ${healthStatus} === 'HEALTHY' ? 'sap-icon://heart' : ${healthStatus} === 'UNCONFIGURED' ? 'sap-icon://key' : 'sap-icon://alert'}"/>
+                                <Select selectedKey="{role}" change=".onRoleChange" forceSelection="true">
+                                    <core:Item key="" text="-"/>
+                                    <core:Item key="DEFAULT" text="★ {i18n>roleDefault}"/>
+                                    <core:Item key="FALLBACK" text="↺ {i18n>roleFallback}"/>
+                                </Select>
+                                <HBox justifyContent="End">
+                                    <Button icon="sap-icon://duplicate" type="Transparent" press=".onDuplicateProvider" tooltip="{i18n>duplicate}"/>
+                                    <Button icon="sap-icon://lab" type="Transparent" press=".onTestConnection" tooltip="{i18n>testConnection}"/>
+                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditProvider" tooltip="{i18n>edit}"/>
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteProvider" tooltip="{i18n>delete}"/>
                                 </HBox>
                             </cells>
                         </ColumnListItem>
                     </items>
                 </Table>
             </f:content>
-            <f:footer>
-                <OverflowToolbar>
-                    <ToolbarSpacer/>
-                    <Text text="DecisionCore AI - Created by Taha Khattari"/>
-                    <ToolbarSpacer/>
-                </OverflowToolbar>
-            </f:footer>
         </f:DynamicPage>
     </App>
 </mvc:View>

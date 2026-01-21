@@ -7,9 +7,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.0.0-blue" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-2.1.0-blue" alt="Version"/>
   <img src="https://img.shields.io/badge/SAP-CAP-orange" alt="SAP CAP"/>
   <img src="https://img.shields.io/badge/AI-OpenAI%20%7C%20Azure%20%7C%20Claude-green" alt="AI Providers"/>
+  <img src="https://img.shields.io/badge/i18n-8%20Languages-teal" alt="Languages"/>
   <img src="https://img.shields.io/badge/Author-Taha%20Khattari-purple" alt="Author"/>
 </p>
 
@@ -26,8 +27,32 @@
 | **100% Data-Driven** | No hardcoded business logic - everything is configurable |
 | **Pluggable AI** | OpenAI, Azure OpenAI, Claude, SAP AI Core + Mock for testing |
 | **Full Explainability** | Every decision includes detailed score breakdown |
-| **8 Enterprise Templates** | Pre-built for Credit, Fraud, Procurement, Sales, HR, Compliance, Security |
+| **18 Enterprise Templates** | Pre-built for all SAP modules (FI, MM, SD, HR, PM, QM, etc.) |
 | **SAP Native** | Built on CAP, ready for S/4HANA, SuccessFactors, Ariba integration |
+| **8 Languages** | EN, DE, FR, ES, IT, NL, ZH, JA - full i18n support |
+| **Dark/Light Mode** | Theme toggle with per-scenario persistence |
+
+---
+
+## 🆕 What's New in v2.1
+
+### New Features
+- 🌍 **Full Internationalization (i18n)** - 8 languages supported
+- 🔔 **Notification System** - Real-time alerts in header
+- 👤 **User Profile Dialog** - Settings, shortcuts, theme preferences
+- ⌨️ **Keyboard Shortcuts** - Alt+1-7 navigation, Alt+S search, Alt+T theme
+- 🎨 **Theme per Scenario** - Save dark/light mode preference per page
+- 📊 **18 Enterprise Scenarios** - Pre-configured for all SAP modules
+- 🏷️ **Categorized Dropdowns** - Scenarios grouped by SAP module
+
+### Keyboard Shortcuts
+| Shortcut | Action |
+|----------|--------|
+| `Alt + 1-7` | Navigate to pages (Home, Dashboard, Scenarios, Rules, Simulate, History, Admin) |
+| `Alt + S` | Open Global Search |
+| `Alt + T` | Toggle Theme (Dark/Light) |
+| `Alt + N` | Open Notifications |
+| `Esc` | Close Dialogs |
 
 ---
 
@@ -68,7 +93,7 @@ Push the application to your SAP BTP space:
 
 ```bash
 cf login
-cf deploy decisioncore-ai_2.0.0.mtar
+cf deploy decisioncore-ai_2.1.0.mtar
 ```
 
 ### 3. Assign Roles
@@ -91,6 +116,7 @@ After deployment, go to your **BTP Cockpit** > **Security** > **Users** and assi
 
 | App | URL | Description |
 |-----|-----|-------------|
+| **Launchpad** | `/` | Main entry with hero, navigation, notifications |
 | **Dashboard** | `/dashboard/webapp/` | Executive analytics with KPIs and charts |
 | **Scenarios** | `/scenarios/webapp/` | Create and manage decision scenarios |
 | **Rules** | `/rules/webapp/` | Configure business rules |
@@ -100,20 +126,30 @@ After deployment, go to your **BTP Cockpit** > **Security** > **Users** and assi
 
 ---
 
-## 🧩 Decision Templates
+## 🧩 Enterprise Decision Scenarios
 
-Start from pre-built templates instead of scratch:
+18 pre-built scenarios covering all major SAP modules:
 
-| Template | Use Case | Default AI Weight |
-|----------|----------|-------------------|
-| **Credit Approval** | Banks, Finance | 40% |
-| **Fraud Detection** | Payments, E-Commerce | 70% |
-| **Procurement Risk** | SAP MM, Vendor mgmt | 50% |
-| **Pricing/Discount** | Sales | 30% |
-| **HR Decision** | SuccessFactors | 20% |
-| **Compliance/KYC** | Regulated industries | 60% |
-| **Security Decision** | IAM, Access mgmt | 65% |
-| **Generic JSON** | Custom scenarios | 40% |
+| SAP Module | Scenario | Description | AI Weight |
+|------------|----------|-------------|-----------|
+| **SAP_PM** | Asset Lifecycle | Repair vs. Replace decisions | 30% |
+| **SAP_PM** | Maintenance Priority | Work order prioritization | 20% |
+| **SAP_FI** | Capex Budget Release | Investment approval | 20% |
+| **SAP_FSCD** | Credit Application | Customer credit scoring | 40% |
+| **SAP_FSCD** | KYC Compliance | Know Your Customer checks | 50% |
+| **SAP_MM** | Invoice Auto-Approval | Three-way match logic | 10% |
+| **SAP_MM** | Vendor Risk | Supplier risk assessment | 50% |
+| **SAP_HCM** | HR Promotion | Promotion eligibility | 35% |
+| **SAP_GRC** | IT Access Request | Access control decisions | 15% |
+| **SAP_CLM** | Contract Renewal | Auto-renewal logic | 25% |
+| **SAP_QM** | Quality Inspection | Skip/Full inspection | 15% |
+| **SAP_SD** | Sales Discount | Discount approval | 30% |
+| **SAP_SD** | Return Request | Return handling (Refurbish/Scrap/Restock) | 25% |
+| **SAP_TM** | Supply Chain Risk | Logistics risk assessment | 55% |
+| **SAP_CONCUR** | Travel Expense | Expense policy compliance | 15% |
+| **SAP_EWM** | Warehouse Transfer | Stock movement triggers | 10% |
+| **EXTERNAL** | Fraud Detection | Transaction fraud scoring | 70% |
+| **EXTERNAL** | Generic JSON | Custom flexible template | 40% |
 
 ---
 

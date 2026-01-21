@@ -44,6 +44,23 @@
             }
         },
         "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "decisioncore.rules.i18n.i18n",
+                    "supportedLocales": [
+                        "en",
+                        "de",
+                        "es",
+                        "fr",
+                        "it",
+                        "ja",
+                        "nl",
+                        "zh"
+                    ],
+                    "fallbackLocale": "en"
+                }
+            },
             "": {
                 "dataSource": "mainService",
                 "preload": false,

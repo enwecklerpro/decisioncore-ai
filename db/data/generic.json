@@ -1,0 +1,22 @@
+﻿[
+    {
+        "ID": "a1b2c3d4-e5f6-4789-abcd-ef0123456799",
+        "name": "GENERIC_JSON",
+        "displayName": "Generic JSON Decision",
+        "description": "Generic decision scenario for testing arbitrary JSON payloads.",
+        "status": "ACTIVE",
+        "version": 1,
+        "rulesWeight": 50,
+        "aiWeight": 50,
+        "approvalThreshold": 60,
+        "reviewThreshold": 40,
+        "sourceSystem": "EXTERNAL",
+        "sapObjectType": "GENERIC",
+        "allowSimulation": true,
+        "requireApproval": false,
+        "maxRetries": 0,
+        "timeoutMs": 10000,
+        "publishedAt": "2026-01-15T12:00:00Z",
+        "publishedBy": "system"
+    }
+]

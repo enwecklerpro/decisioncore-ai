@@ -2,14 +2,14 @@
     xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout"
     controllerName="decisioncore.rules.controller.Main" displayBlock="true">
     <App id="app">
-        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="true">
+        <f:DynamicPage headerExpanded="true" toggleHeaderOnTitleClick="true" showFooter="false">
             <!-- Title -->
             <f:title>
                 <f:DynamicPageTitle>
-                    <f:heading><Title text="Rules Management"/></f:heading>
-                    <f:expandedContent><Label text="Configure business rules and policies"/></f:expandedContent>
+                    <f:heading><Title text="{i18n>pageTitle}"/></f:heading>
+                    <f:expandedContent><Label text="{i18n>pageSubtitle}"/></f:expandedContent>
                     <f:actions>
-                        <Button text="New Rule" type="Emphasized" icon="sap-icon://add" press=".onOpenCreateRuleDialog"/>
+                        <Button text="{i18n>newRule}" type="Emphasized" icon="sap-icon://add" press=".onOpenCreateRuleDialog"/>
                     </f:actions>
                 </f:DynamicPageTitle>
             </f:title>
@@ -18,58 +18,70 @@
                 <f:DynamicPageHeader pinnable="true">
                     <layout:HorizontalLayout allowWrapping="true">
                          <layout:VerticalLayout class="sapUiMediumMarginEnd">
-                            <ObjectAttribute title="Total Rules" text="156"/>
+                            <ObjectAttribute title="{i18n>totalRules}" text="{stats>/totalRules}"/>
                         </layout:VerticalLayout>
                         <layout:VerticalLayout class="sapUiMediumMarginEnd">
-                            <ObjectAttribute title="Avg. Impact" text="+45 pts"/>
+                            <ObjectAttribute title="{i18n>activeRules}" text="{stats>/activeRules}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>avgImpact}" text="{stats>/avgImpact}"/>
+                        </layout:VerticalLayout>
+                        <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                            <ObjectAttribute title="{i18n>draftRules}" text="{stats>/draftRules}"/>
                         </layout:VerticalLayout>
                     </layout:HorizontalLayout>
                 </f:DynamicPageHeader>
             </f:header>
             <!-- Content -->
             <f:content>
-                <Table id="rulesTable" mode="MultiSelect" items="{/Rules}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto">
+                <Table id="rulesTable" mode="MultiSelect" items="{path: '/Rules', parameters: {$expand: 'scenario'}}" sticky="ColumnHeaders,HeaderToolbar" inset="false" class="sapFDynamicPageAlignContent" width="auto" growing="true" growingThreshold="50">
                     <headerToolbar>
                         <OverflowToolbar>
-                            <Title text="Decision Rules"/>
+                            <Title text="{i18n>decisionRules}" level="H2"/>
                             <ToolbarSpacer/>
-                            <SearchField width="200px" placeholder="Search..." search=".onSearch" liveChange=".onSearch"/>
-                            <Button icon="sap-icon://filter" type="Transparent" press=".onFilter"/>
-                            <Button icon="sap-icon://delete" type="Transparent" text="Delete Selected" press=".onDeleteSelectedRules"/>
+                            <SearchField width="200px" placeholder="{i18n>searchPlaceholder}" search=".onSearch" liveChange=".onSearch"/>
+                            <Button icon="sap-icon://filter" type="Transparent" press=".onFilter" tooltip="{i18n>filter}"/>
+                            <ToolbarSeparator/>
+                            <Button icon="sap-icon://duplicate" type="Transparent" text="{i18n>duplicate}" press=".onDuplicateSelectedRules" tooltip="{i18n>duplicateSelected}"/>
+                            <Button icon="sap-icon://delete" type="Transparent" text="{i18n>delete}" press=".onDeleteSelectedRules"/>
+                            <Button icon="sap-icon://refresh" type="Transparent" press=".onRefresh" tooltip="{i18n>refresh}"/>
                         </OverflowToolbar>
                     </headerToolbar>
                     <columns>
-                        <Column width="12rem"><Text text="Rule Code"/></Column>
-                        <Column><Text text="Description"/></Column>
-                        <Column width="8rem"><Text text="Status"/></Column>
-                        <Column width="6rem" hAlign="End"><Text text="Priority"/></Column>
-                        <Column width="8rem"><Text text="Action"/></Column>
-                        <Column width="8rem" hAlign="End"><Text text="Score Impact"/></Column>
-                        <Column width="4rem" hAlign="End"><Text text=""/></Column>
+                        <Column width="10rem"><Text text="{i18n>colRuleCode}"/></Column>
+                        <Column><Text text="{i18n>colRuleName}"/></Column>
+                        <Column width="10rem"><Text text="{i18n>colScenario}"/></Column>
+                        <Column width="8rem" hAlign="Center"><Text text="{i18n>colStatus}"/></Column>
+                        <Column width="5rem" hAlign="Center"><Text text="{i18n>colPriority}"/></Column>
+                        <Column width="7rem"><Text text="{i18n>colAction}"/></Column>
+                        <Column width="6rem" hAlign="End"><Text text="{i18n>colScore}"/></Column>
+                        <Column width="10rem" hAlign="End"><Text text="{i18n>colActions}"/></Column>
                     </columns>
                     <items>
-                        <ColumnListItem type="Navigation">
+                        <ColumnListItem type="Navigation" press=".onRulePress">
                             <cells>
                                 <ObjectIdentifier title="{ruleCode}"/>
-                                <Text text="{ruleName}"/>
-                                <ObjectStatus text="{status}" state="{= ${status} === 'ACTIVE' ? 'Success' : 'Warning'}" inverted="true"/>
+                                <Text text="{ruleName}" wrapping="false"/>
+                                <Text text="{scenario/displayName}"/>
+                                <Select selectedKey="{status}" change=".onStatusChange" forceSelection="true">
+                                    <core:Item key="ACTIVE" text="{i18n>statusActive}"/>
+                                    <core:Item key="INACTIVE" text="{i18n>statusInactive}"/>
+                                    <core:Item key="DRAFT" text="{i18n>statusDraft}"/>
+                                </Select>
                                 <ObjectNumber number="{priority}"/>
-                                <ObjectStatus text="{action}" state="{= ${action} === 'REJECT' ? 'Error' : 'None'}" icon="{= ${action} === 'REJECT' ? 'sap-icon://decline' : 'sap-icon://accept'}"/>
+                                <ObjectStatus text="{action}" state="{= ${action} === 'REJECT' ? 'Error' : ${action} === 'FLAG' ? 'Warning' : 'Success'}" icon="{= ${action} === 'REJECT' ? 'sap-icon://decline' : ${action} === 'FLAG' ? 'sap-icon://flag' : 'sap-icon://accept'}"/>
                                 <ObjectNumber number="{scoreModifier}" state="{= ${scoreModifier} >= 0 ? 'Success' : 'Error'}" unit="pts"/>
-                                <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteRule" tooltip="Delete Rule"/>
+                                <HBox justifyContent="End">
+                                    <Button icon="sap-icon://duplicate" type="Transparent" press=".onDuplicateRule" tooltip="{i18n>duplicate}"/>
+                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditRule" tooltip="{i18n>edit}"/>
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteRule" tooltip="{i18n>delete}"/>
+                                </HBox>
                             </cells>
                         </ColumnListItem>
                     </items>
                 </Table>
             </f:content>
-            <!-- Footer -->
-            <f:footer>
-                <OverflowToolbar>
-                    <ToolbarSpacer/>
-                    <Text text="DecisionCore AI - Created by Taha Khattari"/>
-                    <ToolbarSpacer/>
-                </OverflowToolbar>
-            </f:footer>
+
         </f:DynamicPage>
     </App>
-</mvc:View> 
+</mvc:View>

@@ -70,7 +70,7 @@ sap.ui.define([
 
             // Load Outputs (Decisions)
             var oOutputsBinding = oModel.bindList("/Outputs");
-            var oRulesBinding = oModel.bindList("/DecisionRules");
+            var oRulesBinding = oModel.bindList("/Rules");
             var oProvidersBinding = oModel.bindList("/AIProviders");
 
             Promise.all([

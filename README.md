@@ -16,6 +16,14 @@ evaluated via OData actions or a REST-style API and return:
 - the rules score and the AI score separately
 - a plain-text explanation and an entry in the decision history (audit trail)
 
+## Screenshots
+
+Local run (`cds serve`, in-memory database with the sample data from `db/data/`):
+
+![Scenario management – 19 sample scenarios with rules/AI weighting](docs/images/scenarios.png)
+
+![Rules management – expression rules with actions and score impact](docs/images/rules.png)
+
 ## Implemented vs. planned
 
 | Area | Status |
@@ -31,6 +39,8 @@ evaluated via OData actions or a REST-style API and return:
 | SAP AI Core provider | 🟡 Stub — falls back to the heuristic provider |
 | MTA descriptor for SAP BTP Cloud Foundry | 🟡 Included (`mta.yaml`) |
 | Automated tests | 🔲 Planned — Jest is configured, test suites still to be written |
+| Sample data: link the seeded rules to the seeded scenarios | 🔲 Known issue — the sample rules reference scenario IDs (`scn-credit-001`, …) that are not in the scenario sample data, so simulations on sample data trigger no rules |
+| Launchpad / dashboard KPIs from live data | 🔲 Known issue — the launchpad tiles and some dashboard percentages are static placeholders |
 | Integration with S/4HANA, SuccessFactors or Ariba | 🔲 Planned — not implemented |
 | Learning from decision history (ML) | 🔲 Planned |
 
